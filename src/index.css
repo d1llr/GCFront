@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family:'Chakra Petch', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #0D0D0D;
+  color: #0D0D0D;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+
+#root{
+  display: flex;
+  flex-direction: row;
+}
+header{
+  box-shadow: -5px 5px 20px 0px rgba(255, 255, 255, 0.09) inset;
+  color: #0D0D0D;
+}
