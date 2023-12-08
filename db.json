@@ -1,0 +1,48 @@
+{
+    "nft":[
+        {
+            "image":"../../src/images/nft/1.png",
+            "name": "Name",
+            "description": "Description",
+            "id": "1"
+        },
+        {
+            "image":"../../src/images/nft/test2.png",
+            "name": "Name",
+            "description": "Description",
+            "id": "2"
+        },
+        {
+            "image":"../../src/images/nft/test2.png",
+            "name": "Name",
+            "description": "Description",
+            "id": "3"
+        }
+    ],
+    "games":[
+        {
+            "image":"../../src/images/games/testPhoto.png",
+            "name": "Name",
+            "description": "Description of the game Description of the game Description of the game Description of the game Description of",
+            "id": "1"
+        },
+        {
+            "image":"../../src/images/games/testPhoto.png",
+            "name": "Name",
+            "description": "Description of the game Description of the game Description of the game Description of the game Description of",
+            "id": "2"
+        },
+        {
+            "image":"../../src/images/games/testPhoto.png",
+            "name": "Name",
+            "description": "Description of the game Description of the game Description of the game Description of the game Description of",
+            "id": "3"
+        },
+        {
+            "image":"../../src/images/games/testPhoto.png",
+            "name": "Name",
+            "description": "Description of the game Description of the game Description of the game Description of the game Description of",
+            "id": "4"
+        }
+    ]
+}

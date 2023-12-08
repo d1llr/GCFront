@@ -6,25 +6,25 @@ const Games = () => {
             image:'../../src/images/games/testPhoto.png',
             name: 'Name',
             description: 'Description of the game Description of the game Description of the game Description of the game Description of',
-            button: 'More detailed'
+            id: '1'
         },
         {
             image:'../../src/images/games/testPhoto.png',
             name: 'Name',
             description: 'Description of the game Description of the game Description of the game Description of the game Description of',
-            button: 'More detailed'
+            id: '2'
         },
         {
             image:'../../src/images/games/testPhoto.png',
             name: 'Name',
             description: 'Description of the game Description of the game Description of the game Description of the game Description of',
-            button: 'More detailed'
+            id: '3'
         },
         {
             image:'../../src/images/games/testPhoto.png',
             name: 'Name',
             description: 'Description of the game Description of the game Description of the game Description of the game Description of',
-            button: 'More detailed'
+            id: '4'
         },
     ]
     return (
@@ -43,9 +43,9 @@ const Games = () => {
                         <span className="text-white text-xl">
                             {item.description}
                         </span>
-                        <button className="w-full bg-yellow text-xl font-bold p-3">
-                            {item.button}
-                        </button>
+                        <a href={`games/${item.id}`}className="w-full bg-yellow text-xl font-bold p-3 text-center cursor-pointer">
+                            More datailed
+                        </a>
                     </div>
                     )
                 })}

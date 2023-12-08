@@ -11,6 +11,9 @@ export default {
       },
       colors:{
         'yellow':'#FFF100'
+      },
+      borderColor:{
+        'gray': '#3F3F3F'
       }
     },
   },

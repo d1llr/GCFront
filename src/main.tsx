@@ -9,13 +9,27 @@ import Header from "./features/header/Header"
 import "./index.css";
 import Games from "./features/games/Games"
 import Nft from "./features/nft/Nft"
+import Mobile from "./features/mobile/mobile"
 
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <Provider store={store}>
+if (window.screen.width > 1000) {
+  ReactDOM.createRoot(document.getElementById("root")!).render(
+    <React.StrictMode>
+      <Provider store={store}>
         <Header />
-        <App/>
-    </Provider>
-  </React.StrictMode>,
-)
+        <App />
+      </Provider>
+    </React.StrictMode>
+
+  )
+}
+else {
+  ReactDOM.createRoot(document.getElementById("root")!).render(
+    <React.StrictMode>
+      <Provider store={store}>
+        <Mobile />
+      </Provider>
+    </React.StrictMode>
+
+  )
+}
