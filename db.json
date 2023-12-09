@@ -44,5 +44,13 @@
             "description": "Description of the game Description of the game Description of the game Description of the game Description of",
             "id": "4"
         }
+    ], 
+    "users":[
+        {
+            "id":"1",
+            "login":"admin",
+            "password":"admin",
+            "token":"admin"
+        }
     ]
 }
