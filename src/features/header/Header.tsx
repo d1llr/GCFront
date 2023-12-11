@@ -4,10 +4,13 @@ import Telegram from '../../images/icons/telegram.svg'
 import Mail from '../../images/icons/mail.svg'
 import X from '../../images/icons/x.svg'
 import { Link } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
 
 
 const Header = () => {
+
+    const navigate = useNavigate();
     return (
         <header className="w-1/4 h-screen text-white p-5 gap-5 flex flex-col justify-between">
             <div className='gap-5 flex flex-col'>
@@ -31,13 +34,19 @@ const Header = () => {
                     </div>
                 </div>
                 <ul className='text-yellow text-2xl gap-3 flex flex-col'>
-                    <a href='/games' className='w-fit decoration-dotted underline '>
+                    <a onClick={() => {
+                        navigate('/games');
+                    }} className='w-fit decoration-dotted underline '>
                         Games
                     </a>
-                    <a href='/nft' className='w-fit decoration-dotted underline '>
+                    <a onClick={() => {
+                        navigate('/nft');
+                    }} className='w-fit decoration-dotted underline '>
                         NFT
                     </a>
-                    <a href='/tournaments' className='w-fit decoration-dotted underline '>
+                    <a onClick={() => {
+                        navigate('/tournaments');
+                    }} className='w-fit decoration-dotted underline '>
                         Tournaments
                     </a>
                     <li className='w-fit decoration-dotted underline'>

@@ -5,7 +5,7 @@ import ITournaments from "./Tournaments.type";
 // Define a service using a base URL and expected endpoints
 export const GetTournaments = createApi({
     reducerPath: 'GetTournaments',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://185.76.14.193:88/' }),
     endpoints: (builder) => ({
         GetTournaments: builder.query<ITournaments[], null>({
             query: () => `tournaments`,
