@@ -5,7 +5,7 @@ import IGames from "./Game.type";
 // Define a service using a base URL and expected endpoints
 export const GetGameById = createApi({
   reducerPath: 'GetGameById',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://185.76.14.193:88/' }),
   endpoints: (builder) => ({
     GetGameById: builder.query<IGames, string | undefined>({
       query: (id) => `games/${id}`,
