@@ -1,27 +1,15 @@
-# vite-template-redux
+#front
 
-Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Testing Library](https://github.com/testing-library/react-testing-library) to create a modern [React](https://react.dev/) app compatible with [Create React App](https://create-react-app.dev/)
+git pull | delete GCFront & git clone https://github.com/d1llr/GCFront.git
+npm install
+pm2 start 'npm start'
 
-```sh
-npx degit reduxjs/redux-templates/packages/vite-template-redux my-app
-```
 
-## Goals
 
-- Easy migration from Create React App or Vite
-- As beginner friendly as Create React App
-- Optimized performance compared to Create React App
-- Customizable without ejecting
+#fakeBackEnd
 
-## Scripts
+Все данные для тестового бэка приходят из гита, лежат в файле db.json
+Остается только запустить json-server, инициализиция происходит в файле server.js
+pm2 start server.js --watch ./db.json --name json-server
 
-- `dev`/`start` - start dev server and open browser
-- `build` - build for production
-- `preview` - locally preview production build
-- `test` - launch test runner
 
-## Inspiration
-
-- [Create React App](https://github.com/facebook/create-react-app/tree/main/packages/cra-template)
-- [Vite](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react)
-- [Vitest](https://github.com/vitest-dev/vitest/tree/main/examples/react-testing-lib)
