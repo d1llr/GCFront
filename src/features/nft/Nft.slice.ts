@@ -5,7 +5,7 @@ import INFT from "./Nft.type";
 // Define a service using a base URL and expected endpoints
 export const GetNFTS = createApi({
     reducerPath: 'GetNFTS',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://185.76.14.193:88/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/' }),
     endpoints: (builder) => ({
         GetNFTS: builder.query<INFT[], null>({
             query: () => `nft`,
