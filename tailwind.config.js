@@ -6,13 +6,14 @@ export default {
   ],
   theme: {
     extend: {
-      backgroundColor:{
-        'yellow':'#FFF100'
+      backgroundColor: {
+        'yellow': '#FFF100'
       },
-      colors:{
-        'yellow':'#FFF100'
+      colors: {
+        'yellow': '#FFF100',
+        'gray': '#898989'
       },
-      borderColor:{
+      borderColor: {
         'gray': '#3F3F3F'
       }
     },

@@ -2,18 +2,18 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import { Provider } from "react-redux"
 import { store } from "./app/store"
-import App from "./App"
 import "./index.css"
 import Header from "./features/header/Header"
-
 import "./index.css";
 import Games from "./features/games/Games"
 import Nft from "./features/nft/Nft"
-import Mobile from "./features/mobile/mobile"
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom"
 import Login from "./features/user/login/Login"
 import Game from "./features/games/game/Game"
 import Register from "./features/user/register/Register"
+import Mobile from "./features/mobile/Mobile"
+import Tournaments from "./features/tournaments/Tournaments"
+import Tournament from "./features/tournaments/tournament/Tournament"
 
 
 function Layout() {
@@ -36,17 +36,24 @@ const router = createBrowserRouter([
       },
       {
         path: '/games',
-        element: <Games />
+        element: <Games />,
+      },
+      {
+        path: '/games/:gamesId',
+        element: <Game />
       },
       {
         path: '/nft',
         element: <Nft />
       },
       {
-        path: '/games/:gamesId',
-        element: <Game />
+        path: '/tournaments',
+        element: <Tournaments />
       },
-
+      {
+        path: '/tournaments/:tournamentId',
+        element: <Tournament />
+      },
     ]
   },
   {

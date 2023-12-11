@@ -37,9 +37,9 @@ const Header = () => {
                     <a href='/nft' className='w-fit decoration-dotted underline '>
                         NFT
                     </a>
-                    <li className='w-fit decoration-dotted underline '>
+                    <a href='/tournaments' className='w-fit decoration-dotted underline '>
                         Tournaments
-                    </li>
+                    </a>
                     <li className='w-fit decoration-dotted underline'>
                         My account
                     </li>
