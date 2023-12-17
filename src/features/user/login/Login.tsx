@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import Logo from '../../../images/logo.svg'
 import { setUser, useLoginRequestMutation } from '../User.slice';
 import { Oval } from 'react-loader-spinner';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import tokenService from '../../../services/token.service';
 import { useAppDispatch } from '../../../app/hooks';
 import { isApiResponse } from '../../../helpers/isApiResponse';
@@ -119,29 +119,30 @@ const Login = () => {
 
 
                 <div className="form-group">
-                    <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold">
+                    <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold h-11">
                         {isUninitialized && "Log in"}
-                        {isLoading && <Oval
-                            height={80}
-                            width={80}
-                            color="#FFF100"
-                            wrapperStyle={{}}
-                            wrapperClass=""
-                            visible={true}
-                            ariaLabel='oval-loading'
-                            secondaryColor="#4fa94d"
-                            strokeWidth={2}
-                            strokeWidthSecondary={2}
+                        {isLoading && <div className='w-full flex items-center justify-center overflow-hidden'>
+                            <Oval
+                                height={30}
+                                width={30}
+                                color="#000"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                                visible={true}
+                                ariaLabel='oval-loading'
+                                secondaryColor="rgb(255 241 0)"
+                                strokeWidth={2}
+                                strokeWidthSecondary={2}
 
-                        />}
-                        {isSuccess && 'Вы успешно авторизовались'}
-                        {isError && isApiResponse(error) && error.data.message}
+                            /></div>}
+                        {isSuccess && 'Success'}
+                        {isError && 'Error'}
                     </button>
                 </div>
             </form>
             <div>
                 <h1 className='text-white text-xl'>
-                    <a href="/register">Create an Account</a>
+                    <NavLink to='/register'>Create an Account</NavLink>
                 </h1>
             </div>
         </div>);

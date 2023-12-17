@@ -6,6 +6,7 @@ import Logo from '../../../images/logo.svg'
 import { useRegisterRequestMutation } from '../User.slice';
 import { Oval } from 'react-loader-spinner';
 import { isApiResponse } from '../../../helpers/isApiResponse';
+import { NavLink } from 'react-router-dom';
 
 const Register = () => {
 
@@ -123,29 +124,30 @@ const Register = () => {
 
 
         <div className="form-group">
-          <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold">
+          <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold h-11">
             {isUninitialized && "Sign up"}
-            {isLoading && <Oval
-              height={80}
-              width={80}
-              color="#FFF100"
-              wrapperStyle={{}}
-              wrapperClass=""
-              visible={true}
-              ariaLabel='oval-loading'
-              secondaryColor="#4fa94d"
-              strokeWidth={2}
-              strokeWidthSecondary={2}
+            {isLoading && <div className='w-full flex items-center justify-center overflow-hidden'>
+              <Oval
+                height={30}
+                width={30}
+                color="#000"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel='oval-loading'
+                secondaryColor="rgb(255 241 0)"
+                strokeWidth={2}
+                strokeWidthSecondary={2}
 
-            />}
-            {isSuccess && 'Вы успешно зарегистрировались'}
-            {isError && isApiResponse(error) && error.data.message}
+              /></div>}
+            {isSuccess && 'Success'}
+            {isError && 'Error'}
           </button>
         </div>
       </form>
       <div>
         <h1 className='text-white text-xl'>
-          <a href="/login">Log in</a>
+          <NavLink to='/login'>Log in</NavLink>
         </h1>
       </div>
     </div>);
