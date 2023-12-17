@@ -1,27 +1,82 @@
 // Need to use the React-specific entry point to allow generating React hooks
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { FetchBaseQueryError, createApi, fetchBaseQuery, } from '@reduxjs/toolkit/query/react'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import IUser from "./User.type";
-type ILogin = { 
-    login: string, 
-    password: string 
+import authHeader from '../../services/accessHeaders';
+type ILogin = {
+    username: string,
+    password: string
 }
-// Define a service using a base URL and expected endpoints
+type IReg = {
+    username: string,
+    email: string,
+    password: string
+}
+
+type IisLog = {
+    isLogged: boolean
+}
+
+
+type ITokens = {
+    accessToken: string
+    refreshToken: string
+}
+
+const initialState: IisLog = {
+    isLogged: false
+}
+
+export const UserSlice = createSlice({
+    name: 'UserSlice',
+    initialState,
+    reducers: {
+        setUser: (state, action: PayloadAction<IisLog>) => {
+            state.isLogged = action.payload.isLogged
+        },
+        logOut: (state) => {
+            state = initialState
+        },
+    },
+})
+
+export const { setUser, logOut } = UserSlice.actions
+//--------------------------------------------------------------------//
 export const UsersActions = createApi({
     reducerPath: 'UsersActions',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080' }),
     endpoints: (builder) => ({
         LoginRequest: builder.mutation<IUser, ILogin>({
-            query: ({login, password}) => `user?login=${login}&password=${password}`,
+            query: (body) => ({
+                url: 'api/auth/signin',
+                method: "POST",
+                body: body,
+            }),
         }),
-        AutoLoginRequest: builder.query<IUser, string | undefined>({
-            query: (token) => `user?token=${token}`,
+        RefreshToken: builder.mutation<ITokens, string | undefined>({
+            query: (refreshtoken) => ({
+                url: '/api/auth/refreshtoken',
+                method: "POST",
+                body: { refreshToken: refreshtoken },
+            }),
+            extraOptions: { maxRetries: 2 },
         }),
-        RegisterRequest: builder.mutation<IUser, string | undefined>({
-            query: (id) => `user/${id}`,
-        })
+        RegisterRequest: builder.mutation<string, IReg>({
+            query: (body) => ({
+                url: 'api/auth/signup',
+                method: "POST",
+                body: body,
+            }),
+            transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
+        }),
+        getUserInfo: builder.query<IUser, string | undefined>({
+            query: (id) => ({
+                url: `api/user/getInfoById/${id}`,
+                method: "GET",
+                headers: authHeader()
+            }),
+        }),
     }),
 })
 
-// Export hooks for usage in function components, which are
-// auto-generated based on the defined endpoints
-export const {useRegisterRequestMutation, useLoginRequestMutation, useAutoLoginRequestQuery } = UsersActions
+export const { useRegisterRequestMutation, useLoginRequestMutation, useRefreshTokenMutation, useGetUserInfoQuery } = UsersActions

@@ -1,9 +1,10 @@
 import ITournaments from "./Tournaments.type";
-import QPhoto from '../../images/nft/que.png'
 import { useGetTournamentsQuery } from "./Tournaments.slice";
 import { Oval } from "react-loader-spinner";
+import { useNavigate } from "react-router-dom";
 const Tournaments = () => {
-    const { data, isLoading, isError, error } = useGetTournamentsQuery(null)
+    const { data, isLoading, isError, error } = useGetTournamentsQuery()
+    const navigate = useNavigate();
 
     if (isLoading) {
         return <Oval
@@ -25,12 +26,12 @@ const Tournaments = () => {
             <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">
                 Tournaments
             </h2>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-6 mt-10">
                 {data?.map((item: ITournaments, index: number) => {
                     return (
                         <div key={index} className="border-yellow border-2 p-3 flex flex-row gap-2 text-white">
                             <div className="w-2/3">
-                                <img src={item.image} alt="Фото игры" width={345} height={345} className="object-cover w-full h-full max-h-80"/>
+                                <img src={import.meta.env.VITE_BACKEND_URL + item.image} alt="Фото игры" width={345} height={345} className="object-cover w-full h-full max-h-80" />
                             </div>
                             <div className="flex flex-col w-full gap-6 justify-center">
                                 <div>
@@ -75,7 +76,9 @@ const Tournaments = () => {
                                         </li>
                                     </ul>
                                 </div>
-                                <a href={`tournaments/${item.id}`} className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer">
+                                <a onClick={() => {
+                                    navigate(`/tournaments/${item.id}`);
+                                }} className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer">
                                     More datailed
                                 </a>
                             </div>

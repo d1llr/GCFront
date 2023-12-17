@@ -1,8 +1,10 @@
 export default interface IUser {
-    name:string,
-    email:string,
-    login:string,
-    wallet:string,
-    balance: string,
-    password:string
+    id: number | string
+    username: string
+    name?:string
+    email: string
+    roles?: string[]
+    accessToken?: string
+    refreshToken?: string
+    isLogged?: boolean
 }

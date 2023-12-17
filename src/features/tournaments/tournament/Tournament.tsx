@@ -35,7 +35,7 @@ const Tournament = () => {
                 <div className="flex flex-row gap-6 mt-7 w-2/3">
                     <div className="flex flex-row gap-5">
                         <div className="w-1/2">
-                            <img src={data?.image} alt="Фото" className="object-cover w-full" />
+                            <img src={import.meta.env.VITE_BACKEND_URL + data?.image} alt="Фото" className="object-cover w-full" />
                         </div>
                         <div className="flex flex-col gap-2 h-full justify-between w-1/2">
                             <div className="flex flex-col gap-2 text-white">
@@ -107,7 +107,7 @@ const Tournament = () => {
                                         #{index}
                                     </td>
                                     <td>
-                                       1 110 PAC
+                                        1 110 PAC
                                     </td>
                                     <td>
                                         SAVA

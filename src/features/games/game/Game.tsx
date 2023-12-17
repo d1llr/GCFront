@@ -1,15 +1,40 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetGameByIdQuery } from "./Game.slice";
 import { Oval } from "react-loader-spinner";
 import browser from '../../../images/icons/browser.svg'
 import apple from '../../../images/icons/apple.svg'
 import android from '../../../images/icons/android.svg'
 import win from '../../../images/icons/win.svg'
+import { IoChevronBack } from "react-icons/io5";
+import redirectFunc from "../../../helpers/redirect";
+import { useEffect } from "react";
+import { useRefreshTokenMutation } from "../../user/User.slice";
+import tokenService from "../../../services/token.service";
+
 const Game = () => {
     let params = useParams();
-
-    const { data, isLoading, isError, error } = useGetGameByIdQuery(params.gamesId)
-    console.log(data);
+    const { data, isLoading, isError, error, refetch } = useGetGameByIdQuery(params.gamesId)
+    const navigate = useNavigate();
+    const [refreshToken] = useRefreshTokenMutation()
+    useEffect(() => {
+        refreshToken(tokenService.getLocalRefreshToken())
+            .unwrap()
+            .then(response => {
+                tokenService.updateLocalAccessToken(response.accessToken)
+                tokenService.updateLocalRefreshToken(response.refreshToken)
+                refetch()
+            })
+            .catch(err => {
+                switch (err.status) {
+                    case (422 && 421):
+                        navigate('/login')
+                        break;
+                    case 421:
+                        alert(err.message)
+                        break;
+                }
+            })
+    }, [isError])
 
     if (isLoading) {
         return <Oval
@@ -29,13 +54,18 @@ const Game = () => {
     return (
         <div className="flex flex-row gap-20">
             <div className="text-white flex flex-col gap-5">
-                <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">
-                    Games
+                <h2 onClick={() => { navigate(`/games`) }}
+                    className="w-fit decoration-dotted underline text-yellow text-2xl flex flex-row items-center cursor-pointer"
+                >
+                    <IoChevronBack />
+                    <span>
+                        Games
+                    </span>
                 </h2>
                 <div className="flex flex-row gap-6 mt-7    ">
                     <div className="flex flex-row gap-5">
                         <div className="w-1/2">
-                            <img src={data?.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
+                            <img src={import.meta.env.VITE_BACKEND_URL + data?.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
                         </div>
                         <div className="flex flex-col gap-2 h-full justify-between">
                             <div className="flex flex-col gap-2 text-white">
@@ -62,10 +92,10 @@ const Game = () => {
                 </div>
                 <div className="flex flex-row gap-5">
                     <div className="w-1/2">
-                        <img src={data?.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
+                        <img src={import.meta.env.VITE_BACKEND_URL + data?.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
                     </div>
                     <div className="w-1/2">
-                        <img src={data?.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
+                        <img src={import.meta.env.VITE_BACKEND_URL + data?.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
                     </div>
                 </div>
             </div>
@@ -90,7 +120,7 @@ const Game = () => {
                                         22.02.2023
                                     </td>
                                     <td>
-                                      + 10 $
+                                        + 10 $
                                     </td>
                                 </tr>
                             })
@@ -99,7 +129,7 @@ const Game = () => {
                 </div>
 
             </div>
-        </div>);
+        </div >);
 }
 
 export default Game;

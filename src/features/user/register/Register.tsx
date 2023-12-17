@@ -3,6 +3,9 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import Logo from '../../../images/logo.svg'
+import { useRegisterRequestMutation } from '../User.slice';
+import { Oval } from 'react-loader-spinner';
+import { isApiResponse } from '../../../helpers/isApiResponse';
 
 const Register = () => {
 
@@ -13,6 +16,12 @@ const Register = () => {
     password: string;
     confirmPassword: string
   };
+
+  const [
+    registerUser, // This is the mutation trigger
+    { isLoading, isSuccess, isError, isUninitialized, error }, // This is the destructured mutation result
+  ] = useRegisterRequestMutation()
+
   const validationSchema = Yup.object().shape({
     name: Yup.string()
       .required('Email is required'),
@@ -43,7 +52,13 @@ const Register = () => {
 
 
   const onSubmit = (data: UserSubmitForm) => {
-    console.log(JSON.stringify(data, null, 2));
+    console.log(data);
+    registerUser({
+      username: data.login,
+      email: data.email,
+      password: data.password
+    })
+    isError && console.log(error)
   };
   return (
     <div className="w-full flex flex-col gap-20 justify-center items-center">
@@ -109,7 +124,22 @@ const Register = () => {
 
         <div className="form-group">
           <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold">
-            Sign up
+            {isUninitialized && "Sign up"}
+            {isLoading && <Oval
+              height={80}
+              width={80}
+              color="#FFF100"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+              ariaLabel='oval-loading'
+              secondaryColor="#4fa94d"
+              strokeWidth={2}
+              strokeWidthSecondary={2}
+
+            />}
+            {isSuccess && 'Вы успешно зарегистрировались'}
+            {isError && isApiResponse(error) && error.data.message}
           </button>
         </div>
       </form>

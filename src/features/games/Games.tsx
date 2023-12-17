@@ -1,52 +1,75 @@
+import { redirect, useNavigate } from "react-router-dom";
 import IGames from "./Games.type";
+import { useGetAllGamesQuery } from "./Games.slice";
+import { Oval } from "react-loader-spinner";
+import { isApiResponse } from "../../helpers/isApiResponse";
+import redirectFunc from "../../helpers/redirect";
+import { useEffect } from "react";
+import { useRefreshTokenMutation } from "../user/User.slice";
+import tokenService from "../../services/token.service";
 
+
+var t = true
 const Games = () => {
-    const data:IGames[] = [
-        {
-            image:'../../src/images/games/testPhoto.png',
-            name: 'Name',
-            description: 'Description of the game Description of the game Description of the game Description of the game Description of',
-            id: '1'
-        },
-        {
-            image:'../../src/images/games/testPhoto.png',
-            name: 'Name',
-            description: 'Description of the game Description of the game Description of the game Description of the game Description of',
-            id: '2'
-        },
-        {
-            image:'../../src/images/games/testPhoto.png',
-            name: 'Name',
-            description: 'Description of the game Description of the game Description of the game Description of the game Description of',
-            id: '3'
-        },
-        {
-            image:'../../src/images/games/testPhoto.png',
-            name: 'Name',
-            description: 'Description of the game Description of the game Description of the game Description of the game Description of',
-            id: '4'
-        },
-    ]
+    const { data, isLoading, isError, error, refetch, isFetching } = useGetAllGamesQuery()
+    const navigate = useNavigate();
+    const [refreshToken] = useRefreshTokenMutation()
+    useEffect(() => {
+        refreshToken(tokenService.getLocalRefreshToken())
+            .unwrap()
+            .then(response => {
+                tokenService.updateLocalAccessToken(response.accessToken)
+                tokenService.updateLocalRefreshToken(response.refreshToken)
+                refetch()
+            })
+            .catch(err => {
+                switch (err.status) {
+                    case (422 && 421):
+                        navigate('/login')
+                        break;
+                    case 421:
+                        alert(err.message)
+                        break;
+                }
+            })
+    }, [isError])
+
+    if (isLoading) {
+        return <Oval
+            height={80}
+            width={80}
+            color="#FFF100"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+            ariaLabel='oval-loading'
+            secondaryColor="#4fa94d"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+        />
+    }
     return (
         <div>
             <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">
                 Games
             </h2>
-            <div className="flex flex-row gap-6 mt-10">
-                {data.map((item:IGames, index: number)=>{
+            <div className="grid grid-cols-4 2xl:gap-6 mt-10 md:gap-3">
+                {data?.map((item: IGames, index: number) => {
                     return (
-                    <div key={index} className="border-yellow border-2 p-3 flex flex-col gap-2">
-                        <img src={item.image} alt="Фото игры" />
-                        <span className="text-yellow text-2xl">
-                            {item.name}
-                        </span>
-                        <span className="text-white text-xl">
-                            {item.description}
-                        </span>
-                        <a href={`games/${item.id}`}className="w-full bg-yellow text-xl font-bold p-3 text-center cursor-pointer">
-                            More datailed
-                        </a>
-                    </div>
+                        <div key={index} className="border-yellow border-2 p-3 flex flex-col gap-2">
+                            <img src={import.meta.env.VITE_BACKEND_URL + item.image} alt="Фото игры" />
+                            <span className="text-yellow 2xl:text-2xl md:text-xl">
+                                {item.name}
+                            </span>
+                            <span className="text-white 2xl:text-xl md:text-base">
+                                {item.description}
+                            </span>
+                            <a onClick={() => {
+                                navigate(`/games/${item.id}`);
+                            }} className="w-full bg-yellow 2xl:text-xl md:text-base font-bold 2xl:p-3 md:p-2 text-center cursor-pointer">
+                                More datailed
+                            </a>
+                        </div>
                     )
                 })}
             </div>

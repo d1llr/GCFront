@@ -3,20 +3,20 @@ import Discord from '../../images/icons/discord.svg'
 import Telegram from '../../images/icons/telegram.svg'
 import Mail from '../../images/icons/mail.svg'
 import X from '../../images/icons/x.svg'
-import { Link } from 'react-router-dom'
+import { Link, NavLink, RouteMatch } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
+import { isPending } from '@reduxjs/toolkit'
 
 
 
 const Header = () => {
-
     const navigate = useNavigate();
     return (
         <header className="w-1/4 h-screen text-white p-5 gap-5 flex flex-col justify-between">
             <div className='gap-5 flex flex-col'>
-                <a href="/">
+                <NavLink to='/games'>
                     <img src={Logo} alt="Логотип" />
-                </a>
+                </NavLink>
                 <div className="bg-yellow p-3 flex-col flex gap-5">
                     <span className='text-black text-xl font-bold'>
                         Your game balance
@@ -34,24 +34,18 @@ const Header = () => {
                     </div>
                 </div>
                 <ul className='text-yellow text-2xl gap-3 flex flex-col'>
-                    <a onClick={() => {
-                        navigate('/games');
-                    }} className='w-fit decoration-dotted underline '>
+                    <NavLink to='/games' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                         Games
-                    </a>
-                    <a onClick={() => {
-                        navigate('/nft');
-                    }} className='w-fit decoration-dotted underline '>
+                    </NavLink>
+                    <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                         NFT
-                    </a>
-                    <a onClick={() => {
-                        navigate('/tournaments');
-                    }} className='w-fit decoration-dotted underline '>
+                    </NavLink>
+                    <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                         Tournaments
-                    </a>
-                    <li className='w-fit decoration-dotted underline'>
+                    </NavLink>
+                    <NavLink to='/user' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                         My account
-                    </li>
+                    </NavLink>
                 </ul>
             </div>
             <div className='flex flex-row justify-between'>
@@ -65,7 +59,7 @@ const Header = () => {
                     Exit
                 </span>
             </div>
-        </header>
+        </header >
     );
 }
 

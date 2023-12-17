@@ -2,11 +2,36 @@ import INFT from "./Nft.type";
 import QPhoto from '../../images/nft/que.png'
 import { useGetNFTSQuery } from "./Nft.slice";
 import { Oval } from "react-loader-spinner";
+import redirectFunc from "../../helpers/redirect";
+import { useRefreshTokenMutation } from "../user/User.slice";
+import tokenService from "../../services/token.service";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 const Nft = () => {
-    const { data, isLoading, isError, error } = useGetNFTSQuery(null)
+    const { data, isLoading, isError, error, refetch } = useGetNFTSQuery()
+    const navigate = useNavigate();
+    const [refreshToken] = useRefreshTokenMutation()
+    useEffect(() => {
+        refreshToken(tokenService.getLocalRefreshToken())
+            .unwrap()
+            .then(response => {
+                tokenService.updateLocalAccessToken(response.accessToken)
+                tokenService.updateLocalRefreshToken(response.refreshToken)
+                refetch()
+            })
+            .catch(err => {
+                switch (err.status) {
+                    case (422 && 421):
+                        navigate('/login')
+                        break;
+                    case 421:
+                        alert(err.message)
+                        break;
+                }
+            })
+    }, [isError])
 
 
-    
     if (isLoading) {
         return <Oval
             height={80}
@@ -27,15 +52,15 @@ const Nft = () => {
             <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">
                 NFT
             </h2>
-            <div className="flex flex-row gap-6 mt-10">
+            <div className="grid grid-cols-4  gap-6 mt-10">
                 {data?.map((item: INFT, index: number) => {
                     return (
                         <div key={index} className="border-yellow border-2 p-3 flex flex-col gap-2">
-                            <img src={item.image} alt="Фото игры" />
-                            <span className="text-yellow text-2xl">
+                            <img src={import.meta.env.VITE_BACKEND_URL + item.image} alt="Фото игры" />
+                            <span className="text-yellow 2xl:text-2xl md:text-xl">
                                 {item.name}
                             </span>
-                            <span className="text-white text-xl break-normal">
+                            <span className="text-white 2xl:text-2xl md:text-base break-normal">
                                 {item.description}
                             </span>
                         </div>

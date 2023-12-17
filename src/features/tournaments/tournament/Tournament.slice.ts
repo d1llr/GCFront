@@ -1,14 +1,18 @@
 // Need to use the React-specific entry point to allow generating React hooks
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import ITournaments from "../Tournaments.type";
+import authHeader from '../../../services/accessHeaders';
 
 // Define a service using a base URL and expected endpoints
 export const GetTournamentById = createApi({
     reducerPath: 'GetTournamentById',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://185.76.14.193:88/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
     endpoints: (builder) => ({
         GetTournamentById: builder.query<ITournaments, string | undefined>({
-            query: (id) => `tournaments/${id}`,
+            query: (id) => ({
+                url: `/api/tournaments/${id}`,
+                headers: authHeader()
+            }),
         }),
     }),
 })

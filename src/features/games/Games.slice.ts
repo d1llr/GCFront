@@ -1,22 +1,23 @@
 // Need to use the React-specific entry point to allow generating React hooks
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import IGames from "./Game.type";
-import authHeader from '../../../services/accessHeaders';
+import IGames from "./Games.type";
+import authHeader from '../../services/accessHeaders';
 
 // Define a service using a base URL and expected endpoints
-export const GetGameById = createApi({
-  reducerPath: 'GetGameById',
+export const GetAllGames = createApi({
+  reducerPath: 'GetAllGames',
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
   endpoints: (builder) => ({
-    GetGameById: builder.query<IGames, string | undefined>({
-      query: (id) => ({
-        url: `/api/games/${id}`,
+    GetAllGames: builder.query<IGames[], void>({
+      query: () => ({
+        url: `/api/games/all`,
         headers: authHeader()
       }),
     }),
   }),
+  tagTypes: ['games'],
 })
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useGetGameByIdQuery } = GetGameById
+export const { useGetAllGamesQuery } = GetAllGames
