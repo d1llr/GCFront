@@ -2,7 +2,18 @@ import { Outlet, redirect, useNavigate } from "react-router-dom";
 import { useAppSelector } from "./app/hooks";
 import Header from "./features/header/Header"
 import { useEffect } from "react";
+import tokenService from "./services/token.service";
 function Layout() {
+    const navigate = useNavigate();
+    try {
+        tokenService.getUser()
+    }
+    catch {
+        useEffect(()=>{
+            navigate('/login')
+
+        },[])
+    }
     return (
         <>
             <Header />
