@@ -1,17 +1,15 @@
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import IGames from "./Games.type";
 import { useGetAllGamesQuery } from "./Games.slice";
-import { Oval } from "react-loader-spinner";
-import { isApiResponse } from "../../helpers/isApiResponse";
-import redirectFunc from "../../helpers/redirect";
 import { useEffect } from "react";
 import { useRefreshTokenMutation } from "../user/User.slice";
 import tokenService from "../../services/token.service";
+import Loader from "../../helpers/Loader";
 
 
 var t = true
 const Games = () => {
-    const { data, isLoading, isError, error, refetch, isFetching } = useGetAllGamesQuery()
+    const { data, isLoading, isError, error, refetch, isSuccess } = useGetAllGamesQuery()
     const navigate = useNavigate();
     const [refreshToken] = useRefreshTokenMutation()
     useEffect(() => {
@@ -27,26 +25,12 @@ const Games = () => {
                     case (422 && 421):
                         navigate('/login')
                         break;
-                    case 421:
-                        alert(err.message)
-                        break;
                 }
             })
     }, [isError])
 
     if (isLoading) {
-        return <Oval
-            height={80}
-            width={80}
-            color="#FFF100"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-            ariaLabel='oval-loading'
-            secondaryColor="#4fa94d"
-            strokeWidth={2}
-            strokeWidthSecondary={2}
-        />
+        return <Loader />
     }
     return (
         <div>

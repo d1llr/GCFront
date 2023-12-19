@@ -6,6 +6,7 @@ import { UsersActions, UserSlice } from './../features/user/User.slice';
 import { GetGameById } from './../features/games/game/Game.slice';
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
 import counterReducer from "../features/counter/counterSlice"
+import { WalletActions } from '../features/header/wallet/wallet.slice';
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +17,7 @@ export const store = configureStore({
     GetNFTS: GetNFTS.reducer,
     GetTournaments: GetTournaments.reducer,
     GetTournamentById: GetTournamentById.reducer,
-
+    WalletActions: WalletActions.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -25,7 +26,8 @@ export const store = configureStore({
       UsersActions.middleware,
       GetNFTS.middleware,
       GetTournaments.middleware,
-      GetTournamentById.middleware
+      GetTournamentById.middleware,
+      WalletActions.middleware
     ),
 })
 

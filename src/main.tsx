@@ -36,14 +36,14 @@ const router = createBrowserRouter([{
       path: '/nft',
       element: <Nft />
     },
-    {
-      path: '/tournaments',
-      element: <InDevelop />
-    },
-    {
-      path: '/tournaments/:tournamentId',
-      element: <InDevelop />
-    },
+    // {
+    //   path: '/tournaments',
+    //   element: <InDevelop />
+    // },
+    // {
+    //   path: '/tournaments/:tournamentId',
+    //   element: <InDevelop />
+    // },
     {
       path: '/user',
       element: <User />

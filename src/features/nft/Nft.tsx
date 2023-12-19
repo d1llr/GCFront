@@ -1,14 +1,13 @@
 import INFT from "./Nft.type";
 import QPhoto from '../../images/nft/que.png'
 import { useGetNFTSQuery } from "./Nft.slice";
-import { Oval } from "react-loader-spinner";
-import redirectFunc from "../../helpers/redirect";
 import { useRefreshTokenMutation } from "../user/User.slice";
 import tokenService from "../../services/token.service";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../helpers/Loader";
 const Nft = () => {
-    const { data, isLoading, isError, error, refetch } = useGetNFTSQuery()
+    const { data, isLoading, isError, error, refetch, isSuccess } = useGetNFTSQuery()
     const navigate = useNavigate();
     const [refreshToken] = useRefreshTokenMutation()
     useEffect(() => {
@@ -24,28 +23,13 @@ const Nft = () => {
                     case (422 && 421):
                         navigate('/login')
                         break;
-                    case 421:
-                        alert(err.message)
-                        break;
                 }
             })
     }, [isError])
 
 
     if (isLoading) {
-        return <Oval
-            height={80}
-            width={80}
-            color="#FFF100"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-            ariaLabel='oval-loading'
-            secondaryColor="#4fa94d"
-            strokeWidth={2}
-            strokeWidthSecondary={2}
-
-        />
+        return <Loader />
     }
     return (
         <div>

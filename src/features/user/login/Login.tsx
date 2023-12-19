@@ -1,16 +1,16 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import Logo from '../../../images/logo.svg'
 import { setUser, useLoginRequestMutation } from '../User.slice';
-import { Oval } from 'react-loader-spinner';
 import { NavLink, useNavigate } from 'react-router-dom';
 import tokenService from '../../../services/token.service';
 import { useAppDispatch } from '../../../app/hooks';
 import { isApiResponse } from '../../../helpers/isApiResponse';
 import { IoEyeSharp } from "react-icons/io5";
 import { BsEyeSlashFill } from "react-icons/bs";
+import Loader from '../../../helpers/Loader';
 
 
 
@@ -20,6 +20,7 @@ const Login = () => {
         login: string;
         password: string;
     };
+    console.log(process.env.NODE_ENV);
 
     const dispatch = useAppDispatch()
 
@@ -31,8 +32,9 @@ const Login = () => {
         loginUser, // This is the mutation trigger
         { isLoading, isSuccess, isError, isUninitialized, error }, // This is the destructured mutation result
     ] = useLoginRequestMutation()
-    const validationSchema = Yup.object().shape({
 
+
+    const validationSchema = Yup.object().shape({
         login: Yup.string()
             .required('Email is required')
             .min(6, 'Login must be at least 6 characters'),
@@ -41,7 +43,6 @@ const Login = () => {
             .min(6, 'Password must be at least 6 characters')
             .max(40, 'Password must not exceed 40 characters'),
     });
-
 
     const {
         register,
@@ -55,24 +56,16 @@ const Login = () => {
     const navigate = useNavigate();
     const onSubmit = async (data: UserSubmitForm) => {
         console.log(JSON.stringify(data, null, 2));
-        try {
-            const payload = await loginUser({
-                username: data.login,
-                password: data.password
-            }).unwrap();
-            tokenService.setUser(payload)
-            dispatch(setUser({
-                isLogged: true,
-            }))
-            navigate('/')
-        } catch (error) {
-            if (isApiResponse(error)) {
-                alert(error.data.message)
-            } else {
-                // log error
-                console.error(error);
-            }
-        }
+        await loginUser({
+            username: data.login,
+            password: data.password
+        })
+            .unwrap()
+            .then(response => {
+                tokenService.setUser(response)
+                dispatch(setUser(true))
+                navigate('/')
+            })
     };
 
     return (
@@ -80,7 +73,7 @@ const Login = () => {
             <div className='w-fit p-3'>
                 <img src={Logo} alt="Logotype" />
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col p-7 gap-4 border-2 border-yellow text-white mx-auto my-auto w-96'>
+            <form onSubmit={handleSubmit(onSubmit)} className={`flex flex-col p-7 gap-4 border-2 ${isError ? 'border-red-500' : 'border-yellow'} text-white mx-auto my-auto w-96`}>
                 <h1 className="text-3xl text-center">
                     Log in to the system
                 </h1>
@@ -90,20 +83,19 @@ const Login = () => {
                     <input
                         type="text"
                         {...register('login')}
-                        className={`form-control ${errors.login ? 'is-invalid' : ''} border-2 border-yellow bg-inherit p-1 px-3`}
+                        className={`form-control focus:outline-none ${errors.login ? 'is-invalid border-red-500' : ''} border-2 border-yellow bg-inherit p-1 px-3`}
                         placeholder='Login'
                     />
-                    <div className="invalid-feedback">{errors.login?.message}</div>
+                    <div className="invalid-feedback text-red-500 text-sm">{errors.login?.message}</div>
                 </div>
 
                 <div className="form-group flex flex-col">
                     <label className='text-sm'>Password<b className='text-yellow'>*</b></label>
-                    <div className={`form-control ${errors.password ? 'is-invalid' : ''} border-2 border-yellow bg-inherit p-1 px-3 flex flex-row items-center justify-between`}>
+                    <div className={`form-control ${errors.password ? 'is-invalid border-red-500' : ''} border-2 border-yellow bg-inherit p-1 px-3 flex flex-row items-center justify-between`}>
                         <input
                             type={passwordShown ? "text" : "password"}
                             {...register('password')}
-                            className={`form-control ${errors.password ? 'is-invalid' : ''} bg-inherit border-none focus:outline-none`}
-
+                            className={`form-control focus:outline-none ${errors.password ? 'is-invalid' : ''} bg-inherit border-none focus:outline-none`}
                             placeholder='Password'
                         />
                         <i onClick={togglePasswordVisiblity} className='cursor-pointer'>
@@ -114,29 +106,16 @@ const Login = () => {
                             }
                         </i>
                     </div>
-                    <div className="invalid-feedback">{errors.password?.message}</div>
+                    <div className="invalid-feedback text-red-500 text-sm" >{errors.password?.message}</div>
                 </div>
 
 
                 <div className="form-group">
                     <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold h-11">
                         {isUninitialized && "Log in"}
-                        {isLoading && <div className='w-full flex items-center justify-center overflow-hidden'>
-                            <Oval
-                                height={30}
-                                width={30}
-                                color="#000"
-                                wrapperStyle={{}}
-                                wrapperClass=""
-                                visible={true}
-                                ariaLabel='oval-loading'
-                                secondaryColor="rgb(255 241 0)"
-                                strokeWidth={2}
-                                strokeWidthSecondary={2}
-
-                            /></div>}
+                        {isLoading && <Loader />}
                         {isSuccess && 'Success'}
-                        {isError && 'Error'}
+                        {isError && (isApiResponse(error) && [401, 402].includes(error.status) ? "Invalid login or password" : 'Server error, retry later')}
                     </button>
                 </div>
             </form>

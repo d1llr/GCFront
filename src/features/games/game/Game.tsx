@@ -10,6 +10,7 @@ import redirectFunc from "../../../helpers/redirect";
 import { useEffect } from "react";
 import { useRefreshTokenMutation } from "../../user/User.slice";
 import tokenService from "../../../services/token.service";
+import Loader from "../../../helpers/Loader";
 
 const Game = () => {
     let params = useParams();
@@ -29,7 +30,7 @@ const Game = () => {
                     case (422 && 421):
                         navigate('/login')
                         break;
-                    case 421:
+                    case 423:
                         alert(err.message)
                         break;
                 }
@@ -37,19 +38,7 @@ const Game = () => {
     }, [isError])
 
     if (isLoading) {
-        return <Oval
-            height={80}
-            width={80}
-            color="#FFF100"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-            ariaLabel='oval-loading'
-            secondaryColor="#4fa94d"
-            strokeWidth={2}
-            strokeWidthSecondary={2}
-
-        />
+        return <Loader />
     }
     return (
         <div className="flex flex-row gap-20">

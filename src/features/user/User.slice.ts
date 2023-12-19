@@ -1,8 +1,10 @@
+import { PayloadAction } from '@reduxjs/toolkit';
 // Need to use the React-specific entry point to allow generating React hooks
 import { FetchBaseQueryError, createApi, fetchBaseQuery, } from '@reduxjs/toolkit/query/react'
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import IUser from "./User.type";
 import authHeader from '../../services/accessHeaders';
+import tokenService from '../../services/token.service';
 type ILogin = {
     username: string,
     password: string
@@ -13,8 +15,10 @@ type IReg = {
     password: string
 }
 
-type IisLog = {
+type IUserState = {
     isLogged: boolean
+    wallet: null | string
+    balance: number
 }
 
 
@@ -23,28 +27,39 @@ type ITokens = {
     refreshToken: string
 }
 
-const initialState: IisLog = {
-    isLogged: false
+const initialState: IUserState = {
+    isLogged: false,
+    wallet: tokenService.getWallet(),
+    balance: tokenService.getBalance()
 }
 
 export const UserSlice = createSlice({
     name: 'UserSlice',
     initialState,
     reducers: {
-        setUser: (state, action: PayloadAction<IisLog>) => {
-            state.isLogged = action.payload.isLogged
+        setUser: (state, action: PayloadAction<boolean>) => {
+            state.isLogged = action.payload
         },
         logOut: (state) => {
             state = initialState
         },
+        setWallet: (state, action: PayloadAction<string>) => {
+            state.wallet = action.payload
+        },
+        removeWallet: (state) => {
+            state.wallet = null
+        },
+        setBalance: (state, action: PayloadAction<number>) => {
+            state.balance = action.payload
+        },
     },
 })
 
-export const { setUser, logOut } = UserSlice.actions
+export const { setUser, logOut, setWallet, setBalance, removeWallet } = UserSlice.actions
 //--------------------------------------------------------------------//
 export const UsersActions = createApi({
     reducerPath: 'UsersActions',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080' }),
+    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
     endpoints: (builder) => ({
         LoginRequest: builder.mutation<IUser, ILogin>({
             query: (body) => ({

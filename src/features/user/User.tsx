@@ -1,10 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { useGetUserInfoQuery, useRefreshTokenMutation } from "./User.slice";
+import { removeWallet, useGetUserInfoQuery, useRefreshTokenMutation } from "./User.slice";
 import tokenService from "../../services/token.service";
 import { useEffect } from "react";
+import Loader from "../../helpers/Loader";
+import { useRemoveWalletMutation } from "../header/wallet/wallet.slice";
+import Wallet from "../header/wallet/Wallet";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 const User = () => {
     const { data, isLoading, isError, error, refetch } = useGetUserInfoQuery(tokenService.getUser().id)
+    const [removeWalletApi, { isError: isErrorRemoveWallet, isLoading: isLoadingRemoveWallet, isSuccess, isUninitialized }] = useRemoveWalletMutation()
+    const wallet = useAppSelector(state => state.UserSlice.wallet)
+    const dispatch = useAppDispatch()
     const navigate = useNavigate();
     const [refreshToken] = useRefreshTokenMutation()
     useEffect(() => {
@@ -20,21 +27,33 @@ const User = () => {
                     case (422 && 421):
                         navigate('/login')
                         break;
-                    case 421:
-                        alert(err.message)
-                        break;
                 }
             })
     }, [isError])
-    console.log(data);
+    if (isLoading) {
+        return <Loader />
+    }
+
+    async function handleRemoveWallet(): Promise<void> {
+        await removeWalletApi({
+            id: tokenService.getUser().id
+        })
+            .then(response => {
+                dispatch(removeWallet())
+                tokenService.setWallet(null)
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
 
     return (
         <div className="flex flex-col gap-9">
             <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">
                 My account
             </h2>
-            <div className="flex flex-col gap-2">
-                <div className="flex flex-col text-white w-1/3">
+            <div className="flex flex-col gap-2 max-w-lg">
+                <div className="flex flex-col text-white w-full">
                     <h3 className="text-sm">
                         Your name
                     </h3>
@@ -42,7 +61,7 @@ const User = () => {
                         {data?.name}
                     </span>
                 </div>
-                <div className="flex flex-col text-white w-1/3">
+                <div className="flex flex-col text-white w-full">
                     <h3 className="text-sm">
                         Email
                     </h3>
@@ -50,7 +69,7 @@ const User = () => {
                         {data?.email}
                     </span>
                 </div>
-                <div className="flex flex-col text-white w-1/3">
+                <div className="flex flex-col text-white w-full">
                     <h3 className="text-sm">
                         Login
                     </h3>
@@ -58,34 +77,22 @@ const User = () => {
                         {data?.username}
                     </span>
                 </div>
-                <div className="flex flex-col text-white w-1/3">
+                <div className="flex flex-col text-white w-full">
                     <h3 className="text-sm">
                         Wallet
                     </h3>
                     <span className="px-3 py-2 border-yellow border-2">
-                        dnadkvnape39w73akinvp;anxaf2 (Пока тестовый)
+                        {tokenService.getWallet() ?? 'Wallet isnt connected'}
                     </span>
                 </div>
             </div>
-            <div className="flex flex-col gap-5">
-                <div className="bg-yellow p-3 flex-col flex gap-5 w-1/3">
-                    <span className='text-black text-xl font-bold'>
-                        Your game balance
-                    </span>
-                    <span className='text-black self-end font-bold text-xl'>
-                        100 000 PAC
-                    </span>
-                    <div className='w-full flex flex-row justify-between gap-2'>
-                        <button className='bg-black p-1 w-full border-black text-sm text-yellow'>
-                            Replenish
-                        </button>
-                        <button className='bg-inherit p-1 w-full border-2 border-black text-black'>
-                            Withdraw
-                        </button>
-                    </div>
+            <div className="flex flex-col gap-5 max-w-lg">
+                <div className="bg-yellow p-3 flex-col flex gap-5 w-full">
+                    <Wallet />
                 </div>
-                <button className="w-1/3 text-black text-center bg-yellow p-4 font-bold">
-                    Disconnect wallet
+                <button className={`w-full text-black text-center bg-yellow p-4 font-bold ${!wallet && 'd-none'}`} onClick={() => handleRemoveWallet()}>
+                    {wallet && "Disconnect wallet"}
+                    {isLoadingRemoveWallet && <Loader />}
                 </button>
             </div>
         </div>
