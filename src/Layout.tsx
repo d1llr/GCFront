@@ -5,15 +5,8 @@ import { useEffect } from "react";
 import tokenService from "./services/token.service";
 function Layout() {
     const navigate = useNavigate();
-    try {
-        tokenService.getUser()
-    }
-    catch {
-        useEffect(()=>{
-            navigate('/login')
-
-        },[])
-    }
+    if(tokenService.getUser() === null)  navigate('/login')
+   
     return (
         <>
             <Header />

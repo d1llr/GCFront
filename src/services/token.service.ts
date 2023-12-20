@@ -2,13 +2,23 @@ import IUser from "../features/user/User.type";
 
 class TokenService {
     getLocalRefreshToken() {
-        const user = JSON.parse(localStorage.getItem("user") ?? '');
-        return user?.refreshToken;
+        try {
+            const user = JSON.parse(localStorage.getItem("user") ?? '');
+            return user?.refreshToken;
+        }
+        catch {
+            return null
+        }
     }
 
     getLocalAccessToken() {
-        const user = JSON.parse(localStorage.getItem("user") ?? '');
-        return user?.accessToken;
+        try {
+            const user = JSON.parse(localStorage.getItem("user") ?? '');
+            return user?.accessToken;
+        }
+        catch {
+            return null
+        }
     }
     setWallet(wallet: string | null) {
         const user = JSON.parse(localStorage.getItem("user") ?? '');
@@ -17,14 +27,24 @@ class TokenService {
     }
 
     getWallet() {
-        const user = JSON.parse(localStorage.getItem("user") ?? '');
-        return user?.wallet;
+        try {
+            const user = JSON.parse(localStorage.getItem("user") ?? '');
+            return user?.wallet;
+        }
+        catch {
+            return null
+        }
     }
 
 
     getBalance() {
-        const user = JSON.parse(localStorage.getItem("user") ?? '');
-        return user?.balance;
+        try {
+            const user = JSON.parse(localStorage.getItem("user") ?? '');
+            return user?.balance;
+        }
+        catch {
+            return null
+        }
     }
 
     setBalance(balance: number | null) {
@@ -46,7 +66,13 @@ class TokenService {
 
 
     getUser() {
-        return JSON.parse(localStorage.getItem("user") ?? '');
+        try {
+            let user = JSON.parse(localStorage.getItem("user") ?? '');
+            return user
+        }
+        catch {
+            return null
+        }
     }
 
     setUser(user: IUser) {

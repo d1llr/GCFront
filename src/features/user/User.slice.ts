@@ -10,6 +10,7 @@ type ILogin = {
     password: string
 }
 type IReg = {
+    name:string,
     username: string,
     email: string,
     password: string
@@ -29,8 +30,8 @@ type ITokens = {
 
 const initialState: IUserState = {
     isLogged: false,
-    wallet: tokenService.getWallet(),
-    balance: tokenService.getBalance()
+    wallet: tokenService.getWallet() ?? null,
+    balance: tokenService.getBalance() ?? 0
 }
 
 export const UserSlice = createSlice({

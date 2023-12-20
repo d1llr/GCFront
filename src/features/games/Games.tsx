@@ -21,11 +21,7 @@ const Games = () => {
                 refetch()
             })
             .catch(err => {
-                switch (err.status) {
-                    case (422 && 421):
-                        navigate('/login')
-                        break;
-                }
+                navigate('/login')
             })
     }, [isError])
 

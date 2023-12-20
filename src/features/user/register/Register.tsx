@@ -54,6 +54,7 @@ const Register = () => {
   const onSubmit = (data: UserSubmitForm) => {
     console.log(data);
     registerUser({
+      name: data.name,
       username: data.login,
       email: data.email,
       password: data.password
