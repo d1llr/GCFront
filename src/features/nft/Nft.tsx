@@ -52,9 +52,9 @@ const Nft = () => {
                 })}
                 <div className="border-yellow border-2 p-3 flex flex-col justify-between">
                     <img src={QPhoto} alt="Go to store" />
-                    <button className="w-full bg-yellow text-xl font-bold p-3">
+                    <a href="https://pacman.pw/" target="_blank" className="w-full bg-yellow text-xl font-bold p-3 text-center">
                         Go to store
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

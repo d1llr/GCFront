@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "set NODE_ENV=development && vite --mode development",
-    "start": "set NODE_ENV=production && vite --mode production",
+    "dev": "export NODE_ENV=development && vite --mode development",
+    "start": "export NODE_ENV=production && vite --mode production",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
@@ -19,6 +19,7 @@
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.3.2",
     "@reduxjs/toolkit": "^1.8.1",
+    "flowbite-react": "^0.7.2",
     "framer-motion": "^10.16.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

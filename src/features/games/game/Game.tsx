@@ -1,3 +1,4 @@
+'use client';
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetGameByIdQuery } from "./Game.slice";
 import { Oval } from "react-loader-spinner";
@@ -11,7 +12,7 @@ import { useEffect } from "react";
 import { useRefreshTokenMutation } from "../../user/User.slice";
 import tokenService from "../../../services/token.service";
 import Loader from "../../../helpers/Loader";
-
+import { Carousel } from 'flowbite-react';
 const Game = () => {
     let params = useParams();
     const { data, isLoading, isError, error, refetch } = useGetGameByIdQuery(params.gamesId)
@@ -54,15 +55,15 @@ const Game = () => {
                 <div className="flex flex-row gap-6 mt-7    ">
                     <div className="flex flex-row gap-5">
                         <div className="w-1/2">
-                            <img src={import.meta.env.VITE_BACKEND_URL + data?.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
+                            <img src={import.meta.env.VITE_BACKEND_URL + data?.game.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
                         </div>
                         <div className="flex flex-col gap-2 h-full justify-between">
                             <div className="flex flex-col gap-2 text-white">
                                 <span className="text-yellow text-2xl">
-                                    {data?.name}
+                                    {data?.game.name}
                                 </span>
                                 <span className="text-xl">
-                                    {data?.description}
+                                    {data?.game.short_desc}
                                 </span>
                             </div>
                             <div className="flex flex-row gap-2">
@@ -76,17 +77,15 @@ const Game = () => {
                 </div>
                 <div>
                     <span>
-                        {data?.description}
+                        {data?.game.description}
                     </span>
                 </div>
-                <div className="flex flex-row gap-5">
-                    <div className="w-1/2">
-                        <img src={import.meta.env.VITE_BACKEND_URL + data?.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
-                    </div>
-                    <div className="w-1/2">
-                        <img src={import.meta.env.VITE_BACKEND_URL + data?.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
-                    </div>
+                <div className="h-76 sm:h-64 xl:h-80 2xl:h-96 w-1/2">
+                    <Carousel indicators={false}>
+                        {data?.screenshots.map(image => <img src={import.meta.env.VITE_BACKEND_URL + '/' + data?.game.scr_dir + '/' + image} alt="Фото" className="object-cover w-full h-full max-h-100" />)}
+                    </Carousel>
                 </div>
+
             </div>
             <div className="w-1/3">
                 <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">

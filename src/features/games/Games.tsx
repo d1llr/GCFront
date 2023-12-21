@@ -36,14 +36,17 @@ const Games = () => {
             <div className="grid grid-cols-4 2xl:gap-6 mt-10 md:gap-3">
                 {data?.map((item: IGames, index: number) => {
                     return (
-                        <div key={index} className="border-yellow border-2 p-3 flex flex-col gap-2">
-                            <img src={import.meta.env.VITE_BACKEND_URL + item.image} alt="Фото игры" />
-                            <span className="text-yellow 2xl:text-2xl md:text-xl">
-                                {item.name}
-                            </span>
-                            <span className="text-white 2xl:text-xl md:text-base">
-                                {item.description}
-                            </span>
+                        <div key={index} className="border-yellow border-2 p-3 flex flex-col gap-2 justify-between">
+                            <div className="flex flex-col gap-2">
+                                <img src={import.meta.env.VITE_BACKEND_URL + item.image} alt="Фото игры" />
+                                <span className="text-yellow 2xl:text-2xl md:text-xl">
+                                    {item.name}
+                                </span>
+                                <span className="text-white 2xl:text-xl md:text-base">
+                                    {item.short_desc}
+                                </span>
+
+                            </div>
                             <a onClick={() => {
                                 navigate(`/games/${item.id}`);
                             }} className="w-full bg-yellow 2xl:text-xl md:text-base font-bold 2xl:p-3 md:p-2 text-center cursor-pointer">
