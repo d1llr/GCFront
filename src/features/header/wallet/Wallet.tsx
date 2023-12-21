@@ -118,17 +118,20 @@ const Wallet = () => {
   }
 
   async function handleConnectWallet(): Promise<void> {
-    await connectWallet({
-      id: tokenService.getUser().id,
-      wallet: "TESTWALLETTESTWALLETTESTWALLETTESTWALLET",
-    })
-      .then((response) => {
-        tokenService.setWallet("TESTWALLETTESTWALLETTESTWALLETTESTWALLET")
-        dispatch(setWallet("TESTWALLETTESTWALLETTESTWALLETTESTWALLET"))
+    await handleAuth()
+    if (account.address) {
+      await connectWallet({
+        id: tokenService.getUser().id,
+        wallet: account.address,
       })
-      .catch((error) => {
-        console.log(error)
-      })
+        .then((response) => {
+          tokenService.setWallet(account.address!)
+          dispatch(setWallet(account.address!))
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
   }
 
   // wagmi
