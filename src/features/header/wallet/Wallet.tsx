@@ -114,14 +114,14 @@ const Wallet = () => {
                 <form onSubmit={handleSubmit(onSubmit)} className={` flex-col text-white ${mode ? 'flex' : "d-none"} mx-auto my-auto w-full gap-2`}>
                     <div className="form-group flex flex-col">
                         <label className='text-sm text-black'>Amount<b className='text-black'>*</b></label>
-                        <div className={`form-control ${errors.amount ? 'is-invalid border-red-500' : ''} border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}>
+                        <div className={`form-control ${errors.amount ? 'is-invalid border-red-500' : ''} border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between text-black`}>
                             <input
                                 {...register('amount')}
                                 className={`form-control focus:outline-none ${errors.amount ? 'is-invalid' : ''} bg-inherit border-none focus:outline-none`}
                                 placeholder='Amount'
                             />
                             <i className='cursor-pointer text-black'>
-                                pac
+                                PAC
                             </i>
                         </div>
                         <div className="invalid-feedback text-red-500 text-sm" >{errors.amount?.message}</div>
