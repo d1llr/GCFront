@@ -118,24 +118,6 @@ const Wallet = () => {
   }
 
   async function handleConnectWallet(): Promise<void> {
-    await handleAuth()
-    if (account.address) {
-      await connectWallet({
-        id: tokenService.getUser().id,
-        wallet: account.address,
-      })
-        .then((response) => {
-          tokenService.setWallet(account.address!)
-          dispatch(setWallet(account.address!))
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
-  }
-
-  // wagmi
-  const handleAuth = async () => {
     try {
       await changeChain(bsc.id)
 
@@ -146,6 +128,19 @@ const Wallet = () => {
         connector: new MetaMaskConnector(),
       })
       const userData = { address: account, chainId: metamaskChain.id }
+
+      await connectWallet({
+        id: tokenService.getUser().id,
+        wallet: account,
+      })
+        .then((response) => {
+          tokenService.setWallet(account)
+          dispatch(setWallet(account))
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
       console.log("User data: ", userData)
     } catch (e) {
       console.error((e as { message: string })?.message)
