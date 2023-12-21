@@ -139,9 +139,6 @@ const Wallet = () => {
     try {
       await changeChain(bsc.id)
 
-      if (isConnected) {
-        await disconnectAsync()
-      }
       const { account, chain: metamaskChain } = await connectAsync({
         connector: new MetaMaskConnector(),
       })
@@ -150,10 +147,6 @@ const Wallet = () => {
     } catch (e) {
       console.error((e as { message: string })?.message)
     }
-  }
-
-  const handleDisconnect = async () => {
-    await disconnectAsync()
   }
 
   return wallet ? (
