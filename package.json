@@ -52,6 +52,7 @@
     "typescript": "^5.0.2",
     "vite": "^4.0.0",
     "vitest": "^0.30.1",
+    "ethers": "^5.5.3",
     "next-auth": "^4.20.1",
     "@moralisweb3/next": "^2.14.1",
     "moralis": "^2.18.4",
