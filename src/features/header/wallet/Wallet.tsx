@@ -168,12 +168,12 @@ const Wallet = () => {
           >
             <input
               {...register("amount")}
-              className={`form-control focus:outline-none ${
+              className={`form-control focus:outline-none text-black ${
                 errors.amount ? "is-invalid" : ""
               } bg-inherit border-none focus:outline-none`}
               placeholder="Amount"
             />
-            <i className="cursor-pointer text-black">pac</i>
+            <i className="cursor-pointer text-black">PAC</i>
           </div>
           <div className="invalid-feedback text-red-500 text-sm">
             {errors.amount?.message}

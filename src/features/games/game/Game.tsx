@@ -13,6 +13,10 @@ import { useRefreshTokenMutation } from "../../user/User.slice";
 import tokenService from "../../../services/token.service";
 import Loader from "../../../helpers/Loader";
 import { Carousel } from 'flowbite-react';
+
+
+
+
 const Game = () => {
     let params = useParams();
     const { data, isLoading, isError, error, refetch } = useGetGameByIdQuery(params.gamesId)
@@ -67,10 +71,18 @@ const Game = () => {
                                 </span>
                             </div>
                             <div className="flex flex-row gap-2">
-                                <img src={android} alt="android" />
-                                <img src={win} alt="win" />
-                                <img src={apple} alt="apple" />
-                                <img src={browser} alt="browser" />
+                                {
+                                    data?.game.links.android && <a target="_blank" href={data?.game.links.android}><img src={android} alt="android" /></a>
+                                }
+                                 {
+                                    data?.game.links.windows && <a target="_blank" href={data?.game.links.windows}><img src={win} alt="windows" /></a>
+                                }
+                                {
+                                    data?.game.links.apple && <a target="_blank" href={data?.game.links.apple}><img src={apple} alt="apple" /></a>
+                                }
+                                 {
+                                    data?.game.links.web && <a target="_blank" href={data?.game.links.web}><img src={browser} alt="browser" /></a>
+                                }
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 import Logo from '../../images/logo.svg'
 import Discord from '../../images/icons/discord.svg'
-import Telegram from '../../images/icons/telegram.svg'
+import TelegramRU from '../../images/icons/tg_ru.svg'
+import TelegramEN from '../../images/icons/tg_eng.svg'
 import Mail from '../../images/icons/mail.svg'
 import X from '../../images/icons/x.svg'
 import { NavLink } from 'react-router-dom'
@@ -39,9 +40,10 @@ const Header = () => {
             <div className='flex flex-row justify-between'>
                 <div className='flex flex-row align-middle gap-2'>
                     <a target='_blank' href="https://discord.gg/JFwaENGDxy"><img src={Discord} alt="Discord" /></a>
-                    <a target='_blank' href="https://t.me/PacmanCoinRU"><img src={Telegram} alt="Telegram" /></a>
+                    <a target='_blank' href="https://t.me/PacmanCoinRU"><img src={TelegramRU} alt="TelegramRU" /></a>
                     <a target='_blank' href="mailto:coin.pacman@gmail.com"><img src={Mail} alt="Mail" /></a>
                     <a target='_blank' href="https://twitter.com/PACMan_Token"><img src={X} alt="X" /></a>
+                    <a target='_blank' href="https://t.me/PacmanCoinMain"><img src={TelegramEN} alt="TelegramEN" /></a>
                 </div>
                 <span onClick={() => {
                     tokenService.removeUser()
