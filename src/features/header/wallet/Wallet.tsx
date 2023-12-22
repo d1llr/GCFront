@@ -143,7 +143,15 @@ const Wallet = () => {
 
       console.log("User data: ", userData)
     } catch (e) {
-      console.error((e as { message: string })?.message)
+      const error = (e as { message: string })?.message
+      console.error("KEK: ", error)
+
+      if (
+        error.includes("No crypto wallet found") ||
+        error.includes("Connector not found")
+      ) {
+        window.open("https://metamask.io/", "_blank")
+      }
     }
   }
 
