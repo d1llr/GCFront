@@ -10,9 +10,10 @@ import Loader from "../../helpers/Loader"
 import { useRemoveWalletMutation } from "../header/wallet/wallet.slice"
 import Wallet from "../header/wallet/Wallet"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { useDisconnect } from "wagmi"
+import { useAccount, useDisconnect } from "wagmi"
 
 const User = () => {
+  const { isConnected } = useAccount()
   const { disconnectAsync } = useDisconnect()
   const { data, isLoading, isError, error, refetch } = useGetUserInfoQuery(
     tokenService.getUser().id,
@@ -105,11 +106,11 @@ const User = () => {
         </div>
         <button
           className={`w-full text-black text-center bg-yellow p-4 font-bold ${
-            !wallet && "d-none"
+            !isConnected && "d-none"
           }`}
           onClick={() => handleRemoveWallet()}
         >
-          {wallet && "Disconnect wallet"}
+          {isConnected && "Disconnect wallet"}
           {isLoadingRemoveWallet && <Loader />}
         </button>
       </div>
