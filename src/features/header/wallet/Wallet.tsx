@@ -155,7 +155,7 @@ const Wallet = () => {
     }
   }
 
-  return wallet ? (
+  return isConnected ? (
     <>
       <span className="text-black text-xl font-bold">Your game balance</span>
       <span className="text-black self-end font-bold text-xl">{balance}</span>
