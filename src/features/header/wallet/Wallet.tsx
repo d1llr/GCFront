@@ -254,7 +254,7 @@ const Wallet = () => {
         onClick={() => handleConnectWallet()}
       >
         {isLoading && <Loader />}
-        {!wallet && "Connect wallet"}
+        {!isConnected && "Connect wallet"}
       </button>
     </>
   )
