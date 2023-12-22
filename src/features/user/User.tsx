@@ -96,7 +96,7 @@ const User = () => {
         <div className="flex flex-col text-white w-full">
           <h3 className="text-sm">Wallet</h3>
           <span className="px-3 py-2 border-yellow border-2">
-            {tokenService.getWallet() ?? "Wallet isnt connected"}
+            {isConnected ? tokenService.getWallet() : "Wallet isnt connected"}
           </span>
         </div>
       </div>
