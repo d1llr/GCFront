@@ -29,9 +29,9 @@ const Header = () => {
                     <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                         NFT
                     </NavLink>
-                    {/* <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
+                    <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                         Tournaments
-                    </NavLink> */}
+                    </NavLink>
                     <NavLink to='/user' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                         My account
                     </NavLink>

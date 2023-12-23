@@ -73,7 +73,7 @@ const Wallet = () => {
   ] = useWithdrawBalanceMutation()
 
   const validationSchema = Yup.object().shape({
-    amount: Yup.number().required("Email is required").moreThan(0, "Cant be 0"),
+    amount: Yup.number().required("Amount is required").moreThan(0, "Cant be 0"),
   })
 
   const {
@@ -150,7 +150,7 @@ const Wallet = () => {
   return wallet ? (
     <>
       <span className="text-black text-xl font-bold">Your game balance</span>
-      <span className="text-black self-end font-bold text-xl">{balance}</span>
+      <span className="text-black self-end font-bold text-xl">{balance} PAC</span>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className={` flex-col text-white ${
@@ -168,10 +168,12 @@ const Wallet = () => {
           >
             <input
               {...register("amount")}
+              type="number"
               className={`form-control focus:outline-none text-black ${
                 errors.amount ? "is-invalid" : ""
               } bg-inherit border-none focus:outline-none`}
               placeholder="Amount"
+              
             />
             <i className="cursor-pointer text-black">PAC</i>
           </div>
