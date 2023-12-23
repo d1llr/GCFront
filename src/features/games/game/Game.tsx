@@ -46,8 +46,8 @@ const Game = () => {
         return <Loader />
     }
     return (
-        <div className="flex flex-row gap-20">
-            <div className="text-white flex flex-col gap-5">
+        <div className="flex flex-row gap-20 w-full">
+            <div className="text-white flex flex-col gap-5 w-3/4">
                 <h2 onClick={() => { navigate(`/games`) }}
                     className="w-fit decoration-dotted underline text-yellow text-2xl flex flex-row items-center cursor-pointer"
                 >
@@ -56,12 +56,12 @@ const Game = () => {
                         Games
                     </span>
                 </h2>
-                <div className="flex flex-row gap-6 mt-7    ">
+                <div className="flex flex-row gap-6 mt-7">
                     <div className="flex flex-row gap-5">
-                        <div className="w-1/2">
+                        <div className="">
                             <img src={import.meta.env.VITE_BACKEND_URL + data?.game.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
                         </div>
-                        <div className="flex flex-col gap-2 h-full justify-between">
+                        <div className="flex flex-col gap-2 h-full justify-between w-1/2">
                             <div className="flex flex-col gap-2 text-white">
                                 <span className="text-yellow text-2xl">
                                     {data?.game.name}
@@ -70,17 +70,17 @@ const Game = () => {
                                     {data?.game.short_desc}
                                 </span>
                             </div>
-                            <div className="flex flex-row gap-2">
+                            <div className="flex flex-row gap-2 items-center">
                                 {
                                     data?.game.links.android && <a target="_blank" href={data?.game.links.android}><img src={android} alt="android" /></a>
                                 }
-                                 {
+                                {
                                     data?.game.links.windows && <a target="_blank" href={data?.game.links.windows}><img src={win} alt="windows" /></a>
                                 }
                                 {
                                     data?.game.links.apple && <a target="_blank" href={data?.game.links.apple}><img src={apple} alt="apple" /></a>
                                 }
-                                 {
+                                {
                                     data?.game.links.web && <a target="_blank" href={data?.game.links.web}><img src={browser} alt="browser" /></a>
                                 }
                             </div>
@@ -92,35 +92,35 @@ const Game = () => {
                         {data?.game.description}
                     </span>
                 </div>
-                <div className="h-76 sm:h-64 xl:h-80 2xl:h-96 w-1/2">
+                <div className="h-76 sm:h-64 xl:h-80 2xl:h-96 2xl:w-1/2 md:w-full">
                     <Carousel indicators={false}>
                         {data?.screenshots.map(image => <img src={import.meta.env.VITE_BACKEND_URL + '/' + data?.game.scr_dir + '/' + image} alt="Фото" className="object-cover w-full h-full max-h-100" />)}
                     </Carousel>
                 </div>
 
             </div>
-            <div className="w-1/3">
+            <div className="w-1/4">
                 <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">
                     Game history
                 </h2>
                 <div className="flex flex-row gap-6 mt-10">
                     <table className="gap-2 flex flex-col w-full">
                         <tr className="text-yellow w-full flex flex-row justify-around text-xl">
-                            <th>Time</th>
+                            <th>Title</th>
                             <th>Data</th>
                             <th>Reward</th>
                         </tr>
                         {
-                            [...Array(20)].map(() => {
+                            [...Array(20)].map((i: number, index: number) => {
                                 return <tr className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row justify-around py-1 text-base">
                                     <td>
-                                        23:44
+                                        {index} level completed
                                     </td>
                                     <td>
-                                        22.02.2023
+                                        23:44 22.02.2023
                                     </td>
                                     <td>
-                                        + 10 $
+                                        + 10 PAC
                                     </td>
                                 </tr>
                             })
