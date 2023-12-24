@@ -5,24 +5,29 @@
 
 body {
   margin: 0;
-  font-family:'Chakra Petch', sans-serif;
+  font-family: 'Chakra Petch', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #0D0D0D;
   color: #0D0D0D;
+
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
 
-
-#root{
+#root {
   display: flex;
   flex-direction: row;
 }
-header{
+
+header {
   box-shadow: -5px 5px 20px 0px rgba(255, 255, 255, 0.09) inset;
   color: #0D0D0D;
 }

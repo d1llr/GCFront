@@ -14,21 +14,21 @@ import Wallet from './wallet/Wallet'
 const Header = () => {
     const navigate = useNavigate();
     return (
-        <header className="w-1/4 h-screen text-white p-5 gap-5 flex flex-col justify-between">
+        <header className="w-1/4 text-white p-5 gap-5 flex flex-col justify-between h-full">
             <div className='gap-5 flex flex-col'>
                 <NavLink to='/games'>
                     <img src={Logo} alt="Логотип" />
                 </NavLink>
-                <div className="bg-yellow p-3 flex-col flex gap-5">
-                    <Wallet />
-                </div>
+
+                <Wallet />
+
                 <ul className='text-yellow text-2xl gap-3 flex flex-col'>
                     <NavLink to='/games' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                         Games
                     </NavLink>
-                    <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
+                    {/* <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                         NFT
-                    </NavLink>
+                    </NavLink> */}
                     <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                         Tournaments
                     </NavLink>

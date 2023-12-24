@@ -10,7 +10,7 @@ function Layout() {
     return (
         <>
             <Header />
-            <main className="text-lg p-5 w-full">
+            <main className="text-lg p-5 w-full h-full">
                 <Outlet />
             </main>
         </>

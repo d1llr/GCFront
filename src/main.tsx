@@ -62,10 +62,10 @@ const router = createBrowserRouter([
         path: "/games/:gamesId",
         element: <Game />,
       },
-      {
-        path: "/nft",
-        element: <Nft />,
-      },
+      // {
+      //   path: "/nft",
+      //   element: <Nft />,
+      // },
       {
         path: '/tournaments',
         element: <Tournaments />

@@ -46,7 +46,7 @@ const Game = () => {
         return <Loader />
     }
     return (
-        <div className="flex flex-row gap-20 w-full">
+        <div className="flex flex-row gap-20 w-full h-full">
             <div className="text-white flex flex-col gap-5 w-3/4">
                 <h2 onClick={() => { navigate(`/games`) }}
                     className="w-fit decoration-dotted underline text-yellow text-2xl flex flex-row items-center cursor-pointer"
@@ -92,27 +92,27 @@ const Game = () => {
                         {data?.game.description}
                     </span>
                 </div>
-                <div className="h-76 sm:h-64 xl:h-80 2xl:h-96 2xl:w-1/2 md:w-full">
+                <div className="h-76 sm:h-64 xl:h-80 2xl:h-96 2xl:w-1/2 md:w-3/4">
                     <Carousel indicators={false}>
                         {data?.screenshots.map(image => <img src={import.meta.env.VITE_BACKEND_URL + '/' + data?.game.scr_dir + '/' + image} alt="Фото" className="object-cover w-full h-full max-h-100" />)}
                     </Carousel>
                 </div>
 
             </div>
-            <div className="w-1/4">
+            <div className="w-1/4 h-full">
                 <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">
                     Game history
                 </h2>
-                <div className="flex flex-row gap-6 mt-10">
-                    <table className="gap-2 flex flex-col w-full">
+                <div className="flex flex-row gap-6 mt-10 h-full">
+                    <table className="gap-2 flex flex-col w-full overflow-y-scroll h-4/5">
                         <tr className="text-yellow w-full flex flex-row justify-around text-xl">
                             <th>Title</th>
                             <th>Data</th>
                             <th>Reward</th>
                         </tr>
                         {
-                            [...Array(20)].map((i: number, index: number) => {
-                                return <tr className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row justify-around py-1 text-base">
+                            [...Array(40)].map((i: number, index: number) => {
+                                return <tr className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row justify-around py-1 text-base md:text-sm">
                                     <td>
                                         {index} level completed
                                     </td>
