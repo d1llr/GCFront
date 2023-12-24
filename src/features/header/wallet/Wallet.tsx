@@ -26,6 +26,7 @@ import { bsc } from "@wagmi/core/chains"
 import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi"
 import { changeChain } from "./chainHelper"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
+import { transfer } from "./transferERC20"
 
 enum Mode {
   recharge = "Recharge",
@@ -92,15 +93,18 @@ const Wallet = () => {
   const onSubmit = async (data: UserSubmitForm) => {
     switch (mode) {
       case Mode.recharge:
-        await RechargeBalance({
-          id: tokenService.getUser().id,
-          amount: data.amount,
-        })
-          .unwrap()
-          .then((response: IWallet) => {
-            dispatch(setBalance(response.balance))
-            tokenService.setBalance(response.balance)
+        const result = (await transfer(data.amount.toString())).status
+        if (result) {
+          await RechargeBalance({
+            id: tokenService.getUser().id,
+            amount: data.amount,
           })
+            .unwrap()
+            .then((response: IWallet) => {
+              dispatch(setBalance(response.balance))
+              tokenService.setBalance(response.balance)
+            })
+        }
 
         break
 
@@ -146,7 +150,15 @@ const Wallet = () => {
 
       console.log("User data: ", userData)
     } catch (e) {
-      console.error((e as { message: string })?.message)
+      const error = (e as { message: string })?.message
+      console.error("KEK: ", error)
+
+      if (
+        error.includes("No crypto wallet found") ||
+        error.includes("Connector not found")
+      ) {
+        window.open("https://metamask.io/", "_blank")
+      }
     }
   }
   const handleDisConnectWallet = async () => {
@@ -162,7 +174,7 @@ const Wallet = () => {
       })
   }
 
-  return (
+  return isConnected ? (
     <div className="flex flex-col gap-3">
       <div className="bg-yellow p-3 flex-col flex gap-5">
         <span className="text-black text-xl font-bold">Your game balance</span>
@@ -256,6 +268,9 @@ const Wallet = () => {
         </div>
 
       </div>
+    </>
+  ) : (
+  
       <>
         {wallet ?
           <button
