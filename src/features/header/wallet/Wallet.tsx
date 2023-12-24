@@ -24,6 +24,7 @@ import { bsc } from "@wagmi/core/chains"
 import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi"
 import { changeChain } from "./chainHelper"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
+import { transfer } from "./transferERC20"
 
 enum Mode {
   recharge = "Recharge",
@@ -89,15 +90,18 @@ const Wallet = () => {
   const onSubmit = async (data: UserSubmitForm) => {
     switch (mode) {
       case Mode.recharge:
-        await RechargeBalance({
-          id: tokenService.getUser().id,
-          amount: data.amount,
-        })
-          .unwrap()
-          .then((response: IWallet) => {
-            dispatch(setBalance(response.balance))
-            tokenService.setBalance(response.balance)
+        const result = (await transfer(data.amount.toString())).status
+        if (result) {
+          await RechargeBalance({
+            id: tokenService.getUser().id,
+            amount: data.amount,
           })
+            .unwrap()
+            .then((response: IWallet) => {
+              dispatch(setBalance(response.balance))
+              tokenService.setBalance(response.balance)
+            })
+        }
 
         break
 
