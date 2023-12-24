@@ -12,7 +12,7 @@ export async function transfer(amount: string) {
     address: tokenAddress,
     abi: ERC20_ABI.abi,
     functionName: "transfer",
-    args: [to, ethers.utils.formatEther(amount)],
+    args: [to, ethers.utils.parseEther(amount)],
   })
 
   const ret = await (await writeContract(approval)).wait()
