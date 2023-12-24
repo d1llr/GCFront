@@ -101,18 +101,17 @@ const User = () => {
         </div>
       </div>
       <div className="flex flex-col gap-5 max-w-lg">
-        <div className="bg-yellow p-3 flex-col flex gap-5 w-full">
-          <Wallet />
-        </div>
-        <button
+        <Wallet />
+        {/* <button
           className={`w-full text-black text-center bg-yellow p-4 font-bold ${
             !isConnected && "d-none"
           }`}
           onClick={() => handleRemoveWallet()}
         >
           {isConnected && "Disconnect wallet"}
+
           {isLoadingRemoveWallet && <Loader />}
-        </button>
+        </button> */}
       </div>
     </div>
   )

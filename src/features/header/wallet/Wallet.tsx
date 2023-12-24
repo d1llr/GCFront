@@ -2,6 +2,7 @@ import { useState } from "react"
 import Loader from "../../../helpers/Loader"
 import tokenService from "../../../services/token.service"
 import {
+  removeWallet,
   setBalance,
   setWallet,
   useRefreshTokenMutation,
@@ -9,6 +10,7 @@ import {
 import {
   useConnectWalletMutation,
   useRechargeBalanceMutation,
+  useRemoveWalletMutation,
   useWithdrawBalanceMutation,
 } from "./wallet.slice"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
@@ -46,8 +48,9 @@ const Wallet = () => {
   const balance = useAppSelector((state) => state.UserSlice.balance)
   const [mode, setMode] = useState<Mode>()
   const dispatch = useAppDispatch()
-  const [connectWallet, { isError, isLoading, isSuccess, isUninitialized }] =
-    useConnectWalletMutation()
+  const [connectWallet, { isError, isLoading, isSuccess, isUninitialized }] = useConnectWalletMutation()
+  const [removeWalletAPI, { isError: removeWalletAPIErr, isLoading: removeWalletAPILoading, isSuccess: removeWalletAPISuccess, isUninitialized: removeWalletAPIUn }] = useRemoveWalletMutation()
+
   type UserSubmitForm = {
     amount: number
   }
@@ -74,7 +77,7 @@ const Wallet = () => {
   ] = useWithdrawBalanceMutation()
 
   const validationSchema = Yup.object().shape({
-    amount: Yup.number().required("Email is required").moreThan(0, "Cant be 0"),
+    amount: Yup.number().required("Amount is required").moreThan(0, "Cant be 0"),
   })
 
   const {
@@ -115,7 +118,7 @@ const Wallet = () => {
             dispatch(setBalance(response.balance))
             tokenService.setBalance(response.balance)
           })
-          .catch((err) => {})
+          .catch((err) => { })
 
         break
     }
@@ -158,109 +161,138 @@ const Wallet = () => {
       }
     }
   }
+  const handleDisConnectWallet = async () => {
+    await removeWalletAPI({
+      id: tokenService.getUser().id,
+    })
+      .then((response) => {
+        tokenService.setWallet(null)
+        dispatch(removeWallet())
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
 
   return isConnected ? (
-    <>
-      <span className="text-black text-xl font-bold">Your game balance</span>
-      <span className="text-black self-end font-bold text-xl">{balance}</span>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className={` flex-col text-white ${
-          mode ? "flex" : "d-none"
-        } mx-auto my-auto w-full gap-2`}
-      >
-        <div className="form-group flex flex-col">
-          <label className="text-sm text-black">
-            Amount<b className="text-black">*</b>
-          </label>
-          <div
-            className={`form-control ${
-              errors.amount ? "is-invalid border-red-500" : ""
-            } border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}
-          >
-            <input
-              {...register("amount")}
-              className={`form-control focus:outline-none text-black ${
-                errors.amount ? "is-invalid" : ""
-              } bg-inherit border-none focus:outline-none`}
-              placeholder="Amount"
-            />
-            <i className="cursor-pointer text-black">PAC</i>
-          </div>
-          <div className="invalid-feedback text-red-500 text-sm">
-            {errors.amount?.message}
-          </div>
-        </div>
-        <div className="form-group w-full flex flex-row justify-between gap-2">
-          {mode === Mode.recharge && (
-            <>
-              <button
-                className="bg-black p-1 w-full border-black text-sm text-white font-bold"
-                onClick={() => setMode(undefined)}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
-              >
-                {Mode.recharge}
-              </button>
-            </>
-          )}
-          {mode === Mode.withdraw && (
-            <>
-              <button
-                className="bg-black p-1 w-full border-black text-sm text-white font-bold"
-                onClick={() => setMode(undefined)}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
-              >
-                {Mode.withdraw}
-              </button>
-            </>
-          )}
-        </div>
-      </form>
-      <div className="invalid-feedback text-red-500 text-sm">
-        {isErrorWithdrawBalance &&
-          isApiResponse(errorWithdrawBalance) &&
-          errorWithdrawBalance.data.message}
-      </div>
+    <div className="flex flex-col gap-3">
+      <div className="bg-yellow p-3 flex-col flex gap-5">
+        <span className="text-black text-xl font-bold">Your game balance</span>
+        <span className="text-black self-end font-bold text-xl">{balance} PAC</span>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className={` flex-col text-white ${wallet ? "flex" : "d-none"
+            } mx-auto my-auto w-full gap-2`}
+        >
+          <div className={`form-group  flex-col ${mode ? "flex" : "d-none"}`}>
+            <label className="text-sm text-black">
+              Amount<b className="text-black">*</b>
+            </label>
+            <div
+              className={`form-control ${errors.amount ? "is-invalid border-red-500" : ""
+                } border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}
+            >
+              <input
+                {...register("amount")}
+                type="number"
+                className={`form-control focus:outline-none text-black ${errors.amount ? "is-invalid" : ""
+                  } bg-inherit border-none focus:outline-none`}
+                placeholder="Amount"
 
-      <div
-        className={`form-group w-full ${
-          mode ? "d-none" : "flex"
-        } flex-row justify-between gap-2`}
-      >
-        <button
-          className="bg-black p-1 w-full border-black text-sm text-white font-bold"
-          onClick={() => setMode(Mode.recharge)}
-        >
-          {Mode.recharge}
-        </button>
-        <button
-          className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
-          onClick={() => setMode(Mode.withdraw)}
-        >
-          {Mode.withdraw}
-        </button>
+              />
+              <i className="cursor-pointer text-black">PAC</i>
+            </div>
+            <div className="invalid-feedback text-red-500 text-sm">
+              {errors.amount?.message}
+            </div>
+          </div>
+          {
+            wallet &&
+            <div className="form-group w-full flex flex-row justify-between gap-2">
+              {mode === Mode.recharge ? (
+                <>
+                  <button
+                    className="bg-black p-1 w-full border-black text-sm text-white font-bold"
+                    onClick={() => setMode(undefined)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
+                  >
+                    {Mode.recharge}
+                  </button>
+                </>
+              ) :
+                mode === Mode.withdraw ? (
+                  <>
+                    <button
+                      className="bg-black p-1 w-full border-black text-sm text-white font-bold"
+                      onClick={() => setMode(undefined)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
+                    >
+                      {Mode.withdraw}
+                    </button>
+                  </>
+                )
+                  :
+                  <div className={`form-group w-full flex flex-row justify-between gap-2`}>
+                    <button
+                      className="bg-black p-1 w-full border-black text-sm text-white font-bold"
+                      onClick={() => setMode(Mode.recharge)}
+                    >
+                      {Mode.recharge}
+                    </button>
+                    <button
+                      className="bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
+                      onClick={() => setMode(Mode.withdraw)}
+                      disabled
+                    >
+                      {Mode.withdraw}
+                    </button>
+                  </div>
+              }
+            </div>
+          }
+        </form>
+        <div className="invalid-feedback text-red-500 text-sm">
+          {isErrorWithdrawBalance &&
+            isApiResponse(errorWithdrawBalance) &&
+            errorWithdrawBalance.data.message}
+        </div>
+
       </div>
     </>
   ) : (
-    <>
-      <button
-        className="text-xl text-black font-bold"
-        onClick={() => handleConnectWallet()}
-      >
-        {isLoading && <Loader />}
-        {!isConnected && "Connect wallet"}
-      </button>
-    </>
+  
+      <>
+        {wallet ?
+          <button
+            className="text-xl text-black font-bold bg-yellow p-3 flex-col flex gap-5 w-full items-center text-center"
+            onClick={() => handleDisConnectWallet()}
+          >
+            {isLoading && <Loader />}
+            Disconnect wallet
+          </button>
+          :
+
+          <button
+            className="text-xl text-black font-bold bg-yellow p-3 flex-col flex gap-5 w-full items-center text-center"
+            onClick={() => handleConnectWallet()}
+          >
+            {isLoading && <Loader />}
+            Connect wallet
+          </button>
+
+        }
+      </>
+    </div>
   )
 }
 
