@@ -203,10 +203,10 @@ const Wallet = () => {
         </span>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` flex-col text-white ${wallet ? "flex" : "d-none"
+          className={` flex-col text-white ${wallet ? "flex" : "hidden"
             } mx-auto my-auto w-full gap-2`}
         >
-          <div className={`form-group  flex-col ${mode ? "flex" : "d-none"}`}>
+          <div className={`form-group  flex-col ${mode ? "flex" : "hidden"}`}>
             <label className="text-sm text-black">
               Amount<b className="text-black">*</b>
             </label>
@@ -290,7 +290,7 @@ const Wallet = () => {
     </div>
   ) : (
     <div>
-      {wallet ? (
+      {isConnected ? (
         <button
           className="text-xl text-black font-bold bg-yellow p-3 flex-col flex gap-5 w-full items-center text-center"
           onClick={() => handleDisConnectWallet()}
