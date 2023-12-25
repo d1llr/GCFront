@@ -6,7 +6,7 @@ import authHeader from '../../services/accessHeaders';
 // Define a service using a base URL and expected endpoints
 export const GetNFTS = createApi({
     reducerPath: 'GetNFTS',
-    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'https://back.pacgc.pw' }),
     endpoints: (builder) => ({
         GetNFTS: builder.query<INFT[], void>({
             query: () => ({

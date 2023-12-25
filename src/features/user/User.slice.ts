@@ -60,7 +60,7 @@ export const { setUser, logOut, setWallet, setBalance, removeWallet } = UserSlic
 //--------------------------------------------------------------------//
 export const UsersActions = createApi({
     reducerPath: 'UsersActions',
-    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'https://back.pacgc.pw' }),
     endpoints: (builder) => ({
         LoginRequest: builder.mutation<IUser, ILogin>({
             query: (body) => ({
