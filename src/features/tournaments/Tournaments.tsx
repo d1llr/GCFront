@@ -31,7 +31,7 @@ const Tournaments = () => {
                     return (
                         <div key={index} className="border-yellow border-2 p-3 flex flex-row gap-2 text-white">
                             <div className="w-2/3">
-                                <img src={import.meta.env.VITE_BACKEND_URL + item.image} alt="Фото игры" width={345} height={345} className="object-cover w-full h-full max-h-80" />
+                                <img src={'https://back.pacgc.pw' + item.image} alt="Фото игры" width={345} height={345} className="object-cover w-full h-full max-h-80" />
                             </div>
                             <div className="flex flex-col w-full gap-6 justify-center">
                                 <div>

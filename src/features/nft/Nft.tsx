@@ -40,7 +40,7 @@ const Nft = () => {
                 {data?.map((item: INFT, index: number) => {
                     return (
                         <div key={index} className="border-yellow border-2 p-3 flex flex-col gap-2">
-                            <img src={import.meta.env.VITE_BACKEND_URL + item.image} alt="Фото игры" />
+                            <img src={'https://back.pacgc.pw' + item.image} alt="Фото игры" />
                             <span className="text-yellow 2xl:text-2xl md:text-xl">
                                 {item.name}
                             </span>

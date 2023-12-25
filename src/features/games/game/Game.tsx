@@ -59,7 +59,7 @@ const Game = () => {
                 <div className="flex flex-row gap-6 mt-7">
                     <div className="flex flex-row gap-5">
                         <div className="">
-                            <img src={import.meta.env.VITE_BACKEND_URL + data?.game.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
+                            <img src={'https://back.pacgc.pw' + data?.game.image} alt="Фото" className="object-cover w-full h-full max-h-80" />
                         </div>
                         <div className="flex flex-col gap-2 h-full justify-between w-1/2">
                             <div className="flex flex-col gap-2 text-white">

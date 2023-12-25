@@ -15,7 +15,7 @@ type IReq = {
 // Define a service using a base URL and expected endpoints
 export const WalletActions = createApi({
     reducerPath: 'WalletActions',
-    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'https://back.pacgc.pw'}),
     endpoints: (builder) => ({
         ConnectWallet: builder.mutation<IWallet, IReq>({
             query: (body) => ({
