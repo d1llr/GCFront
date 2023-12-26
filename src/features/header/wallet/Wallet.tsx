@@ -281,7 +281,7 @@ const Wallet = () => {
                   {needToSwitch ? (
                     <button
                       className="bg-black p-1 w-full border-black text-sm text-white font-bold"
-                      onClick={() => setMode(Mode.switch)}
+                      onClick={() => changeChain(bsc.id)}
                     >
                       {Mode.switch}
                     </button>
