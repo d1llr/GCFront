@@ -48,8 +48,8 @@ const Wallet = () => {
   const [needToSwitch, setNeedToSwitch] = useState(false)
   useEffect(() => {
     chain?.id && supportedChain(chain?.id)
-      ? setNeedToSwitch(true)
-      : setNeedToSwitch(false)
+      ? setNeedToSwitch(false)
+      : setNeedToSwitch(true)
   }, [chain])
 
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
