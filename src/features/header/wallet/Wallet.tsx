@@ -280,7 +280,7 @@ const Wallet = () => {
                 >
                   {needToSwitch ? (
                     <button
-                      className="text-xl text-black font-bold bg-yellow p-3 flex-col flex gap-5 w-full items-center text-center"
+                      className="bg-black p-1 w-full border-black text-sm text-white font-bold"
                       onClick={() => setMode(Mode.switch)}
                       disabled
                     >
