@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Loader from "../../../helpers/Loader"
 import tokenService from "../../../services/token.service"
 import {
@@ -27,32 +27,22 @@ import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi"
 import { changeChain } from "./meta/chainHelper"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
 import { transfer } from "./transferERC20"
-import { DEFAULT_CHAINID, supportedChain } from "./meta/chains"
 
 enum Mode {
   recharge = "Recharge",
   withdraw = "Withdraw",
-  switch = "Switch",
 }
 
 const Wallet = () => {
   const { connectAsync } = useConnect()
   const { disconnectAsync } = useDisconnect()
+  const { isConnected } = useAccount()
   const { chain } = useNetwork()
   const account = useAccount({
     onConnect({ address, connector, isReconnected }) {
       console.log("Connected", { address, connector, isReconnected })
     },
   })
-
-  const [switcIshActive, setSwitchIshActive] = useState(false as boolean)
-  useEffect(() => {
-    if (chain?.id && supportedChain(chain?.id)) {
-      setSwitchIshActive(false)
-    } else {
-      setSwitchIshActive(true)
-    }
-  }, [chain])
 
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
   const balance = useAppSelector((state) => state.UserSlice.balance)
@@ -113,12 +103,9 @@ const Wallet = () => {
   const navigate = useNavigate()
   const onSubmit = async (data: UserSubmitForm) => {
     switch (mode) {
-      case Mode.switch:
-        await changeChain(bsc.id)
-        break
-
       case Mode.recharge:
-        if (chain !== bsc) {
+        await changeChain(bsc.id)
+        if (chain?.id != bsc.id) {
           console.error("Selected chain is not supported")
           break
         }
@@ -142,11 +129,6 @@ const Wallet = () => {
         break
 
       case Mode.withdraw:
-        if (chain !== bsc) {
-          console.error("Selected chain is not supported")
-          break
-        }
-
         await WithdrawBalance({
           id: tokenService.getUser().id,
           amount: data.amount,
@@ -164,26 +146,23 @@ const Wallet = () => {
 
   async function handleConnectWallet(): Promise<void> {
     try {
-      // connect logic
       await changeChain(bsc.id)
 
-      if (account.isConnected) {
+      if (isConnected) {
         await disconnectAsync()
       }
-      const { account: accountAddress, chain: metamaskChain } =
-        await connectAsync({
-          connector: new MetaMaskConnector(),
-        })
-      const userData = { address: accountAddress, chainId: metamaskChain.id }
+      const { account, chain: metamaskChain } = await connectAsync({
+        connector: new MetaMaskConnector(),
+      })
+      const userData = { address: account, chainId: metamaskChain.id }
 
-      // DB logic
       await connectWallet({
         id: tokenService.getUser().id,
-        wallet: accountAddress,
+        wallet: account,
       })
         .then((response) => {
-          tokenService.setWallet(accountAddress)
-          dispatch(setWallet(accountAddress))
+          tokenService.setWallet(account)
+          dispatch(setWallet(account))
         })
         .catch((error) => {
           console.log(error)
@@ -192,7 +171,7 @@ const Wallet = () => {
       console.log("User data: ", userData)
     } catch (e) {
       const error = (e as { message: string })?.message
-      console.error("Error while disconnect: ", error)
+      console.error("KEK: ", error)
 
       if (
         error.includes("No crypto wallet found") ||
@@ -215,7 +194,7 @@ const Wallet = () => {
       })
   }
 
-  return account.isConnected ? (
+  return isConnected ? (
     <div className="flex flex-col gap-3">
       <div className="bg-yellow p-3 flex-col flex gap-5">
         <span className="text-black text-xl font-bold">Your game balance</span>
@@ -265,7 +244,7 @@ const Wallet = () => {
                     type="submit"
                     className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
                   >
-                    {switcIshActive ? Mode.switch : Mode.recharge}
+                    {Mode.recharge}
                   </button>
                 </>
               ) : mode === Mode.withdraw ? (
@@ -280,7 +259,7 @@ const Wallet = () => {
                     type="submit"
                     className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
                   >
-                    {switcIshActive ? Mode.switch : Mode.withdraw}
+                    {Mode.withdraw}
                   </button>
                 </>
               ) : (
@@ -291,14 +270,14 @@ const Wallet = () => {
                     className="bg-black p-1 w-full border-black text-sm text-white font-bold"
                     onClick={() => setMode(Mode.recharge)}
                   >
-                    {switcIshActive ? Mode.switch : Mode.recharge}
+                    {Mode.recharge}
                   </button>
                   <button
                     className="bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
                     onClick={() => setMode(Mode.withdraw)}
                     disabled
                   >
-                    {switcIshActive ? Mode.switch : Mode.withdraw}
+                    {Mode.withdraw}
                   </button>
                 </div>
               )}
@@ -314,7 +293,7 @@ const Wallet = () => {
     </div>
   ) : (
     <div>
-      {account.isConnected ? (
+      {isConnected ? (
         <button
           className="text-xl text-black font-bold bg-yellow p-3 flex-col flex gap-5 w-full items-center text-center"
           onClick={() => handleDisConnectWallet()}
