@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Loader from "../../../helpers/Loader"
 import tokenService from "../../../services/token.service"
 import {
@@ -27,10 +27,12 @@ import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi"
 import { changeChain } from "./meta/chainHelper"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
 import { transfer } from "./transferERC20"
+import { supportedChain } from "./meta/chains"
 
 enum Mode {
   recharge = "Recharge",
   withdraw = "Withdraw",
+  switch = "Switch",
 }
 
 const Wallet = () => {
@@ -42,6 +44,13 @@ const Wallet = () => {
       console.log("Connected", { address, connector, isReconnected })
     },
   })
+
+  const [needToSwitch, setNeedToSwitch] = useState(false)
+  useEffect(() => {
+    chain?.id && supportedChain(chain?.id)
+      ? setNeedToSwitch(true)
+      : setNeedToSwitch(false)
+  }, [chain])
 
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
   const balance = useAppSelector((state) => state.UserSlice.balance)
@@ -102,9 +111,12 @@ const Wallet = () => {
   const navigate = useNavigate()
   const onSubmit = async (data: UserSubmitForm) => {
     switch (mode) {
-      case Mode.recharge:
+      case Mode.switch:
         await changeChain(bsc.id)
-        if (chain?.id != bsc.id) {
+        break
+
+      case Mode.recharge:
+        if (chain?.id !== bsc.id) {
           console.error("Selected chain is not supported")
           break
         }
@@ -266,19 +278,31 @@ const Wallet = () => {
                 <div
                   className={`form-group w-full flex flex-row justify-between gap-2`}
                 >
-                  <button
-                    className="bg-black p-1 w-full border-black text-sm text-white font-bold"
-                    onClick={() => setMode(Mode.recharge)}
-                  >
-                    {Mode.recharge}
-                  </button>
-                  <button
-                    className="bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
-                    onClick={() => setMode(Mode.withdraw)}
-                    disabled
-                  >
-                    {Mode.withdraw}
-                  </button>
+                  {needToSwitch ? (
+                    <button
+                      className="text-xl text-black font-bold bg-yellow p-3 flex-col flex gap-5 w-full items-center text-center"
+                      onClick={() => setMode(Mode.switch)}
+                      disabled
+                    >
+                      {Mode.switch}
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        className="bg-black p-1 w-full border-black text-sm text-white font-bold"
+                        onClick={() => setMode(Mode.recharge)}
+                      >
+                        {Mode.recharge}
+                      </button>
+                      <button
+                        className="bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
+                        onClick={() => setMode(Mode.withdraw)}
+                        disabled
+                      >
+                        {Mode.withdraw}
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>
