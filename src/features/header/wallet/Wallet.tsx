@@ -36,7 +36,6 @@ enum Mode {
 const Wallet = () => {
   const { connectAsync } = useConnect()
   const { disconnectAsync } = useDisconnect()
-  const { isConnected } = useAccount()
   const { chain } = useNetwork()
   const account = useAccount({
     onConnect({ address, connector, isReconnected }) {
@@ -148,21 +147,22 @@ const Wallet = () => {
     try {
       await changeChain(bsc.id)
 
-      if (isConnected) {
+      if (account.isConnected) {
         await disconnectAsync()
       }
-      const { account, chain: metamaskChain } = await connectAsync({
-        connector: new MetaMaskConnector(),
-      })
-      const userData = { address: account, chainId: metamaskChain.id }
+      const { account: accountAddress, chain: metamaskChain } =
+        await connectAsync({
+          connector: new MetaMaskConnector(),
+        })
+      const userData = { address: accountAddress, chainId: metamaskChain.id }
 
       await connectWallet({
         id: tokenService.getUser().id,
-        wallet: account,
+        wallet: accountAddress,
       })
         .then((response) => {
-          tokenService.setWallet(account)
-          dispatch(setWallet(account))
+          tokenService.setWallet(accountAddress)
+          dispatch(setWallet(accountAddress))
         })
         .catch((error) => {
           console.log(error)
@@ -194,7 +194,7 @@ const Wallet = () => {
       })
   }
 
-  return isConnected ? (
+  return account.isConnected ? (
     <div className="flex flex-col gap-3">
       <div className="bg-yellow p-3 flex-col flex gap-5">
         <span className="text-black text-xl font-bold">Your game balance</span>
@@ -293,7 +293,7 @@ const Wallet = () => {
     </div>
   ) : (
     <div>
-      {isConnected ? (
+      {account.isConnected ? (
         <button
           className="text-xl text-black font-bold bg-yellow p-3 flex-col flex gap-5 w-full items-center text-center"
           onClick={() => handleDisConnectWallet()}
