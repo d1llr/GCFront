@@ -260,7 +260,7 @@ const Wallet = () => {
                   </button>
                   {needToSwitch ? (
                     <button
-                      className="bg-black p-3 w-full border-black text-sm text-white font-bold"
+                      className="bg-black p-2 w-full border-black text-sm text-white font-bold"
                       onClick={() => changeChain(bsc.id)}
                     >
                       {Mode.switch}
@@ -284,7 +284,7 @@ const Wallet = () => {
                   </button>
                   {needToSwitch ? (
                     <button
-                      className="bg-black p-3 w-full border-black text-sm text-white font-bold"
+                      className="bg-black p-2 w-full border-black text-sm text-white font-bold"
                       onClick={() => changeChain(bsc.id)}
                     >
                       {Mode.switch}
@@ -304,7 +304,7 @@ const Wallet = () => {
                 >
                   {needToSwitch ? (
                     <button
-                      className="bg-black p-3 w-full border-black text-sm text-white font-bold"
+                      className="bg-black p-2 w-full border-black text-sm text-white font-bold"
                       onClick={() => changeChain(bsc.id)}
                     >
                       {Mode.switch}
