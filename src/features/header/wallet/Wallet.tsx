@@ -55,7 +55,7 @@ const Wallet = () => {
     message: string,
     status: "info" | "warning" | "success" | "error" | "loading",
   ) {
-    const id = toast({
+    toast({
       title,
       description: message,
       status,
@@ -63,7 +63,6 @@ const Wallet = () => {
       duration: 9000,
       isClosable: true,
     })
-    console.log("Toast id: ", id)
   }
 
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
@@ -126,7 +125,11 @@ const Wallet = () => {
         } catch (message) {
           const reason = (message as { message: string })?.message.match(regex)
           console.log("KEK", reason)
-          notification(`Error while recharge`, `Holy shit`, "error")
+          notification(
+            `Error while recharge`,
+            `${reason?.[1] ? reason?.[1] : message}`,
+            "error",
+          )
         }
 
         break
