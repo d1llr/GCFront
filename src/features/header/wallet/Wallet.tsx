@@ -125,7 +125,11 @@ const Wallet = () => {
         } catch (e) {
           console.log("KEK", e)
           const reason = (e as { e: string })?.e.match(regex)
-          notification(`Error while recharge`, `${reason?.[1]}`, "error")
+          notification(
+            `Error while recharge`,
+            `${reason?.[1] ? reason?.[1] : e}`,
+            "error",
+          )
         }
 
         break
@@ -145,7 +149,11 @@ const Wallet = () => {
         } catch (e) {
           console.log("KEK", e)
           const reason = (e as { e: string })?.e.match(regex)
-          notification(`Error while withdraw`, `${reason?.[1]}`, "error")
+          notification(
+            `Error while withdraw`,
+            `${reason?.[1] ? reason?.[1] : e}`,
+            "error",
+          )
         }
 
         break
