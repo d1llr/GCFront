@@ -55,7 +55,7 @@ const Wallet = () => {
     message: string,
     status: "info" | "warning" | "success" | "error" | "loading",
   ) {
-    toast({
+    const id = toast({
       title,
       description: message,
       status,
@@ -63,6 +63,7 @@ const Wallet = () => {
       duration: 9000,
       isClosable: true,
     })
+    console.log("Toast id: ", id)
   }
 
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
