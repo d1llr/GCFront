@@ -1,4 +1,10 @@
-import { useEffect, useState } from "react"
+import {
+  JSXElementConstructor,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react"
 import Loader from "../../../helpers/Loader"
 import tokenService from "../../../services/token.service"
 import {
@@ -252,12 +258,21 @@ const Wallet = () => {
                   >
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
-                  >
-                    {Mode.recharge}
-                  </button>
+                  {needToSwitch ? (
+                    <button
+                      className="bg-black p-1 w-full border-black text-sm text-white font-bold"
+                      onClick={() => changeChain(bsc.id)}
+                    >
+                      {Mode.switch}
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
+                    >
+                      {Mode.recharge}
+                    </button>
+                  )}
                 </>
               ) : mode === Mode.withdraw ? (
                 <>
@@ -267,12 +282,21 @@ const Wallet = () => {
                   >
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
-                  >
-                    {Mode.withdraw}
-                  </button>
+                  {needToSwitch ? (
+                    <button
+                      className="bg-black p-1 w-full border-black text-sm text-white font-bold"
+                      onClick={() => changeChain(bsc.id)}
+                    >
+                      {Mode.switch}
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
+                    >
+                      {Mode.withdraw}
+                    </button>
+                  )}
                 </>
               ) : (
                 <div
