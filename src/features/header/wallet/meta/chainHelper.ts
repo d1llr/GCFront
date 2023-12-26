@@ -1,17 +1,17 @@
-import { ChainId, NETWORKS, hexId } from "./chains";
+import { ChainId, NETWORKS, hexId } from "./chains"
 
 export async function changeChain(to: ChainId): Promise<boolean> {
   try {
     if (!window.ethereum) {
-      throw new Error("No crypto wallet found");
+      throw new Error("No crypto wallet found")
     }
 
     try {
       await window.ethereum?.request?.({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: hexId(Number(to)) }],
-      });
-      return true;
+      })
+      return true
     } catch (error) {
       if ((error as any).code === 4902) {
         const result = async () => {
@@ -25,22 +25,22 @@ export async function changeChain(to: ChainId): Promise<boolean> {
             },
             rpcUrls: [NETWORKS[to].rpc],
             blockExplorerUrls: [NETWORKS[to].scanner],
-          };
+          }
           await window.ethereum?.request?.({
             method: "wallet_addEthereumChain",
             params: [param],
-          });
-        };
+          })
+        }
 
         if (!result) {
-          return false;
+          return false
         }
       }
-      return true;
+      return true
     }
   } catch (e) {
-    console.error(e);
+    console.error(e)
   }
 
-  return false;
+  return false
 }

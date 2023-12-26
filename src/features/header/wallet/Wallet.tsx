@@ -24,13 +24,15 @@ import { isApiResponse } from "../../../helpers/isApiResponse"
 // wagmi
 import { bsc } from "@wagmi/core/chains"
 import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi"
-import { changeChain } from "./chainHelper"
+import { changeChain } from "./meta/chainHelper"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
 import { transfer } from "./transferERC20"
+import { DEFAULT_CHAINID, supportedChain } from "./meta/chains"
 
 enum Mode {
   recharge = "Recharge",
   withdraw = "Withdraw",
+  switch = "Switch",
 }
 
 const Wallet = () => {
@@ -103,8 +105,11 @@ const Wallet = () => {
   const navigate = useNavigate()
   const onSubmit = async (data: UserSubmitForm) => {
     switch (mode) {
-      case Mode.recharge:
+      case Mode.switch:
         await changeChain(bsc.id)
+        break
+
+      case Mode.recharge:
         if (chain !== bsc) {
           console.error("Selected chain is not supported")
           break
@@ -129,6 +134,11 @@ const Wallet = () => {
         break
 
       case Mode.withdraw:
+        if (chain !== bsc) {
+          console.error("Selected chain is not supported")
+          break
+        }
+
         await WithdrawBalance({
           id: tokenService.getUser().id,
           amount: data.amount,
@@ -138,7 +148,7 @@ const Wallet = () => {
             dispatch(setBalance(response.balance))
             tokenService.setBalance(response.balance)
           })
-          .catch((err) => { })
+          .catch((err) => {})
 
         break
     }
@@ -203,22 +213,25 @@ const Wallet = () => {
         </span>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` flex-col text-white ${wallet ? "flex" : "hidden"
-            } mx-auto my-auto w-full gap-2`}
+          className={` flex-col text-white ${
+            wallet ? "flex" : "hidden"
+          } mx-auto my-auto w-full gap-2`}
         >
           <div className={`form-group  flex-col ${mode ? "flex" : "hidden"}`}>
             <label className="text-sm text-black">
               Amount<b className="text-black">*</b>
             </label>
             <div
-              className={`form-control ${errors.amount ? "is-invalid border-red-500" : ""
-                } border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}
+              className={`form-control ${
+                errors.amount ? "is-invalid border-red-500" : ""
+              } border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}
             >
               <input
                 {...register("amount")}
                 type="number"
-                className={`form-control focus:outline-none text-black ${errors.amount ? "is-invalid" : ""
-                  } bg-inherit border-none focus:outline-none`}
+                className={`form-control focus:outline-none text-black ${
+                  errors.amount ? "is-invalid" : ""
+                } bg-inherit border-none focus:outline-none`}
                 placeholder="Amount"
               />
               <i className="cursor-pointer text-black">PAC</i>
@@ -241,7 +254,9 @@ const Wallet = () => {
                     type="submit"
                     className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
                   >
-                    {Mode.recharge}
+                    {supportedChain(chain?.id || DEFAULT_CHAINID)
+                      ? Mode.recharge
+                      : Mode.switch}
                   </button>
                 </>
               ) : mode === Mode.withdraw ? (
@@ -256,7 +271,9 @@ const Wallet = () => {
                     type="submit"
                     className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
                   >
-                    {Mode.withdraw}
+                    {supportedChain(chain?.id || DEFAULT_CHAINID)
+                      ? Mode.withdraw
+                      : Mode.switch}
                   </button>
                 </>
               ) : (
@@ -267,14 +284,18 @@ const Wallet = () => {
                     className="bg-black p-1 w-full border-black text-sm text-white font-bold"
                     onClick={() => setMode(Mode.recharge)}
                   >
-                    {Mode.recharge}
+                    {supportedChain(chain?.id || DEFAULT_CHAINID)
+                      ? Mode.recharge
+                      : Mode.switch}
                   </button>
                   <button
                     className="bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
                     onClick={() => setMode(Mode.withdraw)}
                     disabled
                   >
-                    {Mode.withdraw}
+                    {supportedChain(chain?.id || DEFAULT_CHAINID)
+                      ? Mode.withdraw
+                      : Mode.switch}
                   </button>
                 </div>
               )}
