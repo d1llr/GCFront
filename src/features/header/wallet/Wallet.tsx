@@ -122,12 +122,12 @@ const Wallet = () => {
               dispatch(setBalance(response.balance))
               tokenService.setBalance(response.balance)
             })
-        } catch (e) {
-          console.log("KEK", e)
-          const reason = (e as { e: string })?.e.match(regex)
+        } catch (message) {
+          console.log("KEK", message)
+          const reason = (message as { message: string })?.message.match(regex)
           notification(
             `Error while recharge`,
-            `${reason?.[1] ? reason?.[1] : e}`,
+            `${reason?.[1] ? reason?.[1] : message}`,
             "error",
           )
         }
@@ -146,12 +146,12 @@ const Wallet = () => {
               tokenService.setBalance(response.balance)
             })
             .catch((err) => {})
-        } catch (e) {
-          console.log("KEK", e)
-          const reason = (e as { e: string })?.e.match(regex)
+        } catch (message) {
+          console.log("KEK", message)
+          const reason = (message as { message: string })?.message.match(regex)
           notification(
             `Error while withdraw`,
-            `${reason?.[1] ? reason?.[1] : e}`,
+            `${reason?.[1] ? reason?.[1] : message}`,
             "error",
           )
         }
