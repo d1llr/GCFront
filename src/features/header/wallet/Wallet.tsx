@@ -1,18 +1,7 @@
-import {
-  JSXElementConstructor,
-  ReactElement,
-  ReactNode,
-  useEffect,
-  useState,
-} from "react"
+import { useEffect, useState } from "react"
 import Loader from "../../../helpers/Loader"
 import tokenService from "../../../services/token.service"
-import {
-  removeWallet,
-  setBalance,
-  setWallet,
-  useRefreshTokenMutation,
-} from "../../user/User.slice"
+import { removeWallet, setBalance, setWallet } from "../../user/User.slice"
 import {
   useConnectWalletMutation,
   useRechargeBalanceMutation,
@@ -39,7 +28,6 @@ import { useToast } from "@chakra-ui/react"
 enum Mode {
   recharge = "Recharge",
   withdraw = "Withdraw",
-  switch = "Switch",
 }
 
 const Wallet = () => {
@@ -89,24 +77,12 @@ const Wallet = () => {
 
   const [
     RechargeBalance, // This is the mutation trigger
-    {
-      isLoading: LoadingBalance,
-      isSuccess: SuccessBalance,
-      isError: isErrorBalance,
-      isUninitialized: UninitializedBalance,
-      error,
-    }, // This is the destructured mutation result
   ] = useRechargeBalanceMutation()
   const [
     WithdrawBalance, // This is the mutation trigger
-    {
-      isLoading: LoadingWithdrawBalance,
-      isSuccess: SuccessWithdrawBalance,
-      isError: isErrorWithdrawBalance,
-      error: errorWithdrawBalance,
-      isUninitialized: UninitializedWithdrawBalance,
-    }, // This is the destructured mutation result
+    { isError: isErrorWithdrawBalance, error: errorWithdrawBalance }, // This is the destructured mutation result
   ] = useWithdrawBalanceMutation()
+  const [removeWalletAPI] = useRemoveWalletMutation()
 
   const validationSchema = Yup.object().shape({
     amount: Yup.number()
@@ -117,19 +93,13 @@ const Wallet = () => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<UserSubmitForm>({
     resolver: yupResolver(validationSchema),
   })
 
-  const navigate = useNavigate()
   const onSubmit = async (data: UserSubmitForm) => {
     switch (mode) {
-      case Mode.switch:
-        await changeChain(bsc.id)
-        break
-
       case Mode.recharge:
         try {
           if (chain?.id !== bsc.id) {
@@ -153,6 +123,7 @@ const Wallet = () => {
               tokenService.setBalance(response.balance)
             })
         } catch (e) {
+          console.log("KEK", e)
           const reason = (e as { e: string })?.e.match(regex)
           notification(`Error while recharge`, `${reason?.[1]}`, "error")
         }
@@ -172,6 +143,7 @@ const Wallet = () => {
             })
             .catch((err) => {})
         } catch (e) {
+          console.log("KEK", e)
           const reason = (e as { e: string })?.e.match(regex)
           notification(`Error while withdraw`, `${reason?.[1]}`, "error")
         }
@@ -282,7 +254,7 @@ const Wallet = () => {
                       className="bg-black p-2 w-full border-black text-sm text-white font-bold"
                       onClick={() => changeChain(bsc.id)}
                     >
-                      {Mode.switch}
+                      Switch
                     </button>
                   ) : (
                     <button
@@ -306,7 +278,7 @@ const Wallet = () => {
                       className="bg-black p-2 w-full border-black text-sm text-white font-bold"
                       onClick={() => changeChain(bsc.id)}
                     >
-                      {Mode.switch}
+                      Switch
                     </button>
                   ) : (
                     <button
@@ -326,7 +298,7 @@ const Wallet = () => {
                       className="bg-black p-2 w-full border-black text-sm text-white font-bold"
                       onClick={() => changeChain(bsc.id)}
                     >
-                      {Mode.switch}
+                      Switch
                     </button>
                   ) : (
                     <>
