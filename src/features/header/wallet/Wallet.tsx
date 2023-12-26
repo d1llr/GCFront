@@ -123,13 +123,9 @@ const Wallet = () => {
               tokenService.setBalance(response.balance)
             })
         } catch (message) {
-          console.log("KEK", message)
           const reason = (message as { message: string })?.message.match(regex)
-          notification(
-            `Error while recharge`,
-            `${reason?.[1] ? reason?.[1] : message}`,
-            "error",
-          )
+          console.log("KEK", reason)
+          notification(`Error while recharge`, `Holy shit`, "error")
         }
 
         break
@@ -147,8 +143,8 @@ const Wallet = () => {
             })
             .catch((err) => {})
         } catch (message) {
-          console.log("KEK", message)
           const reason = (message as { message: string })?.message.match(regex)
+          console.log("KEK", reason)
           notification(
             `Error while withdraw`,
             `${reason?.[1] ? reason?.[1] : message}`,
