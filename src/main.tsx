@@ -93,7 +93,7 @@ const router = createBrowserRouter([
 
 if (window.screen.width > 1000) {
   ReactDOM.createRoot(document.getElementById("root")!).render(
-    <ChakraProvider>
+    <ChakraProvider resetCSS>
       <Provider store={store}>
         <WagmiConfig client={client}>
           <RouterProvider router={router} />
