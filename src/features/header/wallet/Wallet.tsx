@@ -34,6 +34,7 @@ import { changeChain } from "./meta/chainHelper"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
 import { transfer } from "./transferERC20"
 import { supportedChain } from "./meta/chains"
+import { useToast } from "@chakra-ui/react"
 
 enum Mode {
   recharge = "Recharge",
@@ -42,6 +43,7 @@ enum Mode {
 }
 
 const Wallet = () => {
+  const toast = useToast()
   const { connectAsync } = useConnect()
   const { disconnectAsync } = useDisconnect()
   const { chain } = useNetwork()
@@ -51,6 +53,8 @@ const Wallet = () => {
     },
   })
 
+  const regex = /reason="([^"]+)"/
+
   const [needToSwitch, setNeedToSwitch] = useState(false)
   useEffect(() => {
     chain?.id && supportedChain(chain?.id)
@@ -58,21 +62,26 @@ const Wallet = () => {
       : setNeedToSwitch(true)
   }, [chain])
 
+  function notification(
+    title: string,
+    message: string,
+    status: "info" | "warning" | "success" | "error" | "loading",
+  ) {
+    toast({
+      title,
+      description: message,
+      status,
+      position: "top-right",
+      duration: 9000,
+      isClosable: true,
+    })
+  }
+
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
   const balance = useAppSelector((state) => state.UserSlice.balance)
   const [mode, setMode] = useState<Mode>()
   const dispatch = useAppDispatch()
-  const [connectWallet, { isError, isLoading, isSuccess, isUninitialized }] =
-    useConnectWalletMutation()
-  const [
-    removeWalletAPI,
-    {
-      isError: removeWalletAPIErr,
-      isLoading: removeWalletAPILoading,
-      isSuccess: removeWalletAPISuccess,
-      isUninitialized: removeWalletAPIUn,
-    },
-  ] = useRemoveWalletMutation()
+  const [connectWallet, { isLoading }] = useConnectWalletMutation()
 
   type UserSubmitForm = {
     amount: number
@@ -122,40 +131,50 @@ const Wallet = () => {
         break
 
       case Mode.recharge:
-        if (chain?.id !== bsc.id) {
-          console.error("Selected chain is not supported")
-          break
-        }
+        try {
+          if (chain?.id !== bsc.id) {
+            console.error("Selected chain is not supported")
+            break
+          }
 
-        const result = (await transfer(data.amount.toString())).status
-        if (!result) {
-          console.error("Transaction status: unfulfilled")
-          break
-        }
+          const result = (await transfer(data.amount.toString())).status
+          if (!result) {
+            console.error("Transaction status: unfulfilled")
+            break
+          }
 
-        await RechargeBalance({
-          id: tokenService.getUser().id,
-          amount: data.amount,
-        })
-          .unwrap()
-          .then((response: IWallet) => {
-            dispatch(setBalance(response.balance))
-            tokenService.setBalance(response.balance)
+          await RechargeBalance({
+            id: tokenService.getUser().id,
+            amount: data.amount,
           })
+            .unwrap()
+            .then((response: IWallet) => {
+              dispatch(setBalance(response.balance))
+              tokenService.setBalance(response.balance)
+            })
+        } catch (e) {
+          const reason = (e as { e: string })?.e.match(regex)
+          notification(`Error while recharge`, `${reason?.[1]}`, "error")
+        }
 
         break
 
       case Mode.withdraw:
-        await WithdrawBalance({
-          id: tokenService.getUser().id,
-          amount: data.amount,
-        })
-          .unwrap()
-          .then((response: IWallet) => {
-            dispatch(setBalance(response.balance))
-            tokenService.setBalance(response.balance)
+        try {
+          await WithdrawBalance({
+            id: tokenService.getUser().id,
+            amount: data.amount,
           })
-          .catch((err) => {})
+            .unwrap()
+            .then((response: IWallet) => {
+              dispatch(setBalance(response.balance))
+              tokenService.setBalance(response.balance)
+            })
+            .catch((err) => {})
+        } catch (e) {
+          const reason = (e as { e: string })?.e.match(regex)
+          notification(`Error while withdraw`, `${reason?.[1]}`, "error")
+        }
 
         break
     }
