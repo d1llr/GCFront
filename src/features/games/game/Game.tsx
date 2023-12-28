@@ -110,7 +110,7 @@ const Game = () => {
                   image
                 }
                 alt="Фото"
-                className="object-cover w-full h-full max-h-100"
+                className="object-cover w-full max-h-100"
               />
             ))}
           </Carousel>
