@@ -1,6 +1,6 @@
 "use client"
 import { useNavigate, useParams } from "react-router-dom"
-import { useGetGameByIdQuery } from "./Game.slice"
+import { useGetGameByIdQuery, useGetUserGameHistoryMutation } from "./Game.slice"
 import { Oval } from "react-loader-spinner"
 import browser from "../../../images/icons/browser.svg"
 import apple from "../../../images/icons/apple.svg"
@@ -8,19 +8,24 @@ import android from "../../../images/icons/android.svg"
 import win from "../../../images/icons/win.svg"
 import { IoChevronBack } from "react-icons/io5"
 import redirectFunc from "../../../helpers/redirect"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRefreshTokenMutation } from "../../user/User.slice"
 import tokenService from "../../../services/token.service"
 import Loader from "../../../helpers/Loader"
 import { Carousel } from "flowbite-react"
+import { IHistory } from "./Game.type"
 
 const Game = () => {
   let params = useParams()
-  const { data, isLoading, isError, error, refetch } = useGetGameByIdQuery(
+  const { data, isLoading, isError, isSuccess, refetch } = useGetGameByIdQuery(
     params.gamesId,
   )
   const navigate = useNavigate()
   const [refreshToken] = useRefreshTokenMutation()
+  const [getUserHistory, { isLoading: HistoryLoading }] = useGetUserGameHistoryMutation()
+
+  const [gameHistory, setGameHistory] = useState<IHistory[]>()
+
   useEffect(() => {
     refreshToken(tokenService.getLocalRefreshToken())
       .unwrap()
@@ -39,11 +44,35 @@ const Game = () => {
             break
         }
       })
-  }, [isError])
+    getUserHistory({
+      id: tokenService.getUser().id,
+      game: data?.game.name
+    })
+      .unwrap()
+      .then((response) => {
+
+        console.log(response);
+        setGameHistory(response)
+      })
+      .catch((err) => {
+        switch (err.status) {
+          case 422 && 421:
+            navigate("/login")
+            break
+          case 423:
+            alert(err.message)
+            break
+        }
+      })
+  }, [isError, isSuccess])
 
   if (isLoading) {
     return <Loader />
   }
+
+
+
+
   return (
     <div className="flex flex-row gap-20 w-full h-full">
       <div className="text-white flex flex-col gap-5 w-3/4">
@@ -98,7 +127,7 @@ const Game = () => {
         <div>
           <span>{data?.game.description}</span>
         </div>
-        <div className="h-76 sm:h-64 xl:h-80 2xl:h-96 2xl:w-1/2 md:w-3/4">
+        {/* <div className="h-76 sm:h-64 xl:h-80 2xl:h-96 2xl:w-1/2 md:w-3/4">
           <Carousel indicators={false}>
             {data?.screenshots.map((image) => (
               <img
@@ -114,7 +143,7 @@ const Game = () => {
               />
             ))}
           </Carousel>
-        </div>
+        </div> */}
       </div>
       <div className="w-1/4 h-full">
         <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">
@@ -127,12 +156,12 @@ const Game = () => {
               <th>Data</th>
               <th>Reward</th>
             </tr>
-            {[...Array(40)].map((i: number, index: number) => {
+            {gameHistory?.map((game: IHistory, index: number) => {
               return (
-                <tr className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row justify-around py-1 text-base md:text-sm">
-                  <td>{index} level completed</td>
-                  <td>23:44 22.02.2023</td>
-                  <td>+ 10 PAC</td>
+                <tr key={index} className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row justify-around py-1 text-base md:text-sm">
+                  <td>{game.title}</td>
+                  <td>{new Date(game.createdAt).toISOString().substring(0, 10)}</td>
+                  <td>{game.isWinner ? `+${game.match_cost}` : `-${game.match_cost}`}</td>
                 </tr>
               )
             })}

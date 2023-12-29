@@ -58,7 +58,7 @@ const Games = () => {
                 }}
                 className="w-full bg-yellow 2xl:text-xl md:text-base font-bold 2xl:p-3 md:p-2 text-center cursor-pointer"
               >
-                More datailed
+                More detailed
               </a>
             </div>
           )
