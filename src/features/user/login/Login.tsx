@@ -73,56 +73,59 @@ const Login = () => {
             <div className='w-fit p-3'>
                 <img src={Logo} alt="Logotype" />
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className={`flex flex-col p-7 gap-4 border-2 ${isError ? 'border-red-500' : 'border-yellow'} text-white mx-auto my-auto w-96`}>
-                <h1 className="text-3xl text-center">
-                    Log in to the system
-                </h1>
+            <div className='flex flex-col items-center gap-5'>
 
-                <div className="form-group flex flex-col">
-                    <label className='text-sm'>Login<b className='text-yellow'>*</b></label>
-                    <input
-                        type="text"
-                        {...register('login')}
-                        className={`form-control focus:outline-none ${errors.login ? 'is-invalid border-red-500' : ''} border-2 border-yellow bg-inherit p-1 px-3`}
-                        placeholder='Login'
-                    />
-                    <div className="invalid-feedback text-red-500 text-sm">{errors.login?.message}</div>
-                </div>
+                <form onSubmit={handleSubmit(onSubmit)} className={`flex flex-col p-7 gap-4 border-2 ${isError ? 'border-red-500' : 'border-yellow'} text-white mx-auto my-auto w-96`}>
+                    <h1 className="text-3xl text-center">
+                        Log in to the system
+                    </h1>
 
-                <div className="form-group flex flex-col">
-                    <label className='text-sm'>Password<b className='text-yellow'>*</b></label>
-                    <div className={`form-control ${errors.password ? 'is-invalid border-red-500' : ''} border-2 border-yellow bg-inherit p-1 px-3 flex flex-row items-center justify-between`}>
+                    <div className="form-group flex flex-col">
+                        <label className='text-sm'>Login<b className='text-yellow'>*</b></label>
                         <input
-                            type={passwordShown ? "text" : "password"}
-                            {...register('password')}
-                            className={`form-control focus:outline-none ${errors.password ? 'is-invalid' : ''} bg-inherit border-none focus:outline-none`}
-                            placeholder='Password'
+                            type="text"
+                            {...register('login')}
+                            className={`form-control focus:outline-none ${errors.login ? 'is-invalid border-red-500' : ''} border-2 border-yellow bg-inherit p-1 px-3`}
+                            placeholder='Login'
                         />
-                        <i onClick={togglePasswordVisiblity} className='cursor-pointer'>
-                            {
-                                passwordShown ?
-                                    <IoEyeSharp /> :
-                                    <BsEyeSlashFill />
-                            }
-                        </i>
+                        <div className="invalid-feedback text-red-500 text-sm">{errors.login?.message}</div>
                     </div>
-                    <div className="invalid-feedback text-red-500 text-sm" >{errors.password?.message}</div>
-                </div>
+
+                    <div className="form-group flex flex-col">
+                        <label className='text-sm'>Password<b className='text-yellow'>*</b></label>
+                        <div className={`form-control ${errors.password ? 'is-invalid border-red-500' : ''} border-2 border-yellow bg-inherit p-1 px-3 flex flex-row items-center justify-between`}>
+                            <input
+                                type={passwordShown ? "text" : "password"}
+                                {...register('password')}
+                                className={`form-control focus:outline-none ${errors.password ? 'is-invalid' : ''} bg-inherit border-none focus:outline-none`}
+                                placeholder='Password'
+                            />
+                            <i onClick={togglePasswordVisiblity} className='cursor-pointer'>
+                                {
+                                    passwordShown ?
+                                        <IoEyeSharp /> :
+                                        <BsEyeSlashFill />
+                                }
+                            </i>
+                        </div>
+                        <div className="invalid-feedback text-red-500 text-sm" >{errors.password?.message}</div>
+                    </div>
 
 
-                <div className="form-group">
-                    <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold h-11">
-                        {isUninitialized && "Log in"}
-                        {isLoading && <Loader />}
-                        {isSuccess && 'Success'}
-                        {isError && (isApiResponse(error) && [401, 402].includes(error.status) ? "Invalid login or password" : 'Server error, retry later')}
-                    </button>
+                    <div className="form-group">
+                        <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold h-11">
+                            {isUninitialized && "Log in"}
+                            {isLoading && <Loader />}
+                            {isSuccess && 'Success'}
+                            {isError && (isApiResponse(error) && [401, 402].includes(error.status) ? "Invalid login or password" : 'Server error, retry later')}
+                        </button>
+                    </div>
+                </form>
+                <div>
+                    <h1 className='text-white text-xl'>
+                        <NavLink to='/register'>Create an Account</NavLink>
+                    </h1>
                 </div>
-            </form>
-            <div>
-                <h1 className='text-white text-xl'>
-                    <NavLink to='/register'>Create an Account</NavLink>
-                </h1>
             </div>
         </div>);
 }

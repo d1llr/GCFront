@@ -52,14 +52,16 @@ const Games = () => {
                   {item.short_desc}
                 </span>
               </div>
-              <a
+              <button
                 onClick={() => {
                   navigate(`/games/${item.id}`)
                 }}
-                className="w-full bg-yellow 2xl:text-xl md:text-base font-bold 2xl:p-3 md:p-2 text-center cursor-pointer"
+                disabled={!item.active}
+                
+                className="w-full bg-yellow 2xl:text-xl md:text-base font-bold 2xl:p-3 md:p-2 text-center cursor-pointer disabled:opacity-30"
               >
                 More detailed
-              </a>
+              </button>
             </div>
           )
         })}
