@@ -1,19 +1,19 @@
 "use client"
 import { useNavigate, useParams } from "react-router-dom"
 import { useGetGameByIdQuery, useGetUserGameHistoryMutation } from "./Game.slice"
-import { Oval } from "react-loader-spinner"
+import { Navigation, Pagination, Scrollbar, Controller } from 'swiper/modules';
 import browser from "../../../images/icons/browser.svg"
 import apple from "../../../images/icons/apple.svg"
 import android from "../../../images/icons/android.svg"
 import win from "../../../images/icons/win.svg"
 import { IoChevronBack } from "react-icons/io5"
-import redirectFunc from "../../../helpers/redirect"
 import { useEffect, useState } from "react"
 import { useRefreshTokenMutation } from "../../user/User.slice"
 import tokenService from "../../../services/token.service"
 import Loader from "../../../helpers/Loader"
-import { Carousel } from "flowbite-react"
+import 'swiper/css';
 import { IHistory } from "./Game.type"
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 const Game = () => {
   let params = useParams()
@@ -47,23 +47,12 @@ const Game = () => {
     getUserHistory({
       id: tokenService.getUser().id,
       game: data?.game.name
-    })
-      .unwrap()
+    }).unwrap()
       .then((response) => {
-
         console.log(response);
         setGameHistory(response)
       })
-      .catch((err) => {
-        switch (err.status) {
-          case 422 && 421:
-            navigate("/login")
-            break
-          case 423:
-            alert(err.message)
-            break
-        }
-      })
+
   }, [isError, isSuccess])
 
   if (isLoading) {
@@ -127,23 +116,35 @@ const Game = () => {
         <div>
           <span>{data?.game.description}</span>
         </div>
-        {/* <div className="h-76 sm:h-64 xl:h-80 2xl:h-96 2xl:w-1/2 md:w-3/4">
-          <Carousel indicators={false}>
+        <div className="p-3">
+          <Swiper
+            modules={[Navigation, Pagination, Scrollbar, Controller]}
+            navigation
+            pagination={{ clickable: true }}
+            scrollbar={{ draggable: true }}
+            spaceBetween={30}
+            slidesPerView={2}
+            onSlideChange={() => console.log('slide change')}
+            onSwiper={(swiper) => console.log(swiper)}
+          >
             {data?.screenshots.map((image) => (
-              <img
-                src={
-                  "https://back.pacgc.pw" +
-                  "/" +
-                  data?.game.scr_dir +
-                  "/" +
-                  image
-                }
-                alt="Фото"
-                className="object-cover w-full max-h-100"
-              />
+              <SwiperSlide>
+                <img
+                  src={
+                    "https://back.pacgc.pw" +
+                    "/" +
+                    data?.game.scr_dir +
+                    "/" +
+                    image
+                  }
+                  alt="Фото"
+                  className="object-cover w-full max-h-100"
+                />
+              </SwiperSlide>
             ))}
-          </Carousel>
-        </div> */}
+
+          </Swiper>
+        </div>
       </div>
       <div className="w-1/4 h-full">
         <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">
@@ -158,10 +159,10 @@ const Game = () => {
             </tr>
             {gameHistory?.map((game: IHistory, index: number) => {
               return (
-                <tr key={index} className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row justify-around py-1 text-base md:text-sm">
-                  <td>{game.title}</td>
-                  <td>{new Date(game.createdAt).toISOString().substring(0, 10)}</td>
-                  <td>{game.isWinner ? `+${game.match_cost}` : `-${game.match_cost}`}</td>
+                <tr key={index} className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row  py-1 text-base md:text-sm">
+                  <td className="w-1/3 text-center">{game.title}</td>
+                  <td className="w-1/3 text-center">{new Date(game.createdAt).toISOString().substring(0, 10)}</td>
+                  <td className="w-1/3 text-center">{game.isWinner ? `+${game.match_cost}` : `-${game.match_cost}`} PAC </td>
                 </tr>
               )
             })}
