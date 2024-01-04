@@ -5,8 +5,7 @@ import * as GC_ABI from "./meta/erc20.abi.json"
 
 // approve call for ERC20
 export async function deposit(amount: string) {
-  const to = "0x682B708aD0fA04Ad7a49AE95b01CE24b02125f5a" // some wallet to transfer babki on
-  const tokenAddress = "0xD722baC68242bc0b830667cD8999AE6DcDFAAC69" // BSC PAC
+  console.log("Interacting with: ", ERC20_ABI.address)
 
   // call approve for PAC
   const approvalConfig = await prepareWriteContract({
@@ -22,6 +21,7 @@ export async function deposit(amount: string) {
     return approvalResult
   }
 
+  console.log("Interacting with: ", GC_ABI.address)
   // call deposit
   const depositConfig = await prepareWriteContract({
     address: GC_ABI.address,
@@ -39,6 +39,7 @@ export async function deposit(amount: string) {
 
 // approve call for ERC20
 export async function withdraw(amount: string) {
+  console.log("Interacting with: ", GC_ABI.address)
   // call deposit
   const withdrawConfig = await prepareWriteContract({
     address: GC_ABI.address,
