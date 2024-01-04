@@ -330,8 +330,8 @@ const Wallet = () => {
                       <button
                         className={
                           true
-                            ? "bg-black p-1 w-full border-black text-sm text-white font-bold"
-                            : "bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
+                            ? "bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
+                            : "bg-black p-1 w-full border-black text-sm text-white font-bold"
                         }
                         onClick={
                           () =>
@@ -340,7 +340,7 @@ const Wallet = () => {
                               account.address,
                             ) /**setMode(Mode.withdraw) */
                         }
-                        // disabled
+                        disabled
                       >
                         {Mode.withdraw}
                       </button>
