@@ -21,7 +21,7 @@ import { bsc } from "@wagmi/core/chains"
 import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi"
 import { changeChain } from "./meta/chainHelper"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
-import { transfer } from "./transferERC20"
+import { deposit, withdraw } from "./ChainInteractions"
 import { supportedChain } from "./meta/chains"
 import { useToast } from "@chakra-ui/react"
 
@@ -107,7 +107,7 @@ const Wallet = () => {
             break
           }
 
-          const result = (await transfer(data.amount.toString())).status
+          const result = (await deposit(data.amount.toString())).status
           if (!result) {
             console.error("Transaction status: unfulfilled")
             break
@@ -124,7 +124,7 @@ const Wallet = () => {
             })
         } catch (message) {
           const reason = (message as { message: string })?.message.match(regex)
-          console.log("KEK", reason)
+          console.log("Error while recharge: ", reason)
           notification(
             `Error while recharge`,
             `${reason?.[1] ? reason?.[1] : message}`,
@@ -136,6 +136,17 @@ const Wallet = () => {
 
       case Mode.withdraw:
         try {
+          if (chain?.id !== bsc.id) {
+            console.error("Selected chain is not supported")
+            break
+          }
+
+          const result = (await withdraw(data.amount.toString())).status
+          if (!result) {
+            console.error("Transaction status: unfulfilled")
+            break
+          }
+
           await WithdrawBalance({
             id: tokenService.getUser().id,
             amount: data.amount,
@@ -148,7 +159,7 @@ const Wallet = () => {
             .catch((err) => {})
         } catch (message) {
           const reason = (message as { message: string })?.message.match(regex)
-          console.log("KEK", reason)
+          console.log("Error while withdraw: ", reason)
           notification(
             `Error while withdraw`,
             `${reason?.[1] ? reason?.[1] : message}`,
@@ -317,9 +328,19 @@ const Wallet = () => {
                         {Mode.recharge}
                       </button>
                       <button
-                        className="bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
-                        onClick={() => setMode(Mode.withdraw)}
-                        disabled
+                        className={
+                          true
+                            ? "bg-black p-1 w-full border-black text-sm text-white font-bold"
+                            : "bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
+                        }
+                        onClick={
+                          () =>
+                            console.log(
+                              "Your account address: ",
+                              account.address,
+                            ) /**setMode(Mode.withdraw) */
+                        }
+                        // disabled
                       >
                         {Mode.withdraw}
                       </button>
