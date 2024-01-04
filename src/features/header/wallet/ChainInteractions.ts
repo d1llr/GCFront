@@ -1,7 +1,7 @@
 import { prepareWriteContract, writeContract } from "@wagmi/core"
 import { ethers } from "ethers"
 import * as ERC20_ABI from "./meta/erc20.abi.json"
-import * as GC_ABI from "./meta/erc20.abi.json"
+import * as GC_ABI from "./meta/gc.abi.json"
 
 // approve call for ERC20
 export async function deposit(amount: string) {
