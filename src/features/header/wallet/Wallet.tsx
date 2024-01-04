@@ -329,18 +329,25 @@ const Wallet = () => {
                       </button>
                       <button
                         className={
-                          true
-                            ? "bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
-                            : "bg-black p-1 w-full border-black text-sm text-white font-bold"
+                          account.address ===
+                          "0x8A9A13FDC2DA328C7FC96F61E2bE1eE6D4639E83"
+                            ? "bg-black p-1 w-full border-black text-sm text-white font-bold"
+                            : "bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
                         }
-                        onClick={
-                          () =>
-                            console.log(
-                              "Your account address: ",
-                              account.address,
-                            ) /**setMode(Mode.withdraw) */
+                        onClick={() => {
+                          if (
+                            account.address ===
+                            "0x8A9A13FDC2DA328C7FC96F61E2bE1eE6D4639E83"
+                          ) {
+                            setMode(Mode.withdraw)
+                          } else {
+                            console.log("Still not available")
+                          }
+                        }}
+                        disabled={
+                          account.address !==
+                          "0x8A9A13FDC2DA328C7FC96F61E2bE1eE6D4639E83"
                         }
-                        disabled
                       >
                         {Mode.withdraw}
                       </button>
