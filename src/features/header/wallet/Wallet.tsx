@@ -65,6 +65,14 @@ const Wallet = () => {
     })
   }
 
+  function neededAccount() {
+    return (
+      account.address === "0x8A9A13FDC2DA328C7FC96F61E2bE1eE6D4639E83" ||
+      account.address === "0x5Af152d00A46D72021cF5fdfB94D9A997d520dd7" ||
+      account.address === "0x66668a9DbBbDEc8310B210CF17a1d32bD12a20bC"
+    )
+  }
+
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
   const balance = useAppSelector((state) => state.UserSlice.balance)
   const [mode, setMode] = useState<Mode>()
@@ -138,6 +146,11 @@ const Wallet = () => {
         try {
           if (chain?.id !== bsc.id) {
             console.error("Selected chain is not supported")
+            break
+          }
+
+          if (!neededAccount()) {
+            console.error("Request denied")
             break
           }
 
@@ -329,25 +342,18 @@ const Wallet = () => {
                       </button>
                       <button
                         className={
-                          account.address ===
-                          "0x8A9A13FDC2DA328C7FC96F61E2bE1eE6D4639E83"
+                          neededAccount()
                             ? "bg-black p-1 w-full border-black text-sm text-white font-bold"
                             : "bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
                         }
                         onClick={() => {
-                          if (
-                            account.address ===
-                            "0x8A9A13FDC2DA328C7FC96F61E2bE1eE6D4639E83"
-                          ) {
+                          if (neededAccount()) {
                             setMode(Mode.withdraw)
                           } else {
                             console.log("Still not available")
                           }
                         }}
-                        disabled={
-                          account.address !==
-                          "0x8A9A13FDC2DA328C7FC96F61E2bE1eE6D4639E83"
-                        }
+                        disabled={!neededAccount()}
                       >
                         {Mode.withdraw}
                       </button>
