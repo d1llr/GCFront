@@ -60,7 +60,12 @@ const Register = () => {
       password: data.password
     })
       .then(response => {
-        navigate('/login')
+        isSuccess && navigate('/login')
+        isError && console.log(error);
+
+      })
+      .catch(err => {
+        console.log(err);
       })
   };
   return (
@@ -131,7 +136,7 @@ const Register = () => {
               {isUninitialized && "Sign up"}
               {isLoading && <Loader />}
               {isSuccess && 'Success'}
-              {isError && (isApiResponse(error) && [405].includes(error.status) ? "Server error, retry later" : isApiResponse(error) && error.data.message)}
+              {isError && (isApiResponse(error) && [405].includes(error.status) ? "Server error, retry later" : error.message)}
             </button>
           </div>
         </form>
