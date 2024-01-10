@@ -160,16 +160,16 @@ const Wallet = () => {
             break
           }
 
-          await WithdrawBalance({
-            id: tokenService.getUser().id,
-            amount: data.amount,
-          })
-            .unwrap()
-            .then((response: IWallet) => {
-              dispatch(setBalance(response.balance))
-              tokenService.setBalance(response.balance)
-            })
-            .catch((err) => {})
+          // await WithdrawBalance({
+          //   id: tokenService.getUser().id,
+          //   amount: data.amount,
+          // })
+          //   .unwrap()
+          //   .then((response: IWallet) => {
+          //     dispatch(setBalance(response.balance))
+          //     tokenService.setBalance(response.balance)
+          //   })
+          //   .catch((err) => {})
         } catch (message) {
           const reason = (message as { message: string })?.message.match(regex)
           console.log("Error while withdraw: ", reason)
