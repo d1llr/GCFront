@@ -1,22 +1,12 @@
 {
-    "address": "0x437A5656d51d83DE6B20D2CF46705a31B7Fb13d8",
+    "address": "0xD722baC68242bc0b830667cD8999AE6DcDFAAC69",
     "abi": [
         {
             "inputs": [
                 {
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "_hotWallets",
-                    "type": "address[]"
-                },
-                {
-                    "internalType": "uint32",
-                    "name": "_limitPeriod",
-                    "type": "uint32"
+                    "internalType": "uint256",
+                    "name": "initialSupply",
+                    "type": "uint256"
                 }
             ],
             "stateMutability": "nonpayable",
@@ -28,13 +18,13 @@
                 {
                     "indexed": true,
                     "internalType": "address",
-                    "name": "from",
+                    "name": "owner",
                     "type": "address"
                 },
                 {
                     "indexed": true,
                     "internalType": "address",
-                    "name": "hotWallet",
+                    "name": "spender",
                     "type": "address"
                 },
                 {
@@ -44,7 +34,7 @@
                     "type": "uint256"
                 }
             ],
-            "name": "Deposit",
+            "name": "Approval",
             "type": "event"
         },
         {
@@ -72,13 +62,13 @@
                 {
                     "indexed": true,
                     "internalType": "address",
-                    "name": "user",
+                    "name": "from",
                     "type": "address"
                 },
                 {
                     "indexed": true,
                     "internalType": "address",
-                    "name": "hotWallet",
+                    "name": "to",
                     "type": "address"
                 },
                 {
@@ -86,46 +76,49 @@
                     "internalType": "uint256",
                     "name": "value",
                     "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "timestamp",
-                    "type": "uint256"
                 }
             ],
-            "name": "Withdrawal",
+            "name": "Transfer",
             "type": "event"
         },
         {
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "_hotWallet",
+                    "name": "owner",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "spender",
                     "type": "address"
                 }
             ],
-            "name": "addHotWallet",
-            "outputs": [],
-            "stateMutability": "nonpayable",
+            "name": "allowance",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
             "type": "function"
         },
         {
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "user",
+                    "name": "spender",
                     "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
                 }
             ],
-            "name": "addToBlackList",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "amIBlackListed",
+            "name": "approve",
             "outputs": [
                 {
                     "internalType": "bool",
@@ -133,7 +126,87 @@
                     "type": "bool"
                 }
             ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "balanceOf",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
             "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "decimals",
+            "outputs": [
+                {
+                    "internalType": "uint8",
+                    "name": "",
+                    "type": "uint8"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "spender",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "subtractedValue",
+                    "type": "uint256"
+                }
+            ],
+            "name": "decreaseAllowance",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "spender",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "addedValue",
+                    "type": "uint256"
+                }
+            ],
+            "name": "increaseAllowance",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -142,45 +215,21 @@
                     "internalType": "uint256",
                     "name": "amount",
                     "type": "uint256"
-                },
-                {
-                    "internalType": "uint8",
-                    "name": "hotwalletId",
-                    "type": "uint8"
                 }
             ],
-            "name": "deposit",
+            "name": "mint",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "name": "hotWallets",
-            "outputs": [
-                {
-                    "internalType": "address",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
             "inputs": [],
-            "name": "limitPeriod",
+            "name": "name",
             "outputs": [
                 {
-                    "internalType": "uint32",
+                    "internalType": "string",
                     "name": "",
-                    "type": "uint32"
+                    "type": "string"
                 }
             ],
             "stateMutability": "view",
@@ -200,26 +249,6 @@
             "type": "function"
         },
         {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "user",
-                    "type": "address"
-                }
-            ],
-            "name": "removeFromBlackList",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "removeHotWallet",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
             "inputs": [],
             "name": "renounceOwnership",
             "outputs": [],
@@ -227,42 +256,82 @@
             "type": "function"
         },
         {
-            "inputs": [
+            "inputs": [],
+            "name": "symbol",
+            "outputs": [
                 {
-                    "internalType": "address[]",
-                    "name": "_hotWallets",
-                    "type": "address[]"
+                    "internalType": "string",
+                    "name": "",
+                    "type": "string"
                 }
             ],
-            "name": "setHotWallets",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint32",
-                    "name": "_limitPeriod",
-                    "type": "uint32"
-                }
-            ],
-            "name": "setLimitPeriod",
-            "outputs": [],
-            "stateMutability": "nonpayable",
+            "stateMutability": "view",
             "type": "function"
         },
         {
             "inputs": [],
-            "name": "token",
+            "name": "totalSupply",
             "outputs": [
                 {
-                    "internalType": "contract IERC20",
+                    "internalType": "uint256",
                     "name": "",
-                    "type": "address"
+                    "type": "uint256"
                 }
             ],
             "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "to",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "transfer",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "from",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "to",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "transferFrom",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -274,63 +343,6 @@
                 }
             ],
             "name": "transferOwnership",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "user",
-                    "type": "address"
-                }
-            ],
-            "name": "userIsBlackListed",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint8",
-                    "name": "hotwalletId",
-                    "type": "uint8"
-                }
-            ],
-            "name": "withdraw",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "_randToken",
-                    "type": "address"
-                }
-            ],
-            "name": "withdrawERC20",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "withdrawEth",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
