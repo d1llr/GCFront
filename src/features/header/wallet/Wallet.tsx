@@ -30,6 +30,7 @@ import { useToast } from "@chakra-ui/react"
 enum Mode {
   recharge = "Recharge",
   withdraw = "Withdraw",
+  switch = "Switch",
 }
 
 const Wallet = () => {
@@ -200,6 +201,7 @@ const Wallet = () => {
 
   async function handleConnectWallet(): Promise<void> {
     try {
+      // connect logic
       await changeChain(bsc.id)
 
       if (account.isConnected) {
@@ -211,6 +213,7 @@ const Wallet = () => {
         })
       const userData = { address: accountAddress, chainId: metamaskChain.id }
 
+      // DB logic
       await connectWallet({
         id: tokenService.getUser().id,
         wallet: accountAddress,
@@ -226,7 +229,7 @@ const Wallet = () => {
       console.log("User data: ", userData)
     } catch (e) {
       const error = (e as { message: string })?.message
-      console.error("KEK: ", error)
+      console.error("Error while disconnect: ", error)
 
       if (
         error.includes("No crypto wallet found") ||
@@ -258,22 +261,25 @@ const Wallet = () => {
         </span>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` flex-col text-white ${wallet ? "flex" : "hidden"
-            } mx-auto my-auto w-full gap-2`}
+          className={` flex-col text-white ${
+            wallet ? "flex" : "hidden"
+          } mx-auto my-auto w-full gap-2`}
         >
           <div className={`form-group  flex-col ${mode ? "flex" : "hidden"}`}>
             <label className="text-sm text-black">
               Amount<b className="text-black">*</b>
             </label>
             <div
-              className={`form-control ${errors.amount ? "is-invalid border-red-500" : ""
-                } border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}
+              className={`form-control ${
+                errors.amount ? "is-invalid border-red-500" : ""
+              } border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}
             >
               <input
                 {...register("amount")}
                 type="number"
-                className={`form-control focus:outline-none text-black ${errors.amount ? "is-invalid" : ""
-                  } bg-inherit border-none focus:outline-none`}
+                className={`form-control focus:outline-none text-black ${
+                  errors.amount ? "is-invalid" : ""
+                } bg-inherit border-none focus:outline-none`}
                 placeholder="Amount"
               />
               <i className="cursor-pointer text-black">PAC</i>
