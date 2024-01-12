@@ -3,6 +3,7 @@ import Loader from "../../../helpers/Loader"
 import tokenService from "../../../services/token.service"
 import { removeWallet, setBalance, setWallet } from "../../user/User.slice"
 import {
+  useCheckBalanceQuery,
   useConnectWalletMutation,
   useRechargeBalanceMutation,
   useRemoveWalletMutation,
@@ -15,6 +16,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { useNavigate } from "react-router-dom"
 import IWallet from "./wallet.type"
 import { isApiResponse } from "../../../helpers/isApiResponse"
+import useWindowFocus from 'use-window-focus';
 
 // wagmi
 import { bsc } from "@wagmi/core/chains"
@@ -90,6 +92,18 @@ const Wallet = () => {
     WithdrawBalance, // This is the mutation trigger
     { isError: isErrorWithdrawBalance, error: errorWithdrawBalance }, // This is the destructured mutation result
   ] = useWithdrawBalanceMutation()
+
+
+
+  const isWindowFocused = useWindowFocus();
+  const { data, status, error, refetch } = useCheckBalanceQuery(tokenService.getUser().id, {
+    pollingInterval: 30000,
+    skip: !isWindowFocused,
+    refetchOnFocus: true
+  })
+
+
+  
   const [removeWalletAPI] = useRemoveWalletMutation()
 
   const validationSchema = Yup.object().shape({
@@ -244,25 +258,22 @@ const Wallet = () => {
         </span>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` flex-col text-white ${
-            wallet ? "flex" : "hidden"
-          } mx-auto my-auto w-full gap-2`}
+          className={` flex-col text-white ${wallet ? "flex" : "hidden"
+            } mx-auto my-auto w-full gap-2`}
         >
           <div className={`form-group  flex-col ${mode ? "flex" : "hidden"}`}>
             <label className="text-sm text-black">
               Amount<b className="text-black">*</b>
             </label>
             <div
-              className={`form-control ${
-                errors.amount ? "is-invalid border-red-500" : ""
-              } border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}
+              className={`form-control ${errors.amount ? "is-invalid border-red-500" : ""
+                } border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}
             >
               <input
                 {...register("amount")}
                 type="number"
-                className={`form-control focus:outline-none text-black ${
-                  errors.amount ? "is-invalid" : ""
-                } bg-inherit border-none focus:outline-none`}
+                className={`form-control focus:outline-none text-black ${errors.amount ? "is-invalid" : ""
+                  } bg-inherit border-none focus:outline-none`}
                 placeholder="Amount"
               />
               <i className="cursor-pointer text-black">PAC</i>

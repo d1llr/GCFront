@@ -15,13 +15,20 @@ type IReq = {
 // Define a service using a base URL and expected endpoints
 export const WalletActions = createApi({
     reducerPath: 'WalletActions',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://back.pacgc.pw'}),
+    baseQuery: fetchBaseQuery({ baseUrl: 'https://back.pacgc.pw' }),
     endpoints: (builder) => ({
         ConnectWallet: builder.mutation<IWallet, IReq>({
             query: (body) => ({
                 url: `/api/user/setWallet`,
                 method: 'POST',
                 body: body,
+                headers: authHeader()
+            }),
+        }),
+        checkBalance: builder.query<number, number>({
+            query: (id) => ({
+                url: `/api/GS/user/getBalance/${id}`,
+                method: 'GET',
                 headers: authHeader()
             }),
         }),
@@ -54,4 +61,4 @@ export const WalletActions = createApi({
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useConnectWalletMutation, useRemoveWalletMutation, useRechargeBalanceMutation, useWithdrawBalanceMutation } = WalletActions
+export const { useConnectWalletMutation, useRemoveWalletMutation, useRechargeBalanceMutation, useWithdrawBalanceMutation, useCheckBalanceQuery } = WalletActions
