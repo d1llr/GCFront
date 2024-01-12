@@ -23,6 +23,7 @@ import InDevelop from "./features/inDevelop/InDevelop"
 import Layout from "./Layout"
 import { useAppSelector } from "./app/hooks"
 import User from "./features/user/User"
+import { ChakraProvider } from "@chakra-ui/react"
 
 // next-auth
 import { SessionProvider } from "next-auth/react"
@@ -67,12 +68,12 @@ const router = createBrowserRouter([
       //   element: <Nft />,
       // },
       {
-        path: '/tournaments',
-        element: <Tournaments />
+        path: "/tournaments",
+        element: <Tournaments />,
       },
       {
-        path: '/tournaments/:tournamentId',
-        element: <Tournament />
+        path: "/tournaments/:tournamentId",
+        element: <Tournament />,
       },
       {
         path: "/user",
@@ -92,11 +93,13 @@ const router = createBrowserRouter([
 
 if (window.screen.width > 1000) {
   ReactDOM.createRoot(document.getElementById("root")!).render(
-    <Provider store={store}>
-      <WagmiConfig client={client}>
-        <RouterProvider router={router} />
-      </WagmiConfig>
-    </Provider>,
+    <ChakraProvider resetCSS={true} disableGlobalStyle={true}>
+      <Provider store={store}>
+        <WagmiConfig client={client}>
+          <RouterProvider router={router} />
+        </WagmiConfig>
+      </Provider>
+    </ChakraProvider>,
   )
 } else {
   ReactDOM.createRoot(document.getElementById("root")!).render(

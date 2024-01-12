@@ -4,5 +4,6 @@ export default interface IGames {
     description: string,
     scr_dir: string,
     short_desc: string,
-    id: string
+    id: string,
+    active: boolean
 }

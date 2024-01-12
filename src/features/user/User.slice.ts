@@ -1,16 +1,17 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 // Need to use the React-specific entry point to allow generating React hooks
 import { FetchBaseQueryError, createApi, fetchBaseQuery, } from '@reduxjs/toolkit/query/react'
 import { createSlice } from '@reduxjs/toolkit'
 import IUser from "./User.type";
 import authHeader from '../../services/accessHeaders';
 import tokenService from '../../services/token.service';
+import { WalletActions } from '../header/wallet/wallet.slice';
 type ILogin = {
     username: string,
     password: string
 }
 type IReg = {
-    name:string,
+    name: string,
     username: string,
     email: string,
     password: string
@@ -53,6 +54,13 @@ export const UserSlice = createSlice({
         setBalance: (state, action: PayloadAction<number>) => {
             state.balance = action.payload
         },
+    },
+
+    extraReducers: (builder) => {
+        builder.addMatcher(
+            isAnyOf(WalletActions.endpoints.checkBalance.matchFulfilled), //updated
+            (state, action) => { state.balance = action.payload }
+        );
     },
 })
 

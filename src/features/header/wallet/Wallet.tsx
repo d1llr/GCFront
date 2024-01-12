@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react"
 import Loader from "../../../helpers/Loader"
 import tokenService from "../../../services/token.service"
+import { removeWallet, setBalance, setWallet } from "../../user/User.slice"
 import {
-  removeWallet,
-  setBalance,
-  setWallet,
-  useRefreshTokenMutation,
-} from "../../user/User.slice"
-import {
+  useCheckBalanceQuery,
   useConnectWalletMutation,
   useRechargeBalanceMutation,
   useRemoveWalletMutation,
@@ -20,14 +16,16 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { useNavigate } from "react-router-dom"
 import IWallet from "./wallet.type"
 import { isApiResponse } from "../../../helpers/isApiResponse"
+import useWindowFocus from 'use-window-focus';
 
 // wagmi
 import { bsc } from "@wagmi/core/chains"
 import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi"
 import { changeChain } from "./meta/chainHelper"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
-import { transfer } from "./transferERC20"
-import { DEFAULT_CHAINID, supportedChain } from "./meta/chains"
+import { deposit, withdraw } from "./ChainInteractions"
+import { supportedChain } from "./meta/chains"
+import { useToast } from "@chakra-ui/react"
 
 enum Mode {
   recharge = "Recharge",
@@ -36,6 +34,7 @@ enum Mode {
 }
 
 const Wallet = () => {
+  const toast = useToast()
   const { connectAsync } = useConnect()
   const { disconnectAsync } = useDisconnect()
   const { chain } = useNetwork()
@@ -45,30 +44,43 @@ const Wallet = () => {
     },
   })
 
-  const [switcIshActive, setSwitchIshActive] = useState(false as boolean)
+  const regex = /reason="([^"]+)"/
+
+  const [needToSwitch, setNeedToSwitch] = useState(false)
   useEffect(() => {
-    if (chain?.id && supportedChain(chain?.id)) {
-      setSwitchIshActive(false)
-    } else {
-      setSwitchIshActive(true)
-    }
+    chain?.id && supportedChain(chain?.id)
+      ? setNeedToSwitch(false)
+      : setNeedToSwitch(true)
   }, [chain])
+
+  function notification(
+    title: string,
+    message: string,
+    status: "info" | "warning" | "success" | "error" | "loading",
+  ) {
+    toast({
+      title,
+      description: message,
+      status,
+      position: "top-right",
+      duration: 9000,
+      isClosable: true,
+    })
+  }
+
+  function neededAccount() {
+    return (
+      account.address === "0x8A9A13FDC2DA328C7FC96F61E2bE1eE6D4639E83" ||
+      account.address === "0x5Af152d00A46D72021cF5fdfB94D9A997d520dd7" ||
+      account.address === "0x66668a9DbBbDEc8310B210CF17a1d32bD12a20bC"
+    )
+  }
 
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
   const balance = useAppSelector((state) => state.UserSlice.balance)
   const [mode, setMode] = useState<Mode>()
   const dispatch = useAppDispatch()
-  const [connectWallet, { isError, isLoading, isSuccess, isUninitialized }] =
-    useConnectWalletMutation()
-  const [
-    removeWalletAPI,
-    {
-      isError: removeWalletAPIErr,
-      isLoading: removeWalletAPILoading,
-      isSuccess: removeWalletAPISuccess,
-      isUninitialized: removeWalletAPIUn,
-    },
-  ] = useRemoveWalletMutation()
+  const [connectWallet, { isLoading }] = useConnectWalletMutation()
 
   type UserSubmitForm = {
     amount: number
@@ -76,24 +88,24 @@ const Wallet = () => {
 
   const [
     RechargeBalance, // This is the mutation trigger
-    {
-      isLoading: LoadingBalance,
-      isSuccess: SuccessBalance,
-      isError: isErrorBalance,
-      isUninitialized: UninitializedBalance,
-      error,
-    }, // This is the destructured mutation result
   ] = useRechargeBalanceMutation()
   const [
     WithdrawBalance, // This is the mutation trigger
-    {
-      isLoading: LoadingWithdrawBalance,
-      isSuccess: SuccessWithdrawBalance,
-      isError: isErrorWithdrawBalance,
-      error: errorWithdrawBalance,
-      isUninitialized: UninitializedWithdrawBalance,
-    }, // This is the destructured mutation result
+    { isError: isErrorWithdrawBalance, error: errorWithdrawBalance }, // This is the destructured mutation result
   ] = useWithdrawBalanceMutation()
+
+
+
+  const isWindowFocused = useWindowFocus();
+  const { data, status, error, refetch } = useCheckBalanceQuery(tokenService.getUser().id, {
+    pollingInterval: 30000,
+    skip: !isWindowFocused,
+    refetchOnFocus: true
+  })
+
+
+  
+  const [removeWalletAPI] = useRemoveWalletMutation()
 
   const validationSchema = Yup.object().shape({
     amount: Yup.number()
@@ -104,59 +116,84 @@ const Wallet = () => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<UserSubmitForm>({
     resolver: yupResolver(validationSchema),
   })
 
-  const navigate = useNavigate()
   const onSubmit = async (data: UserSubmitForm) => {
     switch (mode) {
-      case Mode.switch:
-        await changeChain(bsc.id)
-        break
-
       case Mode.recharge:
-        if (chain !== bsc) {
-          console.error("Selected chain is not supported")
-          break
-        }
+        try {
+          if (chain?.id !== bsc.id) {
+            console.error("Selected chain is not supported")
+            break
+          }
 
-        const result = (await transfer(data.amount.toString())).status
-        if (!result) {
-          console.error("Transaction status: unfulfilled")
-          break
-        }
+          const result = (await deposit(data.amount.toString())).status
+          if (!result) {
+            console.error("Transaction status: unfulfilled")
+            break
+          }
 
-        await RechargeBalance({
-          id: tokenService.getUser().id,
-          amount: data.amount,
-        })
-          .unwrap()
-          .then((response: IWallet) => {
-            dispatch(setBalance(response.balance))
-            tokenService.setBalance(response.balance)
+          await RechargeBalance({
+            id: tokenService.getUser().id,
+            amount: data.amount,
           })
+            .unwrap()
+            .then((response: IWallet) => {
+              dispatch(setBalance(response.balance))
+              tokenService.setBalance(response.balance)
+            })
+        } catch (message) {
+          const reason = (message as { message: string })?.message.match(regex)
+          console.log("Error while recharge: ", reason)
+          notification(
+            `Error while recharge`,
+            `${reason?.[1] ? reason?.[1] : message}`,
+            "error",
+          )
+        }
 
         break
 
       case Mode.withdraw:
-        if (chain !== bsc) {
-          console.error("Selected chain is not supported")
-          break
-        }
+        try {
+          if (chain?.id !== bsc.id) {
+            console.error("Selected chain is not supported")
+            break
+          }
 
-        await WithdrawBalance({
-          id: tokenService.getUser().id,
-          amount: data.amount,
-        })
-          .unwrap()
-          .then((response: IWallet) => {
-            dispatch(setBalance(response.balance))
-            tokenService.setBalance(response.balance)
-          })
-          .catch((err) => {})
+          if (!neededAccount()) {
+            console.error("Request denied")
+            break
+          }
+
+          const result = (await withdraw(data.amount.toString())).status
+          if (!result) {
+            console.error("Transaction status: unfulfilled")
+            break
+          }
+
+          // await WithdrawBalance({
+          //   id: tokenService.getUser().id,
+          //   amount: data.amount,
+          // })
+          //   .unwrap()
+          //   .then((response: IWallet) => {
+          //     dispatch(setBalance(response.balance))
+          //     tokenService.setBalance(response.balance)
+          //   })
+          //   .catch((err) => {})
+        } catch (message) {
+          const reason = (message as { message: string })?.message.match(regex)
+          console.log("Error while withdraw: ", reason)
+          notification(
+            `Error while withdraw`,
+            `${reason?.[1] ? reason?.[1] : message}`,
+            "error",
+          )
+        }
 
         break
     }
@@ -261,12 +298,21 @@ const Wallet = () => {
                   >
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
-                  >
-                    {switcIshActive ? Mode.switch : Mode.recharge}
-                  </button>
+                  {needToSwitch ? (
+                    <button
+                      className="bg-black p-2 w-full border-black text-sm text-white font-bold"
+                      onClick={() => changeChain(bsc.id)}
+                    >
+                      Switch
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
+                    >
+                      {Mode.recharge}
+                    </button>
+                  )}
                 </>
               ) : mode === Mode.withdraw ? (
                 <>
@@ -276,30 +322,60 @@ const Wallet = () => {
                   >
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
-                  >
-                    {switcIshActive ? Mode.switch : Mode.withdraw}
-                  </button>
+                  {needToSwitch ? (
+                    <button
+                      className="bg-black p-2 w-full border-black text-sm text-white font-bold"
+                      onClick={() => changeChain(bsc.id)}
+                    >
+                      Switch
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
+                    >
+                      {Mode.withdraw}
+                    </button>
+                  )}
                 </>
               ) : (
                 <div
                   className={`form-group w-full flex flex-row justify-between gap-2`}
                 >
-                  <button
-                    className="bg-black p-1 w-full border-black text-sm text-white font-bold"
-                    onClick={() => setMode(Mode.recharge)}
-                  >
-                    {switcIshActive ? Mode.switch : Mode.recharge}
-                  </button>
-                  <button
-                    className="bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
-                    onClick={() => setMode(Mode.withdraw)}
-                    disabled
-                  >
-                    {switcIshActive ? Mode.switch : Mode.withdraw}
-                  </button>
+                  {needToSwitch ? (
+                    <button
+                      className="bg-black p-2 w-full border-black text-sm text-white font-bold"
+                      onClick={() => changeChain(bsc.id)}
+                    >
+                      Switch
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        className="bg-black p-1 w-full border-black text-sm text-white font-bold"
+                        onClick={() => setMode(Mode.recharge)}
+                      >
+                        {Mode.recharge}
+                      </button>
+                      <button
+                        className={
+                          neededAccount()
+                            ? "bg-black p-1 w-full border-black text-sm text-white font-bold"
+                            : "bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
+                        }
+                        onClick={() => {
+                          if (neededAccount()) {
+                            setMode(Mode.withdraw)
+                          } else {
+                            console.log("Still not available")
+                          }
+                        }}
+                        disabled={!neededAccount()}
+                      >
+                        {Mode.withdraw}
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>

@@ -60,7 +60,12 @@ const Register = () => {
       password: data.password
     })
       .then(response => {
-        navigate('/login')
+        isSuccess && navigate('/login')
+        isError && console.log(error);
+
+      })
+      .catch(err => {
+        console.log(err);
       })
   };
   return (
@@ -68,76 +73,79 @@ const Register = () => {
       <div className='w-fit p-3'>
         <img src={Logo} alt="Logotype" />
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className={`flex flex-col p-7 gap-4 border-2 ${isError ? 'border-red-500' : 'border-yellow'} text-white mx-auto my-auto w-96`}>
-        <h1 className="text-3xl text-center">
-          Create an Account
-        </h1>
-        <div className="form-group flex flex-col">
-          <label className='text-sm'>Your name<b className='text-yellow'>*</b></label>
-          <input
-            type="text"
-            {...register('name')}
-            className={`form-control focus:outline-none ${errors.name ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
-            placeholder='Lavin Sava'
-          />
-          <div className="invalid-feedback text-red-500 text-sm">{errors.name?.message}</div>
-        </div>
-        <div className="form-group flex flex-col">
-          <label className='text-sm'>Email<b className='text-yellow'>*</b></label>
-          <input
-            type="text"
-            {...register('email')}
-            className={`form-control focus:outline-none ${errors.email ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
-            placeholder='lavasava@mail.ru'
-          />
-          <div className="invalid-feedback text-red-500 text-sm">{errors.email?.message}</div>
-        </div>
-        <div className="form-group flex flex-col">
-          <label className='text-sm'>Login<b className='text-yellow'>*</b></label>
-          <input
-            type="text"
-            {...register('login')}
-            className={`form-control focus:outline-none ${errors.login ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
-            placeholder='Login'
-          />
-          <div className="invalid-feedback text-red-500 text-sm">{errors.login?.message}</div>
+      <div className='flex flex-col items-center gap-5'>
+        <form onSubmit={handleSubmit(onSubmit)} className={`flex flex-col p-7 gap-4 border-2 ${isError ? 'border-red-500' : 'border-yellow'} text-white mx-auto my-auto w-96`}>
+          <h1 className="text-3xl text-center">
+            Create an Account
+          </h1>
+          <div className="form-group flex flex-col">
+            <label className='text-sm'>Your name<b className='text-yellow'>*</b></label>
+            <input
+              type="text"
+              {...register('name')}
+              className={`form-control focus:outline-none ${errors.name ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
+              placeholder='Lavin Sava'
+            />
+            <div className="invalid-feedback text-red-500 text-sm">{errors.name?.message}</div>
+          </div>
+          <div className="form-group flex flex-col">
+            <label className='text-sm'>Email<b className='text-yellow'>*</b></label>
+            <input
+              type="text"
+              {...register('email')}
+              className={`form-control focus:outline-none ${errors.email ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
+              placeholder='lavasava@mail.ru'
+            />
+            <div className="invalid-feedback text-red-500 text-sm">{errors.email?.message}</div>
+          </div>
+          <div className="form-group flex flex-col">
+            <label className='text-sm'>Login<b className='text-yellow'>*</b></label>
+            <input
+              type="text"
+              {...register('login')}
+              className={`form-control focus:outline-none ${errors.login ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
+              placeholder='Login'
+            />
+            <div className="invalid-feedback text-red-500 text-sm">{errors.login?.message}</div>
+          </div>
+
+          <div className="form-group flex flex-col">
+            <label className='text-sm'>Password<b className='text-yellow'>*</b></label>
+            <input
+              type="password"
+              {...register('password')}
+              className={`form-control focus:outline-none ${errors.password ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
+              placeholder='Password'
+            />
+            <div className="invalid-feedback text-red-500 text-sm">{errors.password?.message}</div>
+          </div>
+          <div className="form-group flex flex-col">
+            <label className='text-sm'>Repeat the password<b className='text-yellow'>*</b></label>
+            <input
+              type="password"
+              {...register('confirmPassword')}
+              className={`form-control focus:outline-none ${errors.confirmPassword ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
+              placeholder='Password'
+            />
+            <div className="invalid-feedback text-red-500 text-sm">{errors.confirmPassword?.message}</div>
+          </div>
+
+
+          <div className="form-group">
+            <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold h-11">
+              {isUninitialized && "Sign up"}
+              {isLoading && <Loader />}
+              {isSuccess && 'Success'}
+              {isError && (isApiResponse(error) && [405].includes(error.status) ? "Server error, retry later" : error.message)}
+            </button>
+          </div>
+        </form>
+        <div>
+          <h1 className='text-white text-xl'>
+            <NavLink to='/login'>Log in</NavLink>
+          </h1>
         </div>
 
-        <div className="form-group flex flex-col">
-          <label className='text-sm'>Password<b className='text-yellow'>*</b></label>
-          <input
-            type="password"
-            {...register('password')}
-            className={`form-control focus:outline-none ${errors.password ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
-            placeholder='Password'
-          />
-          <div className="invalid-feedback text-red-500 text-sm">{errors.password?.message}</div>
-        </div>
-        <div className="form-group flex flex-col">
-          <label className='text-sm'>Repeat the password<b className='text-yellow'>*</b></label>
-          <input
-            type="password"
-            {...register('confirmPassword')}
-            className={`form-control focus:outline-none ${errors.confirmPassword ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
-            placeholder='Password'
-          />
-          <div className="invalid-feedback text-red-500 text-sm">{errors.confirmPassword?.message}</div>
-        </div>
-
-
-        <div className="form-group">
-          <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold h-11">
-            {isUninitialized && "Sign up"}
-            {isLoading && <Loader />}
-            {isSuccess && 'Success'}
-            {isError && (isApiResponse(error) && [405].includes(error.status) ? "Server error, retry later" : isApiResponse(error) && error.data.message)}
-          </button>
-        </div>
-      </form>
-      <div>
-        <h1 className='text-white text-xl'>
-          <NavLink to='/login'>Log in</NavLink>
-        </h1>
       </div>
     </div>);
 }
