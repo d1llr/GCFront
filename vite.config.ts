@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     open: true,
+    origin: 'https://pacgc.pw',
   },
   build: {
     outDir: "build",

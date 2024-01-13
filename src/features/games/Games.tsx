@@ -1,9 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import IGames from "./Games.type"
 import { useGetAllGamesQuery } from "./Games.slice"
-import { useEffect } from "react"
-import { useRefreshTokenMutation } from "../user/User.slice"
-import tokenService from "../../services/token.service"
 import Loader from "../../helpers/Loader"
 
 var t = true
@@ -11,19 +8,7 @@ const Games = () => {
   const { data, isLoading, isError, error, refetch, isSuccess } =
     useGetAllGamesQuery()
   const navigate = useNavigate()
-  const [refreshToken] = useRefreshTokenMutation()
-  useEffect(() => {
-    refreshToken(tokenService.getLocalRefreshToken())
-      .unwrap()
-      .then((response) => {
-        tokenService.updateLocalAccessToken(response.accessToken)
-        tokenService.updateLocalRefreshToken(response.refreshToken)
-        refetch()
-      })
-      .catch((err) => {
-        navigate("/login")
-      })
-  }, [isError])
+
 
   if (isLoading) {
     return <Loader />

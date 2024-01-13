@@ -16,7 +16,7 @@ const User = () => {
   const { isConnected } = useAccount()
   const { disconnectAsync } = useDisconnect()
   const { data, isLoading, isError, error, refetch } = useGetUserInfoQuery(
-    tokenService.getUser().id,
+    tokenService.getUser()?.id
   )
   const [
     removeWalletApi,
@@ -29,24 +29,6 @@ const User = () => {
   ] = useRemoveWalletMutation()
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
   const dispatch = useAppDispatch()
-  const navigate = useNavigate()
-  const [refreshToken] = useRefreshTokenMutation()
-  useEffect(() => {
-    refreshToken(tokenService.getLocalRefreshToken())
-      .unwrap()
-      .then((response) => {
-        tokenService.updateLocalAccessToken(response.accessToken)
-        tokenService.updateLocalRefreshToken(response.refreshToken)
-        refetch()
-      })
-      .catch((err) => {
-        switch (err.status) {
-          case 422 && 421:
-            navigate("/login")
-            break
-        }
-      })
-  }, [isError])
   if (isLoading) {
     return <Loader />
   }
