@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import Loader from "../../../helpers/Loader"
 import tokenService from "../../../services/token.service"
-import { removeWallet, setBalance, setWallet } from "../../user/User.slice"
+import { removeWallet, setBalance, setWallet, useRefreshTokenMutation } from "../../user/User.slice"
 import {
   useCheckBalanceQuery,
   useConnectWalletMutation,
@@ -97,14 +97,14 @@ const Wallet = () => {
 
 
   const isWindowFocused = useWindowFocus();
-  const { data, status, error, refetch } = useCheckBalanceQuery(tokenService.getUser().id, {
-    pollingInterval: 30000,
+  const { data, status, error, refetch } = useCheckBalanceQuery(tokenService.getUser()?.id, {
+    pollingInterval: 15000,
     skip: !isWindowFocused,
     refetchOnFocus: true
   })
 
 
-  
+
   const [removeWalletAPI] = useRemoveWalletMutation()
 
   const validationSchema = Yup.object().shape({
@@ -164,10 +164,10 @@ const Wallet = () => {
             break
           }
 
-          if (!neededAccount()) {
-            console.error("Request denied")
-            break
-          }
+          // if (!neededAccount()) {
+          //   console.error("Request denied")
+          //   break
+          // }
 
           const result = (await withdraw(data.amount.toString())).status
           if (!result) {
@@ -251,6 +251,22 @@ const Wallet = () => {
         console.log(error)
       })
   }
+
+
+  const navigate = useNavigate()
+  const [refreshToken] = useRefreshTokenMutation()
+  useEffect(() => {
+    refreshToken(tokenService.getLocalRefreshToken())
+      .unwrap()
+      .then((response) => {
+        tokenService.updateLocalAccessToken(response.accessToken)
+        tokenService.updateLocalRefreshToken(response.refreshToken)
+      })
+      .catch((err) => {
+        console.log(err);
+        navigate("/login")
+      })
+  }, [isWindowFocused])
 
   return account.isConnected ? (
     <div className="flex flex-col gap-3">
@@ -351,6 +367,7 @@ const Wallet = () => {
                     </button>
                   ) : (
                     <>
+
                       <button
                         className="bg-black p-1 w-full border-black text-sm text-white font-bold"
                         onClick={() => setMode(Mode.recharge)}
@@ -364,13 +381,8 @@ const Wallet = () => {
                             : "bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
                         }
                         onClick={() => {
-                          if (neededAccount()) {
-                            setMode(Mode.withdraw)
-                          } else {
-                            console.log("Still not available")
-                          }
+                          setMode(Mode.withdraw)
                         }}
-                        disabled={!neededAccount()}
                       >
                         {Mode.withdraw}
                       </button>
@@ -378,15 +390,19 @@ const Wallet = () => {
                   )}
                 </div>
               )}
+
             </div>
           )}
+          <div className="invalid-feedback text-red-500 text-sm" >
+            {isErrorWithdrawBalance &&
+              isApiResponse(errorWithdrawBalance) &&
+              errorWithdrawBalance.data.message}
+          </div>
         </form>
-        <div className="invalid-feedback text-red-500 text-sm">
-          {isErrorWithdrawBalance &&
-            isApiResponse(errorWithdrawBalance) &&
-            errorWithdrawBalance.data.message}
-        </div>
       </div>
+      <span className="text-sm text-white opacity-2/3">
+        Withdrawals may take a long time, please wait at least 30 minutes
+      </span>
     </div>
   ) : (
     <div>
@@ -408,6 +424,7 @@ const Wallet = () => {
         </button>
       )}
     </div>
+
   )
 }
 

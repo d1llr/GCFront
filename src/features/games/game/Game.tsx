@@ -21,29 +21,11 @@ const Game = () => {
     params.gamesId,
   )
   const navigate = useNavigate()
-  const [refreshToken] = useRefreshTokenMutation()
   const [getUserHistory, { isLoading: HistoryLoading }] = useGetUserGameHistoryMutation()
 
   const [gameHistory, setGameHistory] = useState<IHistory[]>()
 
   useEffect(() => {
-    refreshToken(tokenService.getLocalRefreshToken())
-      .unwrap()
-      .then((response) => {
-        tokenService.updateLocalAccessToken(response.accessToken)
-        tokenService.updateLocalRefreshToken(response.refreshToken)
-        refetch()
-      })
-      .catch((err) => {
-        switch (err.status) {
-          case 422 && 421:
-            navigate("/login")
-            break
-          case 423:
-            alert(err.message)
-            break
-        }
-      })
     getUserHistory({
       id: tokenService.getUser().id,
       game: data?.game.name
