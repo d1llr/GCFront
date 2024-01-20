@@ -98,7 +98,7 @@ const Wallet = () => {
 
   const isWindowFocused = useWindowFocus();
   const { data, status, error, refetch } = useCheckBalanceQuery(tokenService.getUser()?.id, {
-    pollingInterval: 15000,
+    pollingInterval: 10000,
     skip: !isWindowFocused,
     refetchOnFocus: true
   })
