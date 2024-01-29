@@ -72,29 +72,29 @@ const Tournament = () => {
     return <Page404 />
   }
 
-  // Extract the useEffect to a separate component
-  const ParticipateEffect = () => {
-    useEffect(() => {
-      if (transactionSend) {
-        console.log(`Transaction hash ${transactionData?.hash}`)
+  //   // Extract the useEffect to a separate component
+  //   const ParticipateEffect = () => {
+  //     useEffect(() => {
+  //       if (transactionSend) {
+  //         console.log(`Transaction hash ${transactionData?.hash}`)
 
-        // post request
-        getParticipate({
-          user_id: tokenService.getUser()?.id,
-          tournament_id: data?.id || "0",
-        })
-          .then((response: any) => {
-            console.log(response)
-            refetch()
-          })
-          .catch((error: any) => {
-            console.log(error)
-          })
-      }
-    }, [transactionSend])
+  //         // post request
+  //         getParticipate({
+  //           user_id: tokenService.getUser()?.id,
+  //           tournament_id: data?.id || "0",
+  //         })
+  //           .then((response: any) => {
+  //             console.log(response)
+  //             refetch()
+  //           })
+  //           .catch((error: any) => {
+  //             console.log(error)
+  //           })
+  //       }
+  //     }, [transactionSend])
 
-    return <></>
-  }
+  //     return <></>
+  //   }
 
   const getCurrentButton = () => {
     if (tournamentChainId !== chain?.id) {
@@ -112,7 +112,20 @@ const Tournament = () => {
     return (
       <button
         className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
-        onClick={() => sendTransaction?.()}
+        onClick={() => {
+          sendTransaction?.()
+          getParticipate({
+            user_id: tokenService.getUser()?.id,
+            tournament_id: data?.id || "0",
+          })
+            .then((response: any) => {
+              console.log(response)
+              refetch()
+            })
+            .catch((error: any) => {
+              console.log(error)
+            })
+        }}
         disabled={!sendTransaction || txLoading || isDisconnected}
       >
         {`Participate in the tournament for ${data?.cost}${
@@ -126,7 +139,7 @@ const Tournament = () => {
 
   return (
     <div className="flex flex-row gap-20">
-      <ParticipateEffect />
+      {/* <ParticipateEffect /> */}
       <div className="text-white flex flex-col gap-5 w-3/4">
         <h2
           onClick={() => {
