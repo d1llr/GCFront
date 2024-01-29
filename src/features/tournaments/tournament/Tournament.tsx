@@ -70,6 +70,7 @@ const Tournament = () => {
 
   console.log(config, " - CONFIG")
   console.log(txError, " - txError")
+  console.log(sendTransaction, " - sendTransaction")
 
   // Extract the useEffect to a separate component
   const ParticipateEffect = () => {
@@ -112,7 +113,7 @@ const Tournament = () => {
       <button
         className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
         onClick={() => sendTransaction?.()}
-        disabled={txLoading || isDisconnected}
+        disabled={!sendTransaction || txLoading || isDisconnected}
       >
         {`Participate in the tournament for ${data?.cost}${
           symbols.hasOwnProperty(tournamentChainId)
