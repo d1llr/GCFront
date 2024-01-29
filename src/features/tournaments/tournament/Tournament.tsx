@@ -18,12 +18,14 @@ import Page404 from "../../../helpers/Page404"
 import Error from "../../../helpers/Error"
 
 import {
+  useNetwork,
   useAccount,
   usePrepareSendTransaction,
   useSendTransaction,
   useWaitForTransaction,
 } from "wagmi"
 import { utils } from "ethers"
+import { changeChain } from "../../header/wallet/meta/chainHelper"
 
 const Tournament = () => {
   let params = useParams()
@@ -36,9 +38,10 @@ const Tournament = () => {
     useGetTournamentByIdQuery(params.tournamentId)
   // console.log(data?.players?.split(','));
   // ===========================================
+  const { chain } = useNetwork()
   const { isDisconnected } = useAccount()
   // TODO: request tgese fields from useGetTournamentByIdQuery
-  const chainId = 800001
+  const tournamentChainId = 800001
   const transferTo = "0x63b3B5a9113D5e3e9cF50c2Ab619d89e8d8D7DA9"
 
   const { config } = usePrepareSendTransaction({
@@ -139,13 +142,21 @@ const Tournament = () => {
               ) : (
                 <button
                   className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
-                  onClick={() => handleParticipate()}
+                  onClick={() =>
+                    tournamentChainId === chain?.id
+                      ? handleParticipate()
+                      : changeChain(tournamentChainId)
+                  }
                   disabled={txLoading || isDisconnected}
                 >
-                  Participate in the tournament for {data?.cost}{" "}
-                  {symbols.hasOwnProperty(chainId)
-                    ? symbols[chainId as keyof typeof symbols]
-                    : symbols.default}
+                  {tournamentChainId === chain?.id
+                    ? `Participate in the tournament for ${data?.cost}
+                  ${
+                    symbols.hasOwnProperty(tournamentChainId)
+                      ? symbols[tournamentChainId as keyof typeof symbols]
+                      : symbols.default
+                  }`
+                    : `Switch to ${tournamentChainId}`}
                 </button>
               )}
             </div>
