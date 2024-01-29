@@ -112,7 +112,7 @@ const Tournament = () => {
       <button
         className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
         onClick={() => sendTransaction?.()}
-        disabled={!sendTransaction || txLoading || isDisconnected}
+        disabled={txLoading || isDisconnected}
       >
         {`Participate in the tournament for ${data?.cost}${
           symbols.hasOwnProperty(tournamentChainId)
