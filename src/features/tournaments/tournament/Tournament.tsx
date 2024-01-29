@@ -5,7 +5,7 @@ import {
   useGetTournamentByIdQuery,
 } from "./Tournament.slice"
 import { IoChevronBack } from "react-icons/io5"
-import { useEffect } from "react"
+// import { useEffect } from "react"
 import tokenService from "../../../services/token.service"
 import Rating from "./Rating"
 import Loader from "../../../helpers/Loader"
@@ -61,24 +61,24 @@ const Tournament = () => {
     return <Loader />
   }
 
-  useEffect(() => {
-    if (transactionConfirmed) {
-      console.log(`Transaction hash ${transactionData?.hash}`)
+  //   useEffect(() => {
+  //     if (transactionConfirmed) {
+  //       console.log(`Transaction hash ${transactionData?.hash}`)
 
-      // post request
-      getParticipate({
-        user_id: tokenService.getUser()?.id,
-        tournament_id: data?.id || "0",
-      })
-        .then((response) => {
-          console.log(response)
-          refetch()
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
-  }, [transactionConfirmed])
+  //       // post request
+  //       getParticipate({
+  //         user_id: tokenService.getUser()?.id,
+  //         tournament_id: data?.id || "0",
+  //       })
+  //         .then((response) => {
+  //           console.log(response)
+  //           refetch()
+  //         })
+  //         .catch((error) => {
+  //           console.log(error)
+  //         })
+  //     }
+  //   }, [transactionConfirmed])
 
   if (!data) {
     return <Page404 />
