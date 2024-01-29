@@ -61,24 +61,24 @@ const Tournament = () => {
     return <Loader />
   }
 
-  //   useEffect(() => {
-  //     if (transactionConfirmed) {
-  //       console.log(`Transaction hash ${transactionData?.hash}`)
+  useEffect(() => {
+    if (transactionConfirmed) {
+      console.log(`Transaction hash ${transactionData?.hash}`)
 
-  //       // post request
-  //       getParticipate({
-  //         user_id: tokenService.getUser()?.id,
-  //         tournament_id: data?.id || "0",
-  //       })
-  //         .then((response) => {
-  //           console.log(response)
-  //           refetch()
-  //         })
-  //         .catch((error) => {
-  //           console.log(error)
-  //         })
-  //     }
-  //   }, [transactionConfirmed])
+      // post request
+      getParticipate({
+        user_id: tokenService.getUser()?.id,
+        tournament_id: data?.id || "0",
+      })
+        .then((response) => {
+          console.log(response)
+          refetch()
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+  }, [transactionConfirmed])
 
   if (!data) {
     return <Page404 />
