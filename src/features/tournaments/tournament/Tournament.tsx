@@ -134,7 +134,7 @@ const Tournament = () => {
               tokenService.getUser()?.id.toString() !==
                 "0x8A9A13FDC2DA328C7FC96F61E2bE1eE6D4639E83" ? (
                 <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30">
-                  You are already participating
+                  Kek Lol
                 </button>
               ) : (
                 <button
