@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom"
 import {
-  useGetCurrentDayMutation,
   useGetParticipateMutation,
   useGetTournamentByIdQuery,
 } from "./Tournament.slice"
@@ -39,7 +38,7 @@ const Tournament = () => {
   const { config } = usePrepareSendTransaction({
     request: {
       to: transferTo,
-      value: utils.parseEther(/** (data?.cost ?? 0) */ (1).toString()),
+      value: utils.parseEther("1"),
     },
   })
   const { data: transactionData, sendTransaction } = useSendTransaction(config)
