@@ -85,6 +85,8 @@ const Tournament = () => {
     return <Page404 />
   }
 
+  console.log("LEKLELE: ", tokenService.getUser())
+
   return (
     <div className="flex flex-row gap-20">
       <div className="text-white flex flex-col gap-5 w-3/4">
@@ -129,10 +131,7 @@ const Tournament = () => {
               </div>
               {data?.players
                 ?.split(",")
-                .includes(tokenService.getUser()?.id.toString()) &&
-              // TODO: remove
-              tokenService.getUser()?.id.toString() !==
-                "0x8A9A13FDC2DA328C7FC96F61E2bE1eE6D4639E83" ? (
+                .includes(tokenService.getUser()?.id.toString()) ? (
                 <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30">
                   Kek Lol
                 </button>
