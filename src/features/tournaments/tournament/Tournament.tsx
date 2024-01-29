@@ -5,7 +5,7 @@ import {
   useGetTournamentByIdQuery,
 } from "./Tournament.slice"
 import { IoChevronBack } from "react-icons/io5"
-// import { useEffect } from "react"
+import { useEffect } from "react"
 import tokenService from "../../../services/token.service"
 import Rating from "./Rating"
 import Loader from "../../../helpers/Loader"
