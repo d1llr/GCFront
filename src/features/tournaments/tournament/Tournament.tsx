@@ -39,7 +39,7 @@ const Tournament = () => {
   const { config } = usePrepareSendTransaction({
     request: {
       to: transferTo,
-      value: utils.parseEther((data?.cost ?? 0).toString()),
+      value: utils.parseEther(/** (data?.cost ?? 0) */ (1).toString()),
     },
   })
   const { data: transactionData, sendTransaction } = useSendTransaction(config)
@@ -90,7 +90,7 @@ const Tournament = () => {
       }
     }, [transactionConfirmed])
 
-    return null // or you can return a placeholder if needed
+    return <></>
   }
 
   const getCurrentButton = () => {
