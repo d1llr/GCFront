@@ -88,6 +88,35 @@ const Tournament = () => {
     return <Page404 />
   }
 
+  console.log(tokenService.getUser(), " - kekekekek")
+
+  const getCurrentButton = () => {
+    if (tournamentChainId !== chain?.id) {
+      return (
+        <button
+          className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
+          onClick={() => changeChain(tournamentChainId)}
+        >
+          {`Switch to ${tournamentChainId}`}
+        </button>
+      )
+    }
+
+    return (
+      <button
+        className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
+        onClick={() => handleParticipate()}
+        disabled={txLoading || isDisconnected}
+      >
+        {`Participate in the tournament for ${data?.cost}${
+          symbols.hasOwnProperty(tournamentChainId)
+            ? symbols[tournamentChainId as keyof typeof symbols]
+            : symbols.default
+        }`}
+      </button>
+    )
+  }
+
   return (
     <div className="flex flex-row gap-20">
       <div className="text-white flex flex-col gap-5 w-3/4">
@@ -140,24 +169,7 @@ const Tournament = () => {
                   You are already participating
                 </button>
               ) : (
-                <button
-                  className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
-                  onClick={() =>
-                    tournamentChainId === chain?.id
-                      ? handleParticipate()
-                      : changeChain(tournamentChainId)
-                  }
-                  disabled={txLoading || isDisconnected}
-                >
-                  {tournamentChainId === chain?.id
-                    ? `Participate in the tournament for ${data?.cost}
-                  ${
-                    symbols.hasOwnProperty(tournamentChainId)
-                      ? symbols[tournamentChainId as keyof typeof symbols]
-                      : symbols.default
-                  }`
-                    : `Switch to ${tournamentChainId}`}
-                </button>
+                getCurrentButton()
               )}
             </div>
           </div>
