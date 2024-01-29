@@ -10,7 +10,7 @@ import apple from "../../../images/icons/apple.svg"
 import android from "../../../images/icons/android.svg"
 import win from "../../../images/icons/win.svg"
 import { IoChevronBack } from "react-icons/io5"
-import { memo, useMemo } from "react"
+import { memo, useEffect, useMemo } from "react"
 import tokenService from "../../../services/token.service"
 import Rating from "./Rating"
 import Loader from "../../../helpers/Loader"
@@ -55,6 +55,7 @@ const Tournament = () => {
     data: txReceipt,
     error: txError,
     isLoading: txLoading,
+    isSuccess: transactionConfirmed,
   } = useWaitForTransaction({ confirmations: 1, hash: transactionData?.hash })
   // ===========================================
 
@@ -68,27 +69,31 @@ const Tournament = () => {
     return <Loader />
   }
 
-  const handleParticipate = () => {
-    getParticipate({
-      user_id: tokenService.getUser()?.id,
-      tournament_id: data?.id || "0",
-    })
-      .then((response) => {
-        console.log(response)
-        refetch()
+  useEffect(() => {
+    if (transactionConfirmed) {
+      console.log(`Transaction hash ${transactionData?.hash}`)
+
+      // post request
+      getParticipate({
+        user_id: tokenService.getUser()?.id,
+        tournament_id: data?.id || "0",
       })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
+        .then((response) => {
+          console.log(response)
+          refetch()
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+  }, [transactionConfirmed])
+
   if (!data) {
     return <Page404 />
   }
   if (isError) {
     return <Page404 />
   }
-
-  console.log(tokenService.getUser(), " - kekekekek")
 
   const getCurrentButton = () => {
     if (tournamentChainId !== chain?.id) {
@@ -106,8 +111,8 @@ const Tournament = () => {
     return (
       <button
         className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
-        onClick={() => handleParticipate()}
-        disabled={txLoading || isDisconnected}
+        onClick={() => sendTransaction?.()}
+        disabled={!sendTransaction || txLoading || isDisconnected}
       >
         {`Participate in the tournament for ${data?.cost}${
           symbols.hasOwnProperty(tournamentChainId)
