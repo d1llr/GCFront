@@ -96,6 +96,7 @@ const Tournament = () => {
         <button
           className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
           onClick={() => changeChain(tournamentChainId)}
+          disabled={isDisconnected}
         >
           {`Switch to ${tournamentChainId}`}
         </button>
