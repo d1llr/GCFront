@@ -61,30 +61,36 @@ const Tournament = () => {
     return <Loader />
   }
 
-  useEffect(() => {
-    if (transactionConfirmed) {
-      console.log(`Transaction hash ${transactionData?.hash}`)
-
-      // post request
-      getParticipate({
-        user_id: tokenService.getUser()?.id,
-        tournament_id: data?.id || "0",
-      })
-        .then((response: any) => {
-          console.log(response)
-          refetch()
-        })
-        .catch((error: any) => {
-          console.log(error)
-        })
-    }
-  }, [])
-
   if (!data) {
     return <Page404 />
   }
+
   if (isError) {
     return <Page404 />
+  }
+
+  // Extract the useEffect to a separate component
+  const ParticipateEffect = () => {
+    useEffect(() => {
+      if (transactionConfirmed) {
+        console.log(`Transaction hash ${transactionData?.hash}`)
+
+        // post request
+        getParticipate({
+          user_id: tokenService.getUser()?.id,
+          tournament_id: data?.id || "0",
+        })
+          .then((response: any) => {
+            console.log(response)
+            refetch()
+          })
+          .catch((error: any) => {
+            console.log(error)
+          })
+      }
+    }, [transactionConfirmed])
+
+    return null // or you can return a placeholder if needed
   }
 
   const getCurrentButton = () => {
@@ -117,6 +123,7 @@ const Tournament = () => {
 
   return (
     <div className="flex flex-row gap-20">
+      <ParticipateEffect />
       <div className="text-white flex flex-col gap-5 w-3/4">
         <h2
           onClick={() => {
