@@ -64,8 +64,21 @@ const Tournament = () => {
   useEffect(() => {
     if (transactionConfirmed) {
       console.log(`Transaction hash ${transactionData?.hash}`)
+
+      // post request
+      getParticipate({
+        user_id: tokenService.getUser()?.id,
+        tournament_id: data?.id || "0",
+      })
+        .then((response: any) => {
+          console.log(response)
+          refetch()
+        })
+        .catch((error: any) => {
+          console.log(error)
+        })
     }
-  }, [transactionConfirmed])
+  }, [])
 
   if (!data) {
     return <Page404 />
