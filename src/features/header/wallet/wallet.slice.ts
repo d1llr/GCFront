@@ -25,13 +25,6 @@ export const WalletActions = createApi({
                 headers: authHeader()
             }),
         }),
-        checkBalance: builder.query<number, number>({
-            query: (id) => ({
-                url: `/api/GS/user/getBalance/${id}`,
-                method: 'GET',
-                headers: authHeader()
-            }),
-        }),
         removeWallet: builder.mutation<IWallet, IReq>({
             query: (body) => ({
                 url: `/api/user/removeWallet`,
@@ -61,4 +54,4 @@ export const WalletActions = createApi({
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useConnectWalletMutation, useRemoveWalletMutation, useRechargeBalanceMutation, useWithdrawBalanceMutation, useCheckBalanceQuery } = WalletActions
+export const { useConnectWalletMutation, useRemoveWalletMutation, useRechargeBalanceMutation, useWithdrawBalanceMutation } = WalletActions

@@ -33,6 +33,8 @@ import { createClient, WagmiConfig } from "wagmi"
 import { configureChains } from "@wagmi/core"
 import { bsc, bscTestnet } from "@wagmi/core/chains"
 import { publicProvider } from "wagmi/providers/public"
+import HistoryTournament from "./features/tournaments/tournament/HistoryTournament"
+import Page404 from "./helpers/Page404"
 
 const { provider, webSocketProvider } = configureChains(
   [bsc, bscTestnet],
@@ -76,8 +78,16 @@ const router = createBrowserRouter([
         element: <Tournament />,
       },
       {
+        path: "/tournaments/history/:tournamentId",
+        element: <HistoryTournament />,
+      },
+      {
         path: "/user",
         element: <User />,
+      },
+      {
+        path: "*",
+        element: <Page404 />,
       },
     ],
   },

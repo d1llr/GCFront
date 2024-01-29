@@ -22,6 +22,7 @@ const Register = () => {
     { isLoading, isSuccess, isError, isUninitialized, error }, // This is the destructured mutation result
   ] = useRegisterRequestMutation()
 
+
   const validationSchema = Yup.object().shape({
     name: Yup.string()
       .required('Name is required'),
@@ -51,23 +52,22 @@ const Register = () => {
   });
 
 
-  const onSubmit = (data: UserSubmitForm) => {
+  const onSubmit = async (data: UserSubmitForm) => {
     console.log(data);
-    registerUser({
+    await registerUser({
       name: data.name,
       username: data.login,
       email: data.email,
       password: data.password
     })
       .then(response => {
-        isSuccess && navigate('/login')
-        isError && console.log(error);
-
       })
       .catch(err => {
         console.log(err);
       })
   };
+  isSuccess && navigate('/login')
+  isError && console.log(error);
   return (
     <div className="w-full flex flex-col gap-20 justify-center items-center">
       <div className='w-fit p-3'>

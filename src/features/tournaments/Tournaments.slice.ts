@@ -8,9 +8,15 @@ export const GetTournaments = createApi({
     reducerPath: 'GetTournaments',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://back.pacgc.pw' }),
     endpoints: (builder) => ({
-        GetTournaments: builder.query<ITournaments[], void>({
+        GetActiveTournaments: builder.query<ITournaments[], void>({
             query: () => ({
                 url: `/api/tournaments/all`,
+                headers: authHeader()
+            }),
+        }),
+        GetHistoryTournaments: builder.query<ITournaments[], void>({
+            query: () => ({
+                url: `/api/tournaments/history`,
                 headers: authHeader()
             }),
         }),
@@ -19,4 +25,4 @@ export const GetTournaments = createApi({
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useGetTournamentsQuery } = GetTournaments
+export const { useGetActiveTournamentsQuery, useGetHistoryTournamentsQuery } = GetTournaments

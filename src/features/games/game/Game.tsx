@@ -12,7 +12,7 @@ import { useRefreshTokenMutation } from "../../user/User.slice"
 import tokenService from "../../../services/token.service"
 import Loader from "../../../helpers/Loader"
 import 'swiper/css';
-import { IHistory } from "./Game.type"
+import IHistory from "./Game.type"
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 const Game = () => {
@@ -21,18 +21,27 @@ const Game = () => {
     params.gamesId,
   )
   const navigate = useNavigate()
-  const [getUserHistory, { isLoading: HistoryLoading }] = useGetUserGameHistoryMutation()
+  const [getUserHistory, { isLoading: HistoryLoading, }] = useGetUserGameHistoryMutation()
 
   const [gameHistory, setGameHistory] = useState<IHistory[]>()
+  const [historyError, setHistoryError] = useState<boolean>(false)
+
 
   useEffect(() => {
     getUserHistory({
       id: tokenService.getUser().id,
-      game: data?.game.name
+      game: data?.game.code
     }).unwrap()
       .then((response) => {
         console.log(response);
-        setGameHistory(response)
+        if (response.length == 0) {
+          console.log('errr');
+
+          setHistoryError(true)
+        }
+        else {
+          setGameHistory(response)
+        }
       })
 
   }, [isError, isSuccess])
@@ -40,8 +49,6 @@ const Game = () => {
   if (isLoading) {
     return <Loader />
   }
-
-
 
 
   return (
@@ -109,8 +116,8 @@ const Game = () => {
             onSlideChange={() => console.log('slide change')}
             onSwiper={(swiper) => console.log(swiper)}
           >
-            {data?.screenshots.map((image) => (
-              <SwiperSlide>
+            {data?.screenshots.map((image, index) => (
+              <SwiperSlide key={index}>
                 <img
                   src={
                     "https://back.pacgc.pw" +
@@ -134,20 +141,26 @@ const Game = () => {
         </h2>
         <div className="flex flex-row gap-6 mt-10 h-full">
           <table className="gap-2 flex flex-col w-full overflow-y-scroll h-4/5">
-            <tr className="text-yellow w-full flex flex-row justify-around text-xl">
-              <th>Title</th>
-              <th>Data</th>
-              <th>Reward</th>
-            </tr>
-            {gameHistory?.map((game: IHistory, index: number) => {
-              return (
-                <tr key={index} className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row  py-1 text-base md:text-sm">
-                  <td className="w-1/3 text-center">{game.title}</td>
-                  <td className="w-1/3 text-center">{new Date(game.createdAt).toISOString().substring(0, 10)}</td>
-                  <td className="w-1/3 text-center">{game.isWinner ? `+${game.match_cost}` : `-${game.match_cost}`} PAC </td>
-                </tr>
-              )
-            })}
+            <thead>
+              <tr className="text-yellow w-full flex flex-row justify-around text-xl">
+                <th>Title</th>
+                <th>Data</th>
+                <th>Reward</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              {historyError ? <div className="text-white">Something went wrong!</div> :
+                gameHistory?.map((game: IHistory, index: number) => {
+                  return (
+                    <tr key={index} className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row  py-1 text-base md:text-sm">
+                      <td className="w-1/3 text-center">{game.title}</td>
+                      <td className="w-1/3 text-center">{new Date(game.createdAt).toISOString().substring(0, 10)}</td>
+                      <td className="w-1/3 text-center">{game.isWinner ? `+${game.match_cost}` : `-${game.match_cost}`} PAC </td>
+                    </tr>
+                  )
+                })}
+            </tbody>
           </table>
         </div>
       </div>

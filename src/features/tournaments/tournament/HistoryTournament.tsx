@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetCurrentDayMutation, useGetParticipateMutation, useGetTournamentByIdQuery } from "./Tournament.slice";
+import { useGetCurrentDayMutation, useGetParticipateMutation, useGetTournamentByIdFromHistoryQuery } from "./Tournament.slice";
 import { Oval } from "react-loader-spinner";
 import browser from '../../../images/icons/browser.svg'
 import apple from '../../../images/icons/apple.svg'
@@ -11,14 +11,13 @@ import tokenService from "../../../services/token.service";
 import Rating from "./Rating";
 import Loader from "../../../helpers/Loader";
 import Page404 from "../../../helpers/Page404";
-import Error from "../../../helpers/Error";
-const Tournament = () => {
+const HistoryTournament = () => {
     let params = useParams();
     const navigate = useNavigate();
     const [getCurrentDay, { isLoading: dayLoading }] = useGetCurrentDayMutation()
     const [getParticipate, { isLoading: participateLoading }] = useGetParticipateMutation()
 
-    const { data, isLoading, isError, error, refetch, isSuccess } = useGetTournamentByIdQuery(params.tournamentId)
+    const { data, isLoading, isError, error, refetch } = useGetTournamentByIdFromHistoryQuery(params.tournamentId)
     // console.log(data?.players?.split(','));
 
     if (isLoading) {
@@ -39,13 +38,13 @@ const Tournament = () => {
             })
 
     }
+
     if (!data) {
         return <Page404 />
     }
     if (isError) {
         return <Page404 />
     }
-
     return (
         <div className="flex flex-row gap-20">
             <div className="text-white flex flex-col gap-5 w-3/4">
@@ -54,7 +53,7 @@ const Tournament = () => {
                 >
                     <IoChevronBack />
                     <span>
-                        Tournaments
+                        Outdated Tournaments
                     </span>
                 </h2>
                 <div className="flex flex-row gap-6 mt-7 w-2/3">
@@ -101,11 +100,11 @@ const Tournament = () => {
                             </div>
                             {data?.players?.split(',').includes(tokenService.getUser()?.id.toString()) ?
                                 <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30">
-                                    You are already participating
+                                    See you next time
                                 </button>
                                 :
                                 <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 " onClick={() => handleParticipate()}>
-                                    Participate in the tournament for {data?.cost} PAC
+                                    See you next time
                                 </button>}
                         </div>
                     </div>
@@ -124,11 +123,11 @@ const Tournament = () => {
                     Player rating
                 </h2>
                 <div className="flex flex-row gap-6 mt-10 z-0 h-full" >
-                    {isSuccess && <Rating tournament_id={data?.id} typeTR={"active"} />}
+                    <Rating tournament_id={data?.id} typeTR={"history"} />
                 </div>
 
             </div>
         </div >);
 }
 
-export default Tournament;
+export default HistoryTournament;

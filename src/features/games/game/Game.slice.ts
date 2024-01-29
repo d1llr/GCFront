@@ -5,8 +5,8 @@ import IHistory from "./Game.type";
 import authHeader from '../../../services/accessHeaders';
 
 // Define a service using a base URL and expected endpoints
-export const GetGameById = createApi({
-  reducerPath: 'GetGameById',
+export const GameSlice = createApi({
+  reducerPath: 'GameSlice',
   baseQuery: fetchBaseQuery({ baseUrl: 'https://back.pacgc.pw' }),
   endpoints: (builder) => ({
     GetGameById: builder.query<IGames, string | undefined>({
@@ -15,7 +15,7 @@ export const GetGameById = createApi({
         headers: authHeader()
       }),
     }),
-    GetUserGameHistory: builder.mutation<IHistory, { id: string, game: string | undefined }>({
+    GetUserGameHistory: builder.mutation<IHistory[], { id: string, game: string | undefined }>({
       query: (body) => ({
         url: `/api/user/getUserHistory`,
         body: body,
@@ -28,4 +28,4 @@ export const GetGameById = createApi({
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useGetGameByIdQuery, useGetUserGameHistoryMutation } = GetGameById
+export const { useGetGameByIdQuery, useGetUserGameHistoryMutation } = GameSlice
