@@ -4,18 +4,12 @@ import {
   useGetParticipateMutation,
   useGetTournamentByIdQuery,
 } from "./Tournament.slice"
-import { Oval } from "react-loader-spinner"
-import browser from "../../../images/icons/browser.svg"
-import apple from "../../../images/icons/apple.svg"
-import android from "../../../images/icons/android.svg"
-import win from "../../../images/icons/win.svg"
 import { IoChevronBack } from "react-icons/io5"
-import { memo, useEffect, useMemo } from "react"
+import { useEffect } from "react"
 import tokenService from "../../../services/token.service"
 import Rating from "./Rating"
 import Loader from "../../../helpers/Loader"
 import Page404 from "../../../helpers/Page404"
-import Error from "../../../helpers/Error"
 
 import {
   useNetwork,
@@ -30,9 +24,7 @@ import { changeChain } from "../../header/wallet/meta/chainHelper"
 const Tournament = () => {
   let params = useParams()
   const navigate = useNavigate()
-  const [getCurrentDay, { isLoading: dayLoading }] = useGetCurrentDayMutation()
-  const [getParticipate, { isLoading: participateLoading }] =
-    useGetParticipateMutation()
+  const [getParticipate] = useGetParticipateMutation()
 
   const { data, isLoading, isError, error, refetch, isSuccess } =
     useGetTournamentByIdQuery(params.tournamentId)
