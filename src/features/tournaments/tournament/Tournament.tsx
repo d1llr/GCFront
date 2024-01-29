@@ -163,10 +163,7 @@ const Tournament = () => {
                 ?.split(",")
                 .includes(tokenService.getUser()?.id.toString()) &&
               // TODO: remove
-              (tokenService.getUser().wallet.toString() !==
-                "0x8A9A13FDC2DA328C7FC96F61E2bE1eE6D4639E83" ||
-                tokenService.getUser().wallet.toString() !==
-                  "0xBDc7d216b364C50b503a521A5cbCDE7e416d591b") ? (
+              tokenService.getUser().id.toString() !== "17" ? (
                 <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30">
                   You are already participating
                 </button>
