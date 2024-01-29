@@ -68,10 +68,6 @@ const Tournament = () => {
     return <Page404 />
   }
 
-  console.log(config, " - CONFIG")
-  console.log(txError, " - txError")
-  console.log(sendTransaction, " - sendTransaction")
-
   // Extract the useEffect to a separate component
   const ParticipateEffect = () => {
     useEffect(() => {
