@@ -112,7 +112,7 @@ const Tournament = () => {
         onClick={() => sendTransaction?.()}
         disabled={!sendTransaction || txLoading || isDisconnected}
       >
-        {`Participate in the tournament for ${data?.cost} ${
+        {`Participate in the tournament for ${data?.cost}____${
           symbols.hasOwnProperty(tournamentChainId)
             ? symbols[tournamentChainId as keyof typeof symbols]
             : symbols.default
