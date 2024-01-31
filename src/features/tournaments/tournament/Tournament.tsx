@@ -72,29 +72,25 @@ const Tournament = () => {
     return <Page404 />
   }
 
-  //   // Extract the useEffect to a separate component
-  //   const ParticipateEffect = () => {
-  //     useEffect(() => {
-  //       if (transactionSend) {
-  //         console.log(`Transaction hash ${transactionData?.hash}`)
+  // Extract the useEffect to a separate component
+  useEffect(() => {
+    if (transactionSend) {
+      console.log(`Transaction hash ${transactionData?.hash}`)
 
-  //         // post request
-  //         getParticipate({
-  //           user_id: tokenService.getUser()?.id,
-  //           tournament_id: data?.id || "0",
-  //         })
-  //           .then((response: any) => {
-  //             console.log(response)
-  //             refetch()
-  //           })
-  //           .catch((error: any) => {
-  //             console.log(error)
-  //           })
-  //       }
-  //     }, [transactionSend])
-
-  //     return <></>
-  //   }
+      // post request
+      getParticipate({
+        user_id: tokenService.getUser()?.id,
+        tournament_id: data?.id || "0",
+      })
+        .then((response: any) => {
+          console.log(response)
+          refetch()
+        })
+        .catch((error: any) => {
+          console.log(error)
+        })
+    }
+  }, [transactionSend])
 
   const getCurrentButton = () => {
     if (tournamentChainId !== chain?.id) {
