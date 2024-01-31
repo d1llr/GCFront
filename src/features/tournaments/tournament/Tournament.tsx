@@ -77,7 +77,11 @@ const Tournament = () => {
               {data?.players
                 ?.split(",")
                 .includes(tokenService.getUser()?.id.toString()) ? (
-                <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30">
+                <button
+                  style={{ cursor: "not-allowed" }}
+                  className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30"
+                  disabled
+                >
                   You are already participating
                 </button>
               ) : (
