@@ -74,6 +74,7 @@ const Tournament = () => {
 
   // Extract the useEffect to a separate component
   useEffect(() => {
+    console.log("transactionSend changed")
     if (transactionSend) {
       console.log(`Transaction hash ${transactionData?.hash}`)
 
@@ -108,23 +109,10 @@ const Tournament = () => {
     return (
       <button
         className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
-        onClick={() => {
-          sendTransaction?.()
-          getParticipate({
-            user_id: tokenService.getUser()?.id,
-            tournament_id: data?.id || "0",
-          })
-            .then((response: any) => {
-              console.log(response)
-              refetch()
-            })
-            .catch((error: any) => {
-              console.log(error)
-            })
-        }}
+        onClick={() => sendTransaction?.()}
         disabled={!sendTransaction || txLoading || isDisconnected}
       >
-        {`Participate in the tournament for ${data?.cost}${
+        {`Participate in the tournament for ${data?.cost} ${
           symbols.hasOwnProperty(tournamentChainId)
             ? symbols[tournamentChainId as keyof typeof symbols]
             : symbols.default
