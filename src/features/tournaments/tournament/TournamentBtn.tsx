@@ -4,7 +4,6 @@ import {
   usePrepareSendTransaction,
   useSendTransaction,
   useWaitForTransaction,
-  Chain,
 } from "wagmi"
 import { utils } from "ethers"
 import { changeChain } from "../../header/wallet/meta/chainHelper"
@@ -47,19 +46,18 @@ const TournamentBtn: FC<ButtonProps> = ({
   const symbols = {
     800001: "OCTA",
     1972: "REDE",
-    default: "TOKEN",
+    default: "PAC",
   }
 
   // Extract the useEffect to a separate component
   useEffect(() => {
     console.log("transactionSend changed")
-    if (transactionSend) {
+    if (transactionConfirmed) {
       console.log(`Transaction hash ${transactionData?.hash}`)
 
-      // post request
       postRequest()
     }
-  }, [transactionSend])
+  }, [transactionConfirmed])
 
   if (tournamentChainId !== chain?.id) {
     return (
