@@ -4,21 +4,11 @@ import {
   useGetTournamentByIdQuery,
 } from "./Tournament.slice"
 import { IoChevronBack } from "react-icons/io5"
-import { useEffect } from "react"
 import tokenService from "../../../services/token.service"
 import Rating from "./Rating"
 import Loader from "../../../helpers/Loader"
 import Page404 from "../../../helpers/Page404"
-
-import {
-  useNetwork,
-  useAccount,
-  usePrepareSendTransaction,
-  useSendTransaction,
-  useWaitForTransaction,
-} from "wagmi"
-import { utils } from "ethers"
-import { changeChain } from "../../header/wallet/meta/chainHelper"
+import TournamentBtn from "./TournamentBtn"
 
 const Tournament = () => {
   let params = useParams()
@@ -28,37 +18,6 @@ const Tournament = () => {
   const { data, isLoading, isError, error, refetch, isSuccess } =
     useGetTournamentByIdQuery(params.tournamentId)
   // console.log(data?.players?.split(','));
-  // ===========================================
-  const { chain } = useNetwork()
-  const { isDisconnected } = useAccount()
-  // TODO: request tgese fields from useGetTournamentByIdQuery
-  const tournamentChainId = 800001
-  const transferTo = "0x63b3B5a9113D5e3e9cF50c2Ab619d89e8d8D7DA9"
-
-  const { config } = usePrepareSendTransaction({
-    request: {
-      to: transferTo,
-      value: utils.parseEther("1"),
-    },
-  })
-  const {
-    data: transactionData,
-    sendTransaction,
-    isSuccess: transactionSend,
-  } = useSendTransaction(config)
-  const {
-    data: txReceipt,
-    error: txError,
-    isLoading: txLoading,
-    isSuccess: transactionConfirmed,
-  } = useWaitForTransaction({ confirmations: 1, hash: transactionData?.hash })
-  // ===========================================
-
-  const symbols = {
-    800001: "OCTA",
-    1972: "REDE",
-    default: "TOKEN",
-  }
 
   if (isLoading) {
     return <Loader />
@@ -70,55 +29,6 @@ const Tournament = () => {
 
   if (isError) {
     return <Page404 />
-  }
-
-  // Extract the useEffect to a separate component
-  useEffect(() => {
-    console.log("transactionSend changed")
-    if (transactionSend) {
-      console.log(`Transaction hash ${transactionData?.hash}`)
-
-      // post request
-      getParticipate({
-        user_id: tokenService.getUser()?.id,
-        tournament_id: data?.id || "0",
-      })
-        .then((response: any) => {
-          console.log(response)
-          refetch()
-        })
-        .catch((error: any) => {
-          console.log(error)
-        })
-    }
-  }, [transactionSend])
-
-  const getCurrentButton = () => {
-    if (tournamentChainId !== chain?.id) {
-      return (
-        <button
-          className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
-          onClick={() => changeChain(tournamentChainId)}
-          disabled={isDisconnected}
-        >
-          {`Switch to ${tournamentChainId}`}
-        </button>
-      )
-    }
-
-    return (
-      <button
-        className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
-        onClick={() => sendTransaction?.()}
-        disabled={!sendTransaction || txLoading || isDisconnected}
-      >
-        {`Participate in the tournament for ${data?.cost}____${
-          symbols.hasOwnProperty(tournamentChainId)
-            ? symbols[tournamentChainId as keyof typeof symbols]
-            : symbols.default
-        }`}
-      </button>
-    )
   }
 
   return (
@@ -173,7 +83,25 @@ const Tournament = () => {
                   You are already participating
                 </button>
               ) : (
-                getCurrentButton()
+                <TournamentBtn
+                  transferTo={"0x63b3B5a9113D5e3e9cF50c2Ab619d89e8d8D7DA9"} // TODO: integrate address for each tournament
+                  tournamentChainId={800001} // TODO: integrate chainId of current tournament for each tournament (chain)
+                  amount={"1"} // TODO: change on `data?.cost.toString()`
+                  postRequest={() =>
+                    // post request
+                    getParticipate({
+                      user_id: tokenService.getUser()?.id,
+                      tournament_id: data?.id || "0",
+                    })
+                      .then((response: any) => {
+                        console.log(response)
+                        refetch()
+                      })
+                      .catch((error: any) => {
+                        console.log(error)
+                      })
+                  }
+                />
               )}
             </div>
           </div>
