@@ -8,6 +8,7 @@ import {
 import { utils } from "ethers"
 import { changeChain } from "../../header/wallet/meta/chainHelper"
 import { FC, useEffect } from "react"
+import { useToast } from "@chakra-ui/react"
 
 interface ButtonProps {
   transferTo: `0x${string}`
@@ -23,6 +24,7 @@ const TournamentBtn: FC<ButtonProps> = ({
 }) => {
   const { chain } = useNetwork()
   const { isDisconnected } = useAccount()
+  const toast = useToast()
 
   const { config } = usePrepareSendTransaction({
     request: {
@@ -49,15 +51,40 @@ const TournamentBtn: FC<ButtonProps> = ({
     default: "PAC",
   }
 
-  // Extract the useEffect to a separate component
+  function notification(
+    title: string,
+    message: string,
+    status: "info" | "warning" | "success" | "error" | "loading",
+  ) {
+    toast({
+      title,
+      description: message,
+      status,
+      position: "top-right",
+      duration: 9000,
+      isClosable: true,
+    })
+  }
+
   useEffect(() => {
-    console.log("transactionSend changed")
     if (transactionConfirmed) {
       console.log(`Transaction hash ${transactionData?.hash}`)
 
       postRequest()
+      notification(
+        "Now you're participating!",
+        `${transactionData?.hash}`,
+        "success",
+      )
     }
   }, [transactionConfirmed])
+
+  useEffect(() => {
+    if (txError) {
+      console.log(`Transaction error ${txError.message}`)
+      notification("TRansaction reverted!", "See console logs", "error")
+    }
+  }, [txError])
 
   if (tournamentChainId !== chain?.id) {
     return (
