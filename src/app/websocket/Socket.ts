@@ -1,6 +1,7 @@
 
-enum MessageType {
-    balance = "balance"
+export enum MessageType {
+    balance = "balance",
+    auth = 'auth'
 }
 
 

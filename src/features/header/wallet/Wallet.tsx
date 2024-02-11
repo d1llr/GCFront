@@ -27,7 +27,7 @@ import { supportedChain } from "./meta/chains"
 import { useToast } from "@chakra-ui/react"
 import { connect } from "../../../app/websocket/websocketSlice"
 import { AppThunk } from "../../../app/store"
-import { Socket } from "../../../app/websocket/Socket"
+import { MessageType, Socket } from "../../../app/websocket/Socket"
 
 enum Mode {
   recharge = "Recharge",
@@ -278,6 +278,8 @@ const Wallet = () => {
               dispatch(setBalance(message.message))
               tokenService.setBalance(message.message)
               break;
+            case 'connect':
+              socket.send({ type: 'auth', message: tokenService.getUser().id })
 
             default:
               break;

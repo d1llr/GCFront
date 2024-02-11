@@ -85,12 +85,8 @@ const Tournament = () => {
                   You are already participating
                 </button>
               ) : (
-                <TournamentBtn
-                  transferTo={"0x63b3B5a9113D5e3e9cF50c2Ab619d89e8d8D7DA9"} // TODO: integrate address for each tournament
-                  tournamentChainId={800001} // TODO: integrate chainId of current tournament for each tournament (chain)
-                  amount={"1"} // TODO: change on `data?.cost.toString()`
-                  postRequest={() =>
-                    // post request
+                <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30"
+                  onClick={() => {
                     getParticipate({
                       user_id: tokenService.getUser()?.id,
                       tournament_id: data?.id || "0",
@@ -102,8 +98,28 @@ const Tournament = () => {
                       .catch((error: any) => {
                         console.log(error)
                       })
-                  }
-                />
+                  }}>
+                  Participate 2 PAC
+                </button>
+                // <TournamentBtn
+                //   transferTo={"0x63b3B5a9113D5e3e9cF50c2Ab619d89e8d8D7DA9"} // TODO: integrate address for each tournament
+                //   tournamentChainId={800001} // TODO: integrate chainId of current tournament for each tournament (chain)
+                //   amount={"1"} // TODO: change on `data?.cost.toString()`
+                //   postRequest={() =>
+                //     // post request
+                //     getParticipate({
+                //       user_id: tokenService.getUser()?.id,
+                //       tournament_id: data?.id || "0",
+                //     })
+                //       .then((response: any) => {
+                //         console.log(response)
+                //         refetch()
+                //       })
+                //       .catch((error: any) => {
+                //         console.log(error)
+                //       })
+                //   }
+                // />
               )}
             </div>
           </div>
