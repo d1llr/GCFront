@@ -21,21 +21,58 @@ import Tournaments from "./features/tournaments/Tournaments"
 import Tournament from "./features/tournaments/tournament/Tournament"
 import InDevelop from "./features/inDevelop/InDevelop"
 import Layout from "./Layout"
-import { useAppSelector } from "./app/hooks"
 import User from "./features/user/User"
+import HistoryTournament from "./features/tournaments/tournament/HistoryTournament"
+import Page404 from "./helpers/Page404"
 import { ChakraProvider } from "@chakra-ui/react"
 
-// next-auth
-import { SessionProvider } from "next-auth/react"
-
 // wagmi
-import { createClient, WagmiConfig } from "wagmi"
-import { configureChains } from "@wagmi/core"
+import { createClient, WagmiConfig, configureChains, Chain } from "wagmi"
 import { bsc, bscTestnet } from "@wagmi/core/chains"
 import { publicProvider } from "wagmi/providers/public"
 
+const octaSpace = {
+  id: 800001,
+  name: "Octa Space",
+  network: "octa_space",
+  nativeCurrency: {
+    decimals: 18,
+    name: "OCTA",
+    symbol: "OCTA",
+  },
+  rpcUrls: {
+    default: { http: ["https://rpc.octa.space"] },
+    public: { http: ["https://rpc.octa.space"] },
+  },
+  blockExplorers: {
+    etherscan: { name: "OctaScan", url: "https://explorer.octa.space" },
+    default: { name: "OctaScan", url: "https://explorer.octa.space" },
+  },
+  testnet: false,
+} as Chain
+
+const redev2 = {
+  id: 1972,
+  name: "REDEV2",
+  network: "redev2",
+  nativeCurrency: {
+    decimals: 18,
+    name: "REDEV2",
+    symbol: "REDEV2",
+  },
+  rpcUrls: {
+    default: { http: ["https://rpc2.redecoin.eu/"] },
+    public: { http: ["https://rpc2.redecoin.eu/"] },
+  },
+  blockExplorers: {
+    etherscan: { name: "RedeScan", url: "https://explorer3.redecoin.eu" },
+    default: { name: "RedeScan", url: "https://explorer3.redecoin.eu" },
+  },
+  testnet: false,
+} as Chain
+
 const { provider, webSocketProvider } = configureChains(
-  [bsc, bscTestnet],
+  [bsc, bscTestnet, octaSpace, redev2],
   [publicProvider()],
 )
 
@@ -76,8 +113,16 @@ const router = createBrowserRouter([
         element: <Tournament />,
       },
       {
+        path: "/tournaments/history/:tournamentId",
+        element: <HistoryTournament />,
+      },
+      {
         path: "/user",
         element: <User />,
+      },
+      {
+        path: "*",
+        element: <Page404 />,
       },
     ],
   },

@@ -1,135 +1,148 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useGetTournamentByIdQuery } from "./Tournament.slice";
-import { Oval } from "react-loader-spinner";
-import browser from '../../../images/icons/browser.svg'
-import apple from '../../../images/icons/apple.svg'
-import android from '../../../images/icons/android.svg'
-import win from '../../../images/icons/win.svg'
-import { IoChevronBack } from "react-icons/io5";
+import { useNavigate, useParams } from "react-router-dom"
+import {
+  useGetParticipateMutation,
+  useGetTournamentByIdQuery,
+} from "./Tournament.slice"
+import { IoChevronBack } from "react-icons/io5"
+import tokenService from "../../../services/token.service"
+import Rating from "./Rating"
+import Loader from "../../../helpers/Loader"
+import Page404 from "../../../helpers/Page404"
+import TournamentBtn from "./TournamentBtn"
+
 const Tournament = () => {
-    let params = useParams();
-    const navigate = useNavigate();
+  let params = useParams()
+  const navigate = useNavigate()
+  const [getParticipate] = useGetParticipateMutation()
 
-    const { data, isLoading, isError, error } = useGetTournamentByIdQuery(params.tournamentId)
-    console.log(data);
+  const { data, isLoading, isError, error, refetch, isSuccess } = useGetTournamentByIdQuery(params.tournamentId)
+  // console.log(data?.players?.split(','));
 
-    if (isLoading) {
-        return <Oval
-            height={80}
-            width={80}
-            color="#FFF100"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-            ariaLabel='oval-loading'
-            secondaryColor="#4fa94d"
-            strokeWidth={2}
-            strokeWidthSecondary={2}
+  if (isLoading) {
+    return <Loader />
+  }
 
-        />
-    }
-    return (
-        <div className="flex flex-row gap-20">
-            <div className="text-white flex flex-col gap-5 w-3/4">
-                <h2 onClick={() => { navigate(`/tournaments`) }}
-                    className="w-fit decoration-dotted underline text-yellow text-2xl flex flex-row items-center cursor-pointer"
+  if (!data) {
+    return <Page404 />
+  }
+
+  if (isError) {
+    return <Page404 />
+  }
+
+  return (
+    <div className="flex flex-row gap-20">
+      {/* <ParticipateEffect /> */}
+      <div className="text-white flex flex-col gap-5 w-3/4">
+        <h2
+          onClick={() => {
+            navigate(`/tournaments`)
+          }}
+          className="w-fit decoration-dotted underline text-yellow text-2xl flex flex-row items-center cursor-pointer"
+        >
+          <IoChevronBack />
+          <span>Tournaments</span>
+        </h2>
+        <div className="flex flex-row gap-6 mt-7 w-2/3">
+          <div className="flex flex-row gap-5">
+            <div className="w-1/2">
+              <img
+                src={"https://back.pacgc.pw" + data?.image}
+                alt="Фото"
+                className="object-cover w-full"
+              />
+            </div>
+            <div className="flex flex-col gap-2 h-full justify-between w-1/2">
+              <div className="flex flex-col gap-2 text-white">
+                <span className="text-yellow text-2xl">{data?.name}</span>
+                <span className="text-xl">{data?.description}</span>
+              </div>
+              <div>
+                <ul>
+                  <li className="flex flex-row justify-between">
+                    <span className="text-yellow text-2xl">Goal</span>
+                    <span>{data?.goal}</span>
+                  </li>
+                  <li className="flex flex-row justify-between">
+                    <span className="text-yellow text-2xl">Participants</span>
+                    <span>{data?.participants}</span>
+                  </li>
+                  <li className="flex flex-row justify-between">
+                    <span className="text-yellow text-2xl">Bank</span>
+                    <span>{data?.bank}</span>
+                  </li>
+                </ul>
+              </div>
+              {data?.players
+                ?.split(",")
+                .includes(tokenService.getUser()?.id.toString()) ? (
+                <button
+                  style={{ cursor: "not-allowed" }}
+                  className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30"
+                  disabled
                 >
-                    <IoChevronBack />
-                    <span>
-                        Tournaments
-                    </span>
-                </h2>
-                <div className="flex flex-row gap-6 mt-7 w-2/3">
-                    <div className="flex flex-row gap-5">
-                        <div className="w-1/2">
-                            <img src={'https://back.pacgc.pw' + data?.image} alt="Фото" className="object-cover w-full" />
-                        </div>
-                        <div className="flex flex-col gap-2 h-full justify-between w-1/2">
-                            <div className="flex flex-col gap-2 text-white">
-                                <span className="text-yellow text-2xl">
-                                    {data?.name}
-                                </span>
-                                <span className="text-xl">
-                                    {data?.description}
-                                </span>
-                            </div>
-                            <div>
-                                <ul>
-                                    <li className="flex flex-row justify-between">
-                                        <span className="text-yellow text-2xl">
-                                            Goal
-                                        </span>
-                                        <span>
-                                            {data?.goal}
-                                        </span>
-                                    </li>
-                                    <li className="flex flex-row justify-between">
-                                        <span className="text-yellow text-2xl">
-                                            Participants
-                                        </span>
-                                        <span>
-                                            {data?.participants}
-                                        </span>
-                                    </li>
-                                    <li className="flex flex-row justify-between">
-                                        <span className="text-yellow text-2xl">
-                                            Bank
-                                        </span>
-                                        <span>
-                                            {data?.bank}
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 " disabled>
-                                Participate in the tournament for 50 PAC
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-5">
-                    <h1 className="text-yellow text-2xl decoration-dotted underline">
-                        Tournament Rules
-                    </h1>
-                    <span>
-                        {data?.description}
-                    </span>
-                </div>
+                  You are already participating
+                </button>
+              ) : (
+                // <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30"
+                //   onClick={() => {
+                //     getParticipate({
+                //       user_id: tokenService.getUser()?.id,
+                //       tournament_id: data?.id || "0",
+                //     })
+                //       .then((response: any) => {
+                //         console.log(response)
+                //         refetch()
+                //       })
+                //       .catch((error: any) => {
+                //         console.log(error)
+                //       })
+                //   }}>
+                //   Participate 2 PAC
+                // </button>
+                <TournamentBtn
+                  transferTo={data?.address}
+                  tournamentChainId={Number(data?.chainID)}
+                  amount={data?.cost.toString()}
+                  // transferTo={"0x63b3B5a9113D5e3e9cF50c2Ab619d89e8d8D7DA9"} // TODO: integrate address for each tournament
+                  // tournamentChainId={800001} // TODO: integrate chainId of current tournament for each tournament (chain)
+                  // amount={"5"} // TODO: change on `data?.cost.toString()`
+                  postRequest={() =>
+                    // post request
+                    getParticipate({
+                      user_id: tokenService.getUser()?.id,
+                      tournament_id: data?.id || "0",
+                    })
+                      .then((response: any) => {
+                        console.log(response)
+                        refetch()
+                      })
+                      .catch((error: any) => {
+                        console.log(error)
+                      })
+                  }
+                />
+              )}
             </div>
-            <div className="w-1/4 relative">
-                <div className="bg-black/10 backdrop-blur-md z-10 w-full h-full absolute rounded-3xl">
-
-                </div>
-                <h2 className="w-fit decoration-dotted underline text-yellow text-2xl z-0 pointer-events-none select-none p-2">
-                    Player rating
-                </h2>
-                <div className="flex flex-row gap-6 mt-10 z-0 h-full pointer-events-none select-none">
-                    <table className="gap-2 flex flex-col w-full h-full">
-                        <tr className="text-yellow w-full flex flex-row justify-around text-xl">
-                            <th>Rating</th>
-                            <th>Earned</th>
-                            <th>Login</th>
-                        </tr>
-                        {
-                            [...Array(8)].map((index: number) => {
-                                return <tr className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row justify-around py-1 text-base">
-                                    <td>
-                                        #{index}
-                                    </td>
-                                    <td>
-                                        1 110 PAC
-                                    </td>
-                                    <td>
-                                        SAVA
-                                    </td>
-                                </tr>
-                            })
-                        }
-                    </table>
-                </div>
-
-            </div>
-        </div>);
+          </div>
+        </div>
+        <div className="flex flex-col gap-5">
+          <h1 className="text-yellow text-2xl decoration-dotted underline">
+            Tournament Rules
+          </h1>
+          <span>{data?.description}</span>
+        </div>
+      </div>
+      <div className="w-2/5 relative">
+        <h2 className="w-fit decoration-dotted underline text-yellow text-2xl z-0 pointer-events-none select-none p-2">
+          Player rating
+        </h2>
+        <div className="flex flex-row gap-6 mt-10 z-0 h-full">
+          {isSuccess && <Rating tournament_id={data?.id} typeTR={"active"} />}
+        </div>
+      </div>
+    </div>
+  )
 }
 
-export default Tournament;
+export default Tournament

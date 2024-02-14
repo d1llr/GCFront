@@ -85,7 +85,7 @@ const Login = () => {
                         <input
                             type="text"
                             {...register('login')}
-                            className={`form-control focus:outline-none ${errors.login ? 'is-invalid border-red-500' : ''} border-2 border-yellow bg-inherit p-1 px-3`}
+                            className={`form-control focus:outline-none ${errors.login ? 'is-invalid border-red-500' : ''} border-2 border-yellow bg-inherit p-2 px-3`}
                             placeholder='Login'
                         />
                         <div className="invalid-feedback text-red-500 text-sm">{errors.login?.message}</div>
@@ -93,14 +93,14 @@ const Login = () => {
 
                     <div className="form-group flex flex-col">
                         <label className='text-sm'>Password<b className='text-yellow'>*</b></label>
-                        <div className={`form-control ${errors.password ? 'is-invalid border-red-500' : ''} border-2 border-yellow bg-inherit p-1 px-3 flex flex-row items-center justify-between`}>
+                        <div className={`form-control ${errors.password ? 'is-invalid border-red-500' : ''} border-2 border-yellow bg-inherit flex flex-row items-center justify-between`}>
                             <input
                                 type={passwordShown ? "text" : "password"}
                                 {...register('password')}
-                                className={`form-control focus:outline-none ${errors.password ? 'is-invalid' : ''} bg-inherit border-none focus:outline-none`}
+                                className={`form-control focus:outline-none ${errors.password ? 'is-invalid' : ''} bg-inherit border-none focus:outline-none w-full`}
                                 placeholder='Password'
                             />
-                            <i onClick={togglePasswordVisiblity} className='cursor-pointer'>
+                            <i onClick={togglePasswordVisiblity} className='cursor-pointer w-1/6 text-center flex justify-center items-center'>
                                 {
                                     passwordShown ?
                                         <IoEyeSharp /> :

@@ -6,6 +6,7 @@ export default interface IGames {
         scr_dir: string,
         short_desc: string,
         id: string,
+        code: string,
         links: {
             windows?: string
             android?: string
@@ -18,7 +19,7 @@ export default interface IGames {
 }
 
 
-export interface IHistory {
+export default interface IHistory {
     title: string,
     isWinner: boolean,
     match_cost: number,

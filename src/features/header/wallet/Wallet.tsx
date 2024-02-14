@@ -3,7 +3,6 @@ import Loader from "../../../helpers/Loader"
 import tokenService from "../../../services/token.service"
 import { removeWallet, setBalance, setWallet, useRefreshTokenMutation } from "../../user/User.slice"
 import {
-  useCheckBalanceQuery,
   useConnectWalletMutation,
   useRechargeBalanceMutation,
   useRemoveWalletMutation,
@@ -26,6 +25,9 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask"
 import { deposit, withdraw } from "./ChainInteractions"
 import { supportedChain } from "./meta/chains"
 import { useToast } from "@chakra-ui/react"
+import { connect } from "../../../app/websocket/websocketSlice"
+import { AppThunk } from "../../../app/store"
+import { MessageType, Socket } from "../../../app/websocket/Socket"
 
 enum Mode {
   recharge = "Recharge",
@@ -97,11 +99,6 @@ const Wallet = () => {
 
 
   const isWindowFocused = useWindowFocus();
-  const { data, status, error, refetch } = useCheckBalanceQuery(tokenService.getUser()?.id, {
-    pollingInterval: 10000,
-    skip: !isWindowFocused,
-    refetchOnFocus: true
-  })
 
 
 
@@ -258,7 +255,31 @@ const Wallet = () => {
   useEffect(() => {
     refreshToken(tokenService.getLocalRefreshToken())
       .unwrap()
-      .then((response) => {
+      .then(async (response) => {
+        const socket = new Socket()
+        socket.connect('wss://back.pacgc.pw/wss')
+
+        // socket.on('open', (event: any) => {
+        //     socket.send('A message')
+        //     console.log('You say hello...')
+        // })
+
+        socket.on('message', (event: any) => {
+          const message = JSON.parse(event.data)
+          console.log('got new message');
+          switch (message.type) {
+            case 'balance':
+
+              dispatch(setBalance(message.message))
+              tokenService.setBalance(message.message)
+              break;
+            case 'connect':
+              socket.send({ type: 'auth', message: tokenService.getUser().id })
+
+            default:
+              break;
+          }
+        })
         tokenService.updateLocalAccessToken(response.accessToken)
         tokenService.updateLocalRefreshToken(response.refreshToken)
       })
@@ -266,7 +287,12 @@ const Wallet = () => {
         console.log(err);
         navigate("/login")
       })
-  }, [isWindowFocused])
+  }, [])
+
+  const connectWebSocket = (): AppThunk => (dispatch, getState) => {
+    // Здесь используем redux-thunk для отправки действия 'websocket/connect'
+    dispatch({ type: 'websocket/connect' });
+  };
 
   return account.isConnected ? (
     <div className="flex flex-col gap-3">
@@ -277,25 +303,22 @@ const Wallet = () => {
         </span>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` flex-col text-white ${
-            wallet ? "flex" : "hidden"
-          } mx-auto my-auto w-full gap-2`}
+          className={` flex-col text-white ${wallet ? "flex" : "hidden"
+            } mx-auto my-auto w-full gap-2`}
         >
           <div className={`form-group  flex-col ${mode ? "flex" : "hidden"}`}>
             <label className="text-sm text-black">
               Amount<b className="text-black">*</b>
             </label>
             <div
-              className={`form-control ${
-                errors.amount ? "is-invalid border-red-500" : ""
-              } border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}
+              className={`form-control ${errors.amount ? "is-invalid border-red-500" : ""
+                } border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}
             >
               <input
                 {...register("amount")}
                 type="number"
-                className={`form-control focus:outline-none text-black ${
-                  errors.amount ? "is-invalid" : ""
-                } bg-inherit border-none focus:outline-none`}
+                className={`form-control focus:outline-none text-black ${errors.amount ? "is-invalid" : ""
+                  } bg-inherit border-none focus:outline-none`}
                 placeholder="Amount"
               />
               <i className="cursor-pointer text-black">PAC</i>

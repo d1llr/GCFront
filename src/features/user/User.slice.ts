@@ -56,12 +56,12 @@ export const UserSlice = createSlice({
         },
     },
 
-    extraReducers: (builder) => {
-        builder.addMatcher(
-            isAnyOf(WalletActions.endpoints.checkBalance.matchFulfilled), //updated
-            (state, action) => { state.balance = action.payload }
-        );
-    },
+    // extraReducers: (builder) => {
+    //     builder.addMatcher(
+    //         isAnyOf(WalletActions.endpoints.checkBalance.matchFulfilled), //updated
+    //         (state, action) => { state.balance = action.payload }
+    //     );
+    // },
 })
 
 export const { setUser, logOut, setWallet, setBalance, removeWallet } = UserSlice.actions
@@ -100,7 +100,14 @@ export const UsersActions = createApi({
                 headers: authHeader()
             }),
         }),
+        getUserName: builder.mutation<string, string | undefined>({
+            query: (id) => ({
+                url: `api/user/getUserName/${id}`,
+                method: "GET",
+                headers: authHeader()
+            }),
+        }),
     }),
 })
 
-export const { useRegisterRequestMutation, useLoginRequestMutation, useRefreshTokenMutation, useGetUserInfoQuery } = UsersActions
+export const { useRegisterRequestMutation, useLoginRequestMutation, useRefreshTokenMutation, useGetUserInfoQuery, useGetUserNameMutation } = UsersActions

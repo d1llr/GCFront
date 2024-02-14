@@ -3,25 +3,31 @@ import { GetTournamentById } from './../features/tournaments/tournament/Tourname
 import { GetTournaments } from './../features/tournaments/Tournaments.slice';
 import { GetNFTS } from './../features/nft/Nft.slice';
 import { UsersActions, UserSlice } from './../features/user/User.slice';
-import { GetGameById } from './../features/games/game/Game.slice';
+import { GameSlice } from './../features/games/game/Game.slice';
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
 import counterReducer from "../features/counter/counterSlice"
 import { WalletActions } from '../features/header/wallet/wallet.slice';
+import websocketReducer from './websocket/websocketSlice';
+import { socketMiddleware } from './websocket/websocketMiddleware';
+import { Socket } from './websocket/Socket';
+
+const websocketMiddleware = socketMiddleware(new Socket());
 
 export const store = configureStore({
   reducer: {
     UserSlice: UserSlice.reducer,
-    GetGameById: GetGameById.reducer,
+    GameSlice: GameSlice.reducer,
     GetAllGames: GetAllGames.reducer,
     UsersActions: UsersActions.reducer,
     GetNFTS: GetNFTS.reducer,
     GetTournaments: GetTournaments.reducer,
     GetTournamentById: GetTournamentById.reducer,
-    WalletActions: WalletActions.reducer
+    WalletActions: WalletActions.reducer,
+    websocket: websocketReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
-      GetGameById.middleware,
+      GameSlice.middleware,
       GetAllGames.middleware,
       UsersActions.middleware,
       GetNFTS.middleware,
