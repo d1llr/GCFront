@@ -23,11 +23,11 @@ const Tournament = () => {
   }
 
   if (!data) {
-    return <Page404 />
+    return <Page404 navigateTo={'/tournaments'} />
   }
 
   if (isError) {
-    return <Page404 />
+    return <Page404 navigateTo={'/tournaments'} />
   }
 
   return (

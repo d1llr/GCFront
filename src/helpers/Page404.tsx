@@ -1,6 +1,12 @@
+import { useNavigate } from 'react-router-dom';
 import image from '../images/icons/lerror.svg'
 
-const Page404 = () => {
+const Page404 = ({ navigateTo }: { navigateTo: string }) => {
+    const navigate = useNavigate()
+
+    setTimeout(() => {
+        navigate(navigateTo ?? '/')
+    }, 2000);
     return (
         <div className='flex flex-row items-center gap-4 w-full h-full justify-center'>
             <img src={image} alt='err' />
