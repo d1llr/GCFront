@@ -31,9 +31,10 @@ const Rating = (props: IRat) => {
     return (
         <table className="gap-2 flex flex-col w-full h-full" key={'123'}>
             <thead>
-                <tr className="text-yellow w-full flex flex-row justify-around text-xl" key={'123'}>
+                <tr className="text-yellow w-full flex flex-row justify-around text-xl text-center" key={'123'}>
                     <th >Rating</th>
                     <th>Earned</th>
+                    <th>Games count</th>
                     <th >Login</th>
                 </tr>
             </thead>
@@ -42,24 +43,30 @@ const Rating = (props: IRat) => {
                     isSuccess && data?.map((item: IRating, index: number) => {
                         return tokenService.getUser()?.username == item.username ?
                             <tr className="text-black border-t-2 border-b-2 border-yellow w-full flex flex-row py-1 text-base bg-yellow font-medium" key={index}>
-                                <td className="w-1/3 text-center">
+                                <td className="w-1/4 text-center">
                                     #{index + 1}
                                 </td>
-                                <td className="w-1/3 text-center">
+                                <td className="w-1/4 text-center">
                                     {item.earned} PAC
                                 </td>
-                                <td className="w-1/3 text-center">
+                                <td className="w-1/4 text-center">
+                                    {item.games_count}
+                                </td>
+                                <td className="w-1/4 text-center">
                                     {item.username}
                                 </td>
                             </tr>
                             : <tr className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row py-1 text-base font-medium" key={index}>
-                                <td className="w-1/3 text-center">
+                                <td className="w-1/4 text-center">
                                     #{index + 1}
                                 </td>
-                                <td className="w-1/3 text-center">
+                                <td className="w-1/4 text-center">
                                     {item.earned} PAC
                                 </td>
-                                <td className="w-1/3 text-center  ">
+                                <td className="w-1/4 text-center">
+                                    {item.games_count}
+                                </td>
+                                <td className="w-1/4 text-center  ">
                                     {item.username}
                                 </td>
 

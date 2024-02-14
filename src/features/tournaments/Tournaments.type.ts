@@ -9,8 +9,10 @@ export default interface ITournaments {
     goal: string,
     participants: string,
     bank: string,
+    address: `0x${string}`,
+    chainID: string,
     players: string
 }
 
 
-export default interface IRating { username: string, earned: number }
+export default interface IRating { username: string, earned: number, games_count: number }

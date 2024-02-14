@@ -15,8 +15,7 @@ const Tournament = () => {
   const navigate = useNavigate()
   const [getParticipate] = useGetParticipateMutation()
 
-  const { data, isLoading, isError, error, refetch, isSuccess } =
-    useGetTournamentByIdQuery(params.tournamentId)
+  const { data, isLoading, isError, error, refetch, isSuccess } = useGetTournamentByIdQuery(params.tournamentId)
   // console.log(data?.players?.split(','));
 
   if (isLoading) {
@@ -85,28 +84,8 @@ const Tournament = () => {
                   You are already participating
                 </button>
               ) : (
-                <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30"
-                  onClick={() => {
-                    getParticipate({
-                      user_id: tokenService.getUser()?.id,
-                      tournament_id: data?.id || "0",
-                    })
-                      .then((response: any) => {
-                        console.log(response)
-                        refetch()
-                      })
-                      .catch((error: any) => {
-                        console.log(error)
-                      })
-                  }}>
-                  Participate 2 PAC
-                </button>
-                // <TournamentBtn
-                //   transferTo={"0x63b3B5a9113D5e3e9cF50c2Ab619d89e8d8D7DA9"} // TODO: integrate address for each tournament
-                //   tournamentChainId={800001} // TODO: integrate chainId of current tournament for each tournament (chain)
-                //   amount={"1"} // TODO: change on `data?.cost.toString()`
-                //   postRequest={() =>
-                //     // post request
+                // <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30"
+                //   onClick={() => {
                 //     getParticipate({
                 //       user_id: tokenService.getUser()?.id,
                 //       tournament_id: data?.id || "0",
@@ -118,8 +97,31 @@ const Tournament = () => {
                 //       .catch((error: any) => {
                 //         console.log(error)
                 //       })
-                //   }
-                // />
+                //   }}>
+                //   Participate 2 PAC
+                // </button>
+                <TournamentBtn
+                  transferTo={data?.address}
+                  tournamentChainId={Number(data?.chainID)}
+                  amount={data?.cost.toString()}
+                  // transferTo={"0x63b3B5a9113D5e3e9cF50c2Ab619d89e8d8D7DA9"} // TODO: integrate address for each tournament
+                  // tournamentChainId={800001} // TODO: integrate chainId of current tournament for each tournament (chain)
+                  // amount={"5"} // TODO: change on `data?.cost.toString()`
+                  postRequest={() =>
+                    // post request
+                    getParticipate({
+                      user_id: tokenService.getUser()?.id,
+                      tournament_id: data?.id || "0",
+                    })
+                      .then((response: any) => {
+                        console.log(response)
+                        refetch()
+                      })
+                      .catch((error: any) => {
+                        console.log(error)
+                      })
+                  }
+                />
               )}
             </div>
           </div>
@@ -131,7 +133,7 @@ const Tournament = () => {
           <span>{data?.description}</span>
         </div>
       </div>
-      <div className="w-1/4 relative">
+      <div className="w-2/5 relative">
         <h2 className="w-fit decoration-dotted underline text-yellow text-2xl z-0 pointer-events-none select-none p-2">
           Player rating
         </h2>
