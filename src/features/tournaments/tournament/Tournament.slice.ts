@@ -6,7 +6,7 @@ import IRating from '../Tournaments.type'
 // Define a service using a base URL and expected endpoints
 export const GetTournamentById = createApi({
     reducerPath: 'GetTournamentById',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://back.pacgc.pw' }),
+    baseQuery: fetchBaseQuery({ baseUrl:  import.meta.env.VITE_BACKEND_URL }),
     endpoints: (builder) => ({
         GetTournamentById: builder.query<ITournaments, string | undefined>({
             query: (id) => ({

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import Loader from "../../../helpers/Loader"
 import tokenService from "../../../services/token.service"
-import { removeWallet, setBalance, setWallet, useRefreshTokenMutation } from "../../user/User.slice"
+import { removeWallet, setBalance, setWallet, useGetUserBalanceQuery, useRefreshTokenMutation } from "../../user/User.slice"
 import {
   useConnectWalletMutation,
   useRechargeBalanceMutation,
@@ -35,7 +35,7 @@ enum Mode {
   switch = "Switch",
 }
 
-const Wallet = () => {
+const Wallet = memo(() => {
   const toast = useToast()
   const { connectAsync } = useConnect()
   const { disconnectAsync } = useDisconnect()
@@ -80,30 +80,22 @@ const Wallet = () => {
 
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
   const balance = useAppSelector((state) => state.UserSlice.balance)
+  const { data: BalanceData, isError: BalanceError, isLoading: BalanceLoading, isSuccess: BalanceSuccess } = useGetUserBalanceQuery(tokenService.getUser()?.id)
+
+
+
   const [mode, setMode] = useState<Mode>()
   const dispatch = useAppDispatch()
   const [connectWallet, { isLoading }] = useConnectWalletMutation()
 
-  type UserSubmitForm = {
-    amount: number
-  }
+  type UserSubmitForm = { amount: number }
 
-  const [
-    RechargeBalance, // This is the mutation trigger
-  ] = useRechargeBalanceMutation()
-  const [
-    WithdrawBalance, // This is the mutation trigger
-    { isError: isErrorWithdrawBalance, error: errorWithdrawBalance }, // This is the destructured mutation result
-  ] = useWithdrawBalanceMutation()
-
-
+  const [RechargeBalance] = useRechargeBalanceMutation()
+  const [WithdrawBalance, { isError: isErrorWithdrawBalance, error: errorWithdrawBalance },] = useWithdrawBalanceMutation()
 
   const isWindowFocused = useWindowFocus();
 
-
-
   const [removeWalletAPI] = useRemoveWalletMutation()
-
   const validationSchema = Yup.object().shape({
     amount: Yup.number()
       .required("Amount is required")
@@ -249,15 +241,25 @@ const Wallet = () => {
       })
   }
 
+  useEffect(() => {
+    if (BalanceData) {
+      tokenService.setBalance(Number(BalanceData))
+      dispatch(setBalance(Number(BalanceData)))
+    }
+  }, [BalanceSuccess])
+
 
   const navigate = useNavigate()
   const [refreshToken] = useRefreshTokenMutation()
+
+
+
   useEffect(() => {
     refreshToken(tokenService.getLocalRefreshToken())
       .unwrap()
       .then(async (response) => {
         const socket = new Socket()
-        socket.connect('wss://back.pacgc.pw/wss')
+        socket.connect(import.meta.env.VITE_WSBACKEND_URL)
 
         // socket.on('open', (event: any) => {
         //     socket.send('A message')
@@ -449,6 +451,6 @@ const Wallet = () => {
     </div>
 
   )
-}
+})
 
 export default Wallet

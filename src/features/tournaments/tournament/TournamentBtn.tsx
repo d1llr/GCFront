@@ -9,6 +9,8 @@ import { utils } from "ethers"
 import { changeChain } from "../../header/wallet/meta/chainHelper"
 import { FC, useEffect } from "react"
 import { useToast } from "@chakra-ui/react"
+import Loader from "../../../helpers/Loader"
+import { useNavigate } from "react-router-dom"
 
 interface ButtonProps {
   transferTo: `0x${string}`
@@ -76,8 +78,20 @@ const TournamentBtn: FC<ButtonProps> = ({
         `${transactionData?.hash}`,
         "success",
       )
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     }
   }, [transactionConfirmed])
+
+  useEffect(() =>{
+    txLoading &&
+    notification(
+      'Warning!',
+      'Do not reload the page until the transaction is completed',
+      'warning'
+    )
+  }, [txLoading])
 
   useEffect(() => {
     if (txError) {
@@ -93,7 +107,10 @@ const TournamentBtn: FC<ButtonProps> = ({
         onClick={() => changeChain(tournamentChainId)}
         disabled={isDisconnected}
       >
-        {`Switch to ${tournamentChainId}`}
+        {`Switch to ${symbols.hasOwnProperty(tournamentChainId)
+            ? symbols[tournamentChainId as keyof typeof symbols]
+            : symbols.default
+          }`}
       </button>
     )
   }
@@ -102,13 +119,15 @@ const TournamentBtn: FC<ButtonProps> = ({
     <button
       className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
       onClick={() => sendTransaction?.()}
-      disabled={!sendTransaction || txLoading || isDisconnected}
+      disabled={!sendTransaction || isDisconnected}
     >
-      {`Participate in the tournament for ${amount} ${
-        symbols.hasOwnProperty(tournamentChainId)
-          ? symbols[tournamentChainId as keyof typeof symbols]
-          : symbols.default
-      }`}
+      {
+        txLoading ? <Loader />
+          :
+          `Participate in the tournament for ${amount} ${symbols.hasOwnProperty(tournamentChainId)
+            ? symbols[tournamentChainId as keyof typeof symbols]
+            : symbols.default
+          }`}
     </button>
   )
 }

@@ -6,7 +6,7 @@ import authHeader from '../../services/accessHeaders';
 // Define a service using a base URL and expected endpoints
 export const GetAllGames = createApi({
   reducerPath: 'GetAllGames',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://back.pacgc.pw' }),
+  baseQuery: fetchBaseQuery({ baseUrl:  import.meta.env.VITE_BACKEND_URL }),
   endpoints: (builder) => ({
     GetAllGames: builder.query<IGames[], void>({
       query: () => ({

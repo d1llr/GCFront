@@ -68,7 +68,7 @@ export const { setUser, logOut, setWallet, setBalance, removeWallet } = UserSlic
 //--------------------------------------------------------------------//
 export const UsersActions = createApi({
     reducerPath: 'UsersActions',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://back.pacgc.pw' }),
+    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
     endpoints: (builder) => ({
         LoginRequest: builder.mutation<IUser, ILogin>({
             query: (body) => ({
@@ -93,6 +93,14 @@ export const UsersActions = createApi({
             }),
             transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
         }),
+        sendCodeOnEmail:builder.mutation<string, IReg>({
+            query: (body) => ({
+                url: 'api/auth/sendCodeOnEmail',
+                method: "POST",
+                body: body,
+            }),
+            transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
+        }),
         getUserInfo: builder.query<IUser, string | undefined>({
             query: (id) => ({
                 url: `api/user/getInfoById/${id}`,
@@ -107,7 +115,14 @@ export const UsersActions = createApi({
                 headers: authHeader()
             }),
         }),
+        getUserBalance: builder.query<string, string | undefined>({
+            query: (id) => ({
+                url: `/api/GS/user/getBalance/${id}`,
+                method: "GET",
+                headers: authHeader()
+            }),
+        }),
     }),
 })
 
-export const { useRegisterRequestMutation, useLoginRequestMutation, useRefreshTokenMutation, useGetUserInfoQuery, useGetUserNameMutation } = UsersActions
+export const { useRegisterRequestMutation, useLoginRequestMutation, useRefreshTokenMutation, useGetUserInfoQuery, useGetUserNameMutation, useGetUserBalanceQuery, useSendCodeOnEmailMutation } = UsersActions
