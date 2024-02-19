@@ -93,7 +93,7 @@ const TournamentBtn: FC<ButtonProps> = ({
         onClick={() => changeChain(tournamentChainId)}
         disabled={isDisconnected}
       >
-        {`Switch to ${tournamentChainId}`}
+        {`Switch to ${tournamentChainId == 800001 && "OCTA"}`}
       </button>
     )
   }
