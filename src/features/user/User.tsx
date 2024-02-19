@@ -15,18 +15,8 @@ import { useAccount, useDisconnect } from "wagmi"
 const User = () => {
   const { isConnected } = useAccount()
   const { disconnectAsync } = useDisconnect()
-  const { data, isLoading, isError, error, refetch } = useGetUserInfoQuery(
-    tokenService.getUser()?.id
-  )
-  const [
-    removeWalletApi,
-    {
-      isError: isErrorRemoveWallet,
-      isLoading: isLoadingRemoveWallet,
-      isSuccess,
-      isUninitialized,
-    },
-  ] = useRemoveWalletMutation()
+  const { data, isLoading, isError, error, refetch } = useGetUserInfoQuery(tokenService.getUser()?.id)
+  const [removeWalletApi, { isError: isErrorRemoveWallet, isLoading: isLoadingRemoveWallet, isSuccess, isUninitialized, },] = useRemoveWalletMutation()
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
   const dispatch = useAppDispatch()
   if (isLoading) {

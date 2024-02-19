@@ -4,6 +4,8 @@ import IRating from '../Tournaments.type'
 import { useGetUserInfoQuery, useGetUserNameMutation } from "../../user/User.slice";
 import { ReactNode, useEffect } from "react";
 import tokenService from "../../../services/token.service";
+import Page404 from "../../../helpers/Page404";
+import Error from "../../../helpers/Error";
 
 interface IRat {
     tournament_id: string | undefined,
@@ -22,20 +24,20 @@ const Rating = (props: IRat) => {
         return <Loader />
     }
     if (isError) {
-        return <div className="text-white">Something went wrong!</div>
+        return <Error />
     }
     if (!data) {
-        return <div className="text-white">Something went wrong!</div>
+        return <Error />
     }
 
     return (
         <table className="gap-2 flex flex-col w-full h-full" key={'123'}>
             <thead>
-                <tr className="text-yellow w-full flex flex-row justify-around text-xl text-center" key={'123'}>
-                    <th >Rating</th>
-                    <th>Earned</th>
-                    <th>Games count</th>
-                    <th >Login</th>
+                <tr className="text-yellow w-full flex flex-row items-center text-xl text-center" key={'123'}>
+                    <th className="w-1/4 text-center">Rating</th>
+                    <th className="w-1/4 text-center">Earned</th>
+                    <th className="w-1/4 text-center leading-4">Games count</th>
+                    <th className="w-1/4 text-center">Login</th>
                 </tr>
             </thead>
             <tbody className="gap-1 flex flex-col">

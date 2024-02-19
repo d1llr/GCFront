@@ -122,7 +122,7 @@ const router = createBrowserRouter([
       },
       {
         path: "*",
-        element: <Page404 />,
+        element: <Page404  />,
       },
     ],
   },

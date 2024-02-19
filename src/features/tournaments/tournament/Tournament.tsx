@@ -103,7 +103,9 @@ const Tournament = () => {
                 <TournamentBtn
                   transferTo={data?.address}
                   tournamentChainId={Number(data?.chainID)}
-                  amount={data?.cost.toString()}
+                  // amount={data?.cost.toString()}
+                  amount={'0.01'}
+
                   // transferTo={"0x63b3B5a9113D5e3e9cF50c2Ab619d89e8d8D7DA9"} // TODO: integrate address for each tournament
                   // tournamentChainId={800001} // TODO: integrate chainId of current tournament for each tournament (chain)
                   // amount={"5"} // TODO: change on `data?.cost.toString()`

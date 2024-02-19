@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import Logo from '../../../images/logo.svg'
-import { useRegisterRequestMutation } from '../User.slice';
+import { useRegisterRequestMutation, useSendCodeOnEmailMutation } from '../User.slice';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Loader from '../../../helpers/Loader';
 import { isApiResponse } from '../../../helpers/isApiResponse';
@@ -19,8 +19,12 @@ const Register = () => {
   const navigate = useNavigate();
   const [
     registerUser, // This is the mutation trigger
-    { isLoading, isSuccess, isError, isUninitialized, error }, // This is the destructured mutation result
   ] = useRegisterRequestMutation()
+
+  const [
+    sendCodeOnEmail, // This is the mutation trigger
+    { isLoading, isSuccess, isError, isUninitialized, error }, // This is the destructured mutation result
+  ] = useSendCodeOnEmailMutation()
 
 
   const validationSchema = Yup.object().shape({
