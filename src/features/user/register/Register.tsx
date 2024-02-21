@@ -19,7 +19,7 @@ const Register = () => {
   const navigate = useNavigate();
   const [
     registerUser, // This is the mutation trigger
-  ] = useRegisterRequestMutation()
+    { isLoading: RegisterLoading, isSuccess: RegisterSuccess,isUninitialized: RegisterUninitialized }] = useRegisterRequestMutation()
 
   const [
     sendCodeOnEmail, // This is the mutation trigger
@@ -70,7 +70,7 @@ const Register = () => {
         console.log(err);
       })
   };
-  isSuccess && navigate('/login')
+  RegisterSuccess && navigate('/login')
   isError && console.log(error);
   return (
     <div className="w-full flex flex-col gap-20 justify-center items-center">
@@ -137,9 +137,8 @@ const Register = () => {
 
           <div className="form-group">
             <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold h-11">
-              {isUninitialized && "Sign up"}
-              {isLoading && <Loader />}
-              {isSuccess && 'Success'}
+              {RegisterUninitialized && "Sign up"}
+              {RegisterLoading && <Loader />}
               {isError && (isApiResponse(error) && [405].includes(error.status) ? "Server error, retry later" : error.message)}
             </button>
           </div>
