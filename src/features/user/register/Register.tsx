@@ -2,10 +2,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import Logo from '../../../images/logo.svg'
-import { useRegisterRequestMutation, useSendCodeOnEmailMutation } from '../User.slice';
+import { useRegisterRequestMutation, useSendEmailMutation } from '../User.slice';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Loader from '../../../helpers/Loader';
 import { isApiResponse } from '../../../helpers/isApiResponse';
+import { Modal, Button, CustomFlowbiteTheme } from 'flowbite-react';
+import { useState } from 'react';
 
 const Register = () => {
 
@@ -16,15 +18,20 @@ const Register = () => {
     password: string;
     confirmPassword: string
   };
+  const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
   const [
     registerUser, // This is the mutation trigger
-    { isLoading: RegisterLoading, isSuccess: RegisterSuccess,isUninitialized: RegisterUninitialized }] = useRegisterRequestMutation()
+    { isLoading: RegisterLoading, isSuccess: RegisterSuccess, isUninitialized: RegisterUninitialized }] = useRegisterRequestMutation()
 
   const [
-    sendCodeOnEmail, // This is the mutation trigger
+    SendEmail, // This is the mutation trigger
     { isLoading, isSuccess, isError, isUninitialized, error }, // This is the destructured mutation result
-  ] = useSendCodeOnEmailMutation()
+  ] = useSendEmailMutation()
+
+  const [timer, setTimer] = useState<number>(60)
+  const [fetchable, setFetchable] = useState<boolean>(true)
+
 
 
   const validationSchema = Yup.object().shape({
@@ -45,6 +52,10 @@ const Register = () => {
       .oneOf([Yup.ref('password')], 'Confirm Password does not match'),
   });
 
+  const validationSchemaCode = Yup.object().shape({
+    code: Yup.string()
+      .required('Code is required'),
+  });
 
   const {
     register,
@@ -55,25 +66,120 @@ const Register = () => {
     resolver: yupResolver(validationSchema)
   });
 
+  const {
+    register: registerCode,
+    handleSubmit: handleSubmitCode
+  } = useForm<{ code: string }>({
+    resolver: yupResolver(validationSchemaCode)
+  });
+
 
   const onSubmit = async (data: UserSubmitForm) => {
+    setOpenModal(true)
     console.log(data);
-    await registerUser({
-      name: data.name,
-      username: data.login,
-      email: data.email,
-      password: data.password
-    })
-      .then(response => {
-      })
-      .catch(err => {
+    if (fetchable)
+      await SendEmail({
+        type: 'SendCode',
+        email: data.email,
+        username: data.login,
+        name: data.name,
+        password: data.password
+      }).then(async responce => {
+        await setTimer(60)
+        await setFetchable(false)
+        const interval = setInterval(() => setTimer(prev => prev - 1), 1000)
+        setTimeout(() => {
+          setFetchable(true)
+          clearInterval(interval)
+        }, 60000)
+        console.log(responce);
+      }).catch(err => {
         console.log(err);
       })
+    else {
+      console.log('Too many requests');
+
+    }
+    // await registerUser({
+    //   name: data.name,
+    //   username: data.login,
+    //   email: data.email,
+    //   password: data.password
+    // })
+    //   .then(response => {
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   })
   };
+
+  const onSubmitCode = async (data: { code: string }) => {
+    console.log(data);
+
+  }
   RegisterSuccess && navigate('/login')
-  isError && console.log(error);
+
+  const theme: CustomFlowbiteTheme['modal'] = {
+    "root": {
+      "base": "p-5 fixed top-0 right-0 left-0 z-50 h-modal h-screen overflow-y-auto overflow-x-hidden md:inset-0 md:h-full",
+      "show": {
+        "on": "flex bg-gray-900 bg-opacity-50 dark:bg-opacity-80 p-3",
+        "off": "hidden"
+      },
+    },
+    header: {
+      title: 'text-center',
+      "close": {
+        "base": "hidden",
+        "icon": "h-5 w-5"
+      }
+    },
+    body:{
+      "base": "flex-1 overflow-auto p-7",
+      "popup": "pt-5"
+    },
+    content:{
+      base:'p-3'
+    }
+  }
   return (
     <div className="w-full flex flex-col gap-20 justify-center items-center">
+      <Modal size='5xl' theme={theme} dismissible show={openModal} onClose={() => setOpenModal(false)} popup>
+        <Modal.Header className="bg-[#0D0D0D] flex flex-col items-center text-2xl border-2 border-yellow text-white border-b-0">
+          Email confirmation code
+        </Modal.Header>
+        <Modal.Body className="bg-[#0D0D0D] border-2 border-yellow text-white border-t-0  text-center">
+          <div className="">
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              The code has been sent to you by email. If it's been missing for a long time, check your spam folder.
+            </p>
+
+            <form onSubmit={handleSubmitCode(onSubmitCode)}>
+              <div className="form-group flex flex-col">
+                <label className='text-sm'>Code<b className='text-yellow'>*</b></label>
+                <input
+                  type="text"
+                  {...registerCode('code')}
+                  className={`form-control focus:outline-none ${errors.name ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
+                />
+                <div className="invalid-feedback text-red-500 text-sm">{errors.name?.message}</div>
+              </div>
+            </form>
+          </div>
+        </Modal.Body>
+        <Modal.Footer className='p-3 bg-black border-2 border-yellow text-white'>
+          <Button onClick={() => setOpenModal(false)} className=''>I accept</Button>
+          {
+            fetchable ? <Button onClick={handleSubmit(onSubmit)}>
+              Send code
+            </Button> :
+
+              <span>
+                {timer} seconds left to get new code
+
+              </span>}
+        </Modal.Footer>
+      </Modal>
       <div className='w-fit p-3'>
         <img src={Logo} alt="Logotype" />
       </div>
@@ -136,10 +242,13 @@ const Register = () => {
 
 
           <div className="form-group">
-            <button type="submit" className="text-center bg-yellow text-black w-full p-1 text-xl font-bold h-11">
+            <button
+              type="submit"
+              className="text-center bg-yellow text-black w-full p-1 text-xl font-bold h-11"
+            >
               {RegisterUninitialized && "Sign up"}
               {RegisterLoading && <Loader />}
-              {isError && (isApiResponse(error) && [405].includes(error.status) ? "Server error, retry later" : error.message)}
+              {isError && (isApiResponse(error) && [405].includes(error.status) && "Server error, retry later")}
             </button>
           </div>
         </form>

@@ -25,7 +25,7 @@ function Layout() {
       });
   }
   requestPermission()
-  console.log('APP IS RUNNING IN',import.meta.env.VITE_APP_VERSION, 'MODE');
+  console.log('APP IS RUNNING IN', import.meta.env.VITE_APP_VERSION, 'MODE');
 
 
   return (

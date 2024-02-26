@@ -23,8 +23,10 @@ const Header = () => {
       <div className="gap-5 flex flex-col">
         <NavLink to="/games">
           <img src={Logo} alt="Логотип" />
+          {import.meta.env.VITE_APP_DEVELOPMENT ?? ''}
+
         </NavLink>
-          <Wallet />
+        <Wallet />
         <ul className="text-yellow text-2xl gap-3 flex flex-col">
           <NavLink
             to="/games"
@@ -38,7 +40,7 @@ const Header = () => {
                         NFT
                     </NavLink> */}
           <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
-              Tournaments
+            Tournaments
           </NavLink>
           <NavLink
             to="/user"
