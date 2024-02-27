@@ -117,6 +117,7 @@ const Register = () => {
     console.log(data);
 
   }
+
   RegisterSuccess && navigate('/login')
 
   const theme: CustomFlowbiteTheme['modal'] = {
@@ -142,12 +143,13 @@ const Register = () => {
       base: 'p-3'
     }
   }
-  const customButton:CustomFlowbiteTheme['button'] = {
-      size: {
-        primary: '',
-      },
+  const customButton: CustomFlowbiteTheme['button'] = {
+    size: {
+      primary: '',
+    },
 
   };
+
   return (
     <div className="w-full flex flex-col gap-20 justify-center items-center">
       <Modal size='xl' theme={theme} show={openModal} onClose={() => setOpenModal(false)} popup>
@@ -159,29 +161,28 @@ const Register = () => {
             <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
               The code has been sent to you by email. If it's been missing for a long time, check your spam folder.
             </p>
-
             <form onSubmit={handleSubmitCode(onSubmitCode)}>
               <div className="w-auto h-32 pt-8 form-group border-yellow flex flex-row gap-5 justify-center items-center">
-                <input
-                  type="text"
-                  {...registerCode('code')}
-                  className={`form-control focus:outline-none ${errors.name ? 'is-invalid border-red-500' : 'border-yellow'} text-center text-6xl w-16 border-2  bg-inherit p-1`}
-                />
-                <input
-                  type="text"
-                  {...registerCode('code')}
-                  className={`form-control focus:outline-none ${errors.name ? 'is-invalid border-red-500' : 'border-yellow'} text-center text-6xl w-16 border-2  bg-inherit p-1`}
-                />
-                <input
-                  type="text"
-                  {...registerCode('code')}
-                  className={`form-control focus:outline-none ${errors.name ? 'is-invalid border-red-500' : 'border-yellow'} text-center text-6xl w-16 border-2  bg-inherit p-1`}
-                />
-                <input
-                  type="text"
-                  {...registerCode('code')}
-                  className={`form-control focus:outline-none ${errors.name ? 'is-invalid border-red-500' : 'border-yellow'} text-center text-6xl w-16 border-2  bg-inherit p-1`}
-                />
+                {[...Array(4)].map(index => {
+                  return <input
+                    key={index}
+                    maxLength={1}
+                    onKeyDown={(event) => {
+                      if (/[0-9]/.test(event.key)) {
+                        event.currentTarget.value = event.key
+                        (event?.currentTarget?.nextElementSibling as HTMLElement)?.focus()
+
+                      } else {
+                        event.preventDefault();
+                      }
+                    }}
+
+                    type="text"
+                    {...registerCode('code')}
+                    className={`form-control focus:outline-none ${errors.name ? 'is-invalid border-red-500' : 'border-yellow'} text-center text-6xl w-16 border-2  bg-inherit p-1`}
+                  />
+                })}
+               
               </div>
               <div className="invalid-feedback text-red-500 text-sm">{errors.name?.message}</div>
             </form>
@@ -194,7 +195,7 @@ const Register = () => {
 
           <div className="w-full flex flex-col justify-center items-center">
             <button onClick={() => setOpenModal(false)} className=' rounded-none text-xl  bg-yellow text-black w-80 py-1 font-semibold '>I accept</button>
-          </div> 
+          </div>
 
         </Modal.Footer>
       </Modal>
