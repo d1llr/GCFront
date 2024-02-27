@@ -6,7 +6,7 @@ import { useRegisterRequestMutation, useSendEmailMutation } from '../User.slice'
 import { NavLink, useNavigate } from 'react-router-dom';
 import Loader from '../../../helpers/Loader';
 import { isApiResponse } from '../../../helpers/isApiResponse';
-import { Modal, Button, CustomFlowbiteTheme } from 'flowbite-react';
+import { Modal, Button, CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
 import { useState } from 'react';
 
 const Register = () => {
@@ -18,7 +18,7 @@ const Register = () => {
     password: string;
     confirmPassword: string
   };
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState(true);
   const navigate = useNavigate();
   const [
     registerUser, // This is the mutation trigger
@@ -117,6 +117,7 @@ const Register = () => {
     console.log(data);
 
   }
+
   RegisterSuccess && navigate('/login')
 
   const theme: CustomFlowbiteTheme['modal'] = {
@@ -134,50 +135,68 @@ const Register = () => {
         "icon": "h-5 w-5"
       }
     },
-    body:{
-      "base": "flex-1 overflow-auto p-7",
+    body: {
+      "base": "flex-1 overflow-auto ",
       "popup": "pt-5"
     },
-    content:{
-      base:'p-3'
+    content: {
+      base: 'p-3'
     }
   }
+  const customButton: CustomFlowbiteTheme['button'] = {
+    size: {
+      primary: '',
+    },
+
+  };
+
   return (
     <div className="w-full flex flex-col gap-20 justify-center items-center">
-      <Modal size='5xl' theme={theme} dismissible show={openModal} onClose={() => setOpenModal(false)} popup>
-        <Modal.Header className="bg-[#0D0D0D] flex flex-col items-center text-2xl border-2 border-yellow text-white border-b-0">
+      <Modal size='xl' theme={theme} show={openModal} onClose={() => setOpenModal(false)} popup>
+        <Modal.Header className="bg-[#0D0D0D] font-semibold pt-6  flex flex-col items-center text-3xl border-2 border-yellow text-white border-b-0">
           Email confirmation code
         </Modal.Header>
-        <Modal.Body className="bg-[#0D0D0D] border-2 border-yellow text-white border-t-0  text-center">
+        <Modal.Body className="bg-[#0D0D0D] border-2 border-yellow text-white border-t-0 border-b-0  text-center px-6">
           <div className="">
             <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
               The code has been sent to you by email. If it's been missing for a long time, check your spam folder.
             </p>
-
             <form onSubmit={handleSubmitCode(onSubmitCode)}>
-              <div className="form-group flex flex-col">
-                <label className='text-sm'>Code<b className='text-yellow'>*</b></label>
-                <input
-                  type="text"
-                  {...registerCode('code')}
-                  className={`form-control focus:outline-none ${errors.name ? 'is-invalid border-red-500' : 'border-yellow'} border-2  bg-inherit p-1 px-3`}
-                />
-                <div className="invalid-feedback text-red-500 text-sm">{errors.name?.message}</div>
+              <div className="w-auto h-32 pt-8 form-group border-yellow flex flex-row gap-5 justify-center items-center">
+                {[...Array(4)].map(index => {
+                  return <input
+                    key={index}
+                    maxLength={1}
+                    onKeyDown={(event) => {
+                      if (/[0-9]/.test(event.key)) {
+                        event.currentTarget.value = event.key
+                        (event?.currentTarget?.nextElementSibling as HTMLElement)?.focus()
+
+                      } else {
+                        event.preventDefault();
+                      }
+                    }}
+
+                    type="text"
+                    {...registerCode('code')}
+                    className={`form-control focus:outline-none ${errors.name ? 'is-invalid border-red-500' : 'border-yellow'} text-center text-6xl w-16 border-2  bg-inherit p-1`}
+                  />
+                })}
+               
               </div>
+              <div className="invalid-feedback text-red-500 text-sm">{errors.name?.message}</div>
             </form>
           </div>
+          <div className="py-8">
+            59 seconds left to get the new code
+          </div>
         </Modal.Body>
-        <Modal.Footer className='p-3 bg-black border-2 border-yellow text-white'>
-          <Button onClick={() => setOpenModal(false)} className=''>I accept</Button>
-          {
-            fetchable ? <Button onClick={handleSubmit(onSubmit)}>
-              Send code
-            </Button> :
+        <Modal.Footer className='pb-6 pt-0 bg-black border-2 border-yellow text-white border-t-0 '>
 
-              <span>
-                {timer} seconds left to get new code
+          <div className="w-full flex flex-col justify-center items-center">
+            <button onClick={() => setOpenModal(false)} className=' rounded-none text-xl  bg-yellow text-black w-80 py-1 font-semibold '>I accept</button>
+          </div>
 
-              </span>}
         </Modal.Footer>
       </Modal>
       <div className='w-fit p-3'>
