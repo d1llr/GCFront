@@ -12,11 +12,26 @@ export default {
       },
       colors: {
         'yellow': '#FFF100',
-        'gray': '#898989'
+        'hoverYellow': 'rgb(210, 199, 6)',
+        'gray': '#898989',
+        'inputGray': 'rgb(39, 39, 39)',
+        'urlGray': 'rgb(98, 98, 98)',
+        'eyeBlack': 'rgba(0, 0, 0, 0.25)',
       },
       borderColor: {
         'gray': '#3F3F3F'
-      }
+      },
+    },
+    fontFamily: {
+      orbitron: [
+        '"Orbitron", sans-serif',
+      ],
+      beausans: [
+        '"PF BeauSans Pro", sans-serif'
+      ],
+      chakra: [
+        '"Chakra Petch", sans-serif'
+      ]
     },
   },
   plugins: [
