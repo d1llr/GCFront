@@ -8,8 +8,6 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import tokenService from '../../../services/token.service';
 import { useAppDispatch } from '../../../app/hooks';
 import { isApiResponse } from '../../../helpers/isApiResponse';
-import { IoEyeSharp } from "react-icons/io5";
-import { BsEyeSlashFill } from "react-icons/bs";
 import Loader from '../../../helpers/Loader';
 
 
@@ -69,7 +67,7 @@ const Login = () => {
     };
 
     return (
-        <div className="w-full flex flex-col gap-10 justify-center items-center">
+        <div className="w-full flex flex-col gap-4 justify-center items-center">
             <div className='w-fit p-3'>
                 <img src={Logo} alt="Logotype" />
             </div>
