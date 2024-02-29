@@ -208,7 +208,7 @@ const Login = () => {
                     <h2 className='text-white text-xl hover:opacity-70 transition-all'>
                         <NavLink to='/register'>Create an Account</NavLink>
                     </h2>
-                    <h3 className='text-sm text-center text-urlGray hover:text-yellow transition-all'>
+                    <h3 className='text-base text-center text-urlGray  hover:text-yellow transition-all'>
                         <NavLink to='/recover'>Recover password</NavLink>
                     </h3>
                 </div>
