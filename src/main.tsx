@@ -30,6 +30,7 @@ import { ChakraProvider } from "@chakra-ui/react"
 import { createClient, WagmiConfig, configureChains, Chain } from "wagmi"
 import { bsc, bscTestnet } from "@wagmi/core/chains"
 import { publicProvider } from "wagmi/providers/public"
+import Code from "./features/user/login/code"
 
 const octaSpace = {
   id: 800001,
@@ -129,6 +130,9 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },{
+    path: "/code",
+    element: <Code/>,
   },
   {
     path: "/register",
