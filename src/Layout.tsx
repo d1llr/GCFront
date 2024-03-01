@@ -30,8 +30,9 @@ function Layout() {
 
   return (
     <>
-      <Header />
-      <main className="text-lg p-5 w-full h-full overflow-auto">
+      
+      <main className="text-lg w-full h-full overflow-auto">
+        <Header />
         <Outlet />
       </main>
     </>

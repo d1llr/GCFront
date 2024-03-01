@@ -233,7 +233,7 @@ const Register = () => {
                 focus:border-rose-500
                 text-lg
                 rounded-lg
-                bg-inputGray
+                bg-lightGray
                 p-2 px-3
                 font-chakra
               `}
@@ -263,7 +263,7 @@ const Register = () => {
                 focus:border-rose-500
                 text-lg
                 rounded-lg
-                bg-inputGray
+                bg-lightGray
                 p-2 px-3
                 font-chakra
               `}
@@ -293,7 +293,7 @@ const Register = () => {
                   focus:border-rose-500
                   text-lg
                   rounded-lg
-                  bg-inputGray
+                  bg-lightGray
                   p-2 px-3
                   font-chakra
                 `}
@@ -330,7 +330,7 @@ const Register = () => {
                   form-control 
                   ${errors.password ? 'is-invalid border border-rose-500' : 'border-none'} 
                   rounded-lg
-                  bg-inputGray
+                  bg-lightGray
                   flex flex-row 
                   items-center 
                   justify-between
@@ -402,7 +402,7 @@ const Register = () => {
                 focus:border-rose-500
                 text-lg
                 rounded-lg
-                bg-inputGray
+                bg-lightGray
                 p-2 px-3
                 font-chakra
               `}

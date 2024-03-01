@@ -1,4 +1,4 @@
-import Logo from "../../images/logo.svg"
+import Logo from "../../images/logo-game-center.svg"
 import Discord from "../../images/icons/discord.svg"
 import TelegramRU from "../../images/icons/tg_ru.svg"
 import TelegramEN from "../../images/icons/tg_eng.svg"
@@ -19,69 +19,100 @@ const Header = () => {
   }
 
   return (
-    <header className="w-1/4 h-screen text-white p-5 gap-5 flex flex-col justify-between">
-      <div className="gap-5 flex flex-col">
-        <NavLink to="/games">
-          <img src={Logo} alt="Логотип" />
-          {import.meta.env.VITE_APP_DEVELOPMENT ?? ''}
+    <div id="header" class="wrapper fixed w-full">
+      <header className="p-4 w-full text-white gap-5 grid grid-cols-3 items-center bg-lightGray rounded-[20px]">
+        <div className="gap-5 flex flex-col">
+          <NavLink to="/games">
+            <img src={Logo} alt="logotype" className="max-w-[120px]"/>
+            {/* {import.meta.env.VITE_APP_DEVELOPMENT ?? ''} */}
 
-        </NavLink>
-        <Wallet />
-        <ul className="text-yellow text-2xl gap-3 flex flex-col">
-          <NavLink
-            to="/games"
-            className={({ isActive }) =>
-              isActive ? "w-fit decoration-dotted underline" : ""
-            }
-          >
-            Games
           </NavLink>
-          {/* <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
-                        NFT
-                    </NavLink> */}
-          <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
-            Tournaments
-          </NavLink>
-          <NavLink
-            to="/user"
-            className={({ isActive }) =>
-              isActive ? "w-fit decoration-dotted underline" : ""
-            }
-          >
-            My account
-          </NavLink>
-        </ul>
-      </div>
-      <div className="flex flex-row justify-between">
-        <div className="flex flex-row align-middle gap-2">
-          <a target="_blank" href="https://discord.gg/JFwaENGDxy">
-            <img src={Discord} alt="Discord" />
-          </a>
-          <a target="_blank" href="https://t.me/PacmanCoinRU">
-            <img src={TelegramRU} alt="TelegramRU" />
-          </a>
-          <a target="_blank" href="mailto:coin.pacman@gmail.com">
-            <img src={Mail} alt="Mail" />
-          </a>
-          <a target="_blank" href="https://twitter.com/PACMan_Token">
-            <img src={X} alt="X" />
-          </a>
-          <a target="_blank" href="https://t.me/PacmanCoinMain">
-            <img src={TelegramEN} alt="TelegramEN" />
-          </a>
+          
         </div>
-        <span
-          onClick={() => {
-            handleDisconnect()
-            tokenService.removeUser()
-            navigate("/login")
-          }}
-          className="text-yellow text-xl cursor-pointer"
-        >
-          Exit
-        </span>
-      </div>
-    </header>
+        {/* SOCIAL AND OLD BUTTON(SPAN) EXIT */}
+        {/* <div className="flex flex-row justify-between">
+          <div className="flex flex-row align-middle gap-2">
+            <a target="_blank" href="https://discord.gg/JFwaENGDxy">
+              <img src={Discord} alt="Discord" />
+            </a>
+            <a target="_blank" href="https://t.me/PacmanCoinRU">
+              <img src={TelegramRU} alt="TelegramRU" />
+            </a>
+            <a target="_blank" href="mailto:coin.pacman@gmail.com">
+              <img src={Mail} alt="Mail" />
+            </a>
+            <a target="_blank" href="https://twitter.com/PACMan_Token">
+              <img src={X} alt="X" />
+            </a>
+            <a target="_blank" href="https://t.me/PacmanCoinMain">
+              <img src={TelegramEN} alt="TelegramEN" />
+            </a>
+          </div>
+          <span
+            onClick={() => {
+              handleDisconnect()
+              tokenService.removeUser()
+              navigate("/login")
+            }}
+            className="text-yellow text-xl cursor-pointer"
+          >
+          
+        </div> */}
+
+        <div className="flex flex-row gap-6 justify-center items-center text-xl font-orbitron">
+            <NavLink
+              to="/games"
+              className={({ isActive }) =>
+                isActive ? "text-yellow" : ""
+              }
+            >
+              Games
+            </NavLink>
+            {/* <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
+                          NFT
+                      </NavLink> */}
+            <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'text-yellow' : ''}>
+              Tournaments
+            </NavLink>
+            <NavLink
+              to="/user"
+              className={({ isActive }) =>
+                isActive ? "text-yellow" : ""
+              }
+            >
+              My account
+            </NavLink>
+        </div>
+
+        <div className="flex flex-row justify-end gap-4">
+
+          <Wallet />
+
+          <button
+            onClick={() => {
+              handleDisconnect()
+              tokenService.removeUser()
+              navigate("/login")
+            }}
+            className="
+              bg-yellow 
+              text-xl 
+              cursor-pointer
+              h-[48px]
+              w-[48px]
+              rounded-[10px]
+              after:flex
+              after:items-center
+              after:justify-center
+              after:content-exit
+              after:w-full
+              after:h-full
+              after:mt-0.5
+            "
+          ></button>
+        </div>
+      </header>
+    </div>
   )
 }
 

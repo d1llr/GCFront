@@ -30,6 +30,13 @@ html, body, #root {
 }
 
 header {
-  box-shadow: -5px 5px 20px 0px rgba(255, 255, 255, 0.09) inset;
-  color: #0D0D0D;
+  /* box-shadow: -5px 5px 20px 0px rgba(255, 255, 255, 0.09) inset;
+  color: #0D0D0D; */
+}
+
+.wrapper{
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 15px
+
 }

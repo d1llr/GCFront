@@ -121,7 +121,7 @@ const Code = () => {
                                     ${errors.code ? 'is-invalid border border-rose-500' : 'border-none'}
                                     text-lg
                                     rounded-lg
-                                    bg-inputGray
+                                    bg-lightGray
                                     p-2 px-3
                                     font-chakra
                                     w-[42px]
