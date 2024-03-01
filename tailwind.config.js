@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        'gameShards': "url('/src/images/icons/game-item-shards.svg')",
+      },
       backgroundColor: {
         'yellow': '#FFF100'
       },
@@ -15,6 +18,7 @@ export default {
         'hoverYellow': 'rgb(210, 199, 6)',
         'gray': '#898989',
         'lightGray': 'rgb(39, 39, 39)',
+        'customBlack': 'rgb(13, 13, 13)',
         'urlGray': 'rgb(98, 98, 98)',
         'eyeBlack': 'rgba(0, 0, 0, 0.25)',
       },

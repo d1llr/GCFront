@@ -15,39 +15,51 @@ const Games = () => {
   //   return <Loader />
   // }
   return (
-    <div>
-      <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">
-        Games
-      </h2>
-      <div className="grid grid-cols-4 2xl:gap-6 mt-10 md:gap-3">
+    <div className="wrapper-content">
+      <h1 className="font-orbitron w-fit text-yellow text-8xl font-extrabold">Games</h1>
+
+      <div className="grid grid-cols-3 2xl:gap-7 mt-10 md:gap-3">
         {data?.map((item: IGames, index: number) => {
           return (
-            <div
-              key={index}
-              className="border-yellow border-2 p-3 flex flex-col gap-2 justify-between"
-            >
-              <div className="flex flex-col gap-2">
-                <img
-                  src={"https://back.pacgc.pw" + item.image}
-                  alt="Фото игры"
-                />
-                <span className="text-yellow 2xl:text-2xl md:text-xl">
-                  {item.name}
-                </span>
-                <span className="text-white 2xl:text-xl md:text-base">
-                  {item.short_desc}
-                </span>
-              </div>
-              <button
-                onClick={() => {
-                  navigate(`/games/${item.id}`)
-                }}
-                disabled={!item.active}
+            <div key={index} className="bg-yellow bg-gameShards bg-no-repeat bg-right-top rounded-[20px] h-full">
 
-                className="w-full bg-yellow 2xl:text-xl md:text-base font-bold 2xl:p-3 md:p-2 text-center cursor-pointer disabled:opacity-30"
-              >
-                More detailed
-              </button>
+              <div className="
+                  game-name
+
+                  text-white 
+                  font-orbitron 
+                  py-3 pl-6 
+                  text-2xl 
+                  max-w-[50%] 
+                  bg-customBlack 
+                  rounded-br-3xl
+                ">
+                {item.name}
+              </div>
+
+              <div className="h-full overflow-hidden flex flex-col justify-between gap-4 py-6 px-6">
+                <div className="text-customBlack text-xl">
+                  {item.short_desc}
+                </div>
+
+                <button
+                  onClick={() => {
+                    navigate(`/games/${item.id}`)
+                  }}
+                  disabled={!item.active}
+
+                  className="w-full bg-customBlack text-yellow rounded-3xl mt-8 2xl:text-xl md:text-base font-bold 2xl:p-3 md:p-2 text-center cursor-pointer disabled:opacity-30"
+                >
+                  More detailed
+                </button>
+              </div>
+
+
+
+
+
+
+
             </div>
           )
         })}
@@ -57,3 +69,17 @@ const Games = () => {
 }
 
 export default Games
+
+
+{/* <div className="flex flex-col gap-2">
+                  <img
+                    src={"https://back.pacgc.pw" + item.image}
+                    alt="Фото игры"
+                  />
+                  <span className="text-yellow 2xl:text-2xl md:text-xl">
+                    {item.name}
+                  </span>
+                  <span className="text-white 2xl:text-xl md:text-base">
+                    {item.short_desc}
+                  </span>
+                </div> */}

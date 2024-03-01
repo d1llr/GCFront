@@ -31,7 +31,7 @@ function Layout() {
   return (
     <>
       
-      <main className="text-lg w-full h-full overflow-auto">
+      <main className="text-lg w-full h-full">
         <Header />
         <Outlet />
       </main>

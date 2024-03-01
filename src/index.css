@@ -5,6 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 
+*{
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: 'Chakra Petch', sans-serif;
@@ -21,12 +25,11 @@ code {
 }
 html, body, #root {
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 #root {
   display: flex;
-  flex-direction: row;
 }
 
 header {
@@ -38,5 +41,31 @@ header {
   max-width: 1600px;
   margin: 0 auto;
   padding: 0 15px
-
+}
+.wrapper-content{
+  max-width: 1600px;
+  margin: 12rem auto;
+  padding: 0 15px
+}
+.game-name{
+  display: block;
+  position: relative;
+}
+.game-name::before{
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -20px;
+  height: 20px;
+  width: 20px;
+  background: radial-gradient(farthest-side at bottom right, transparent 97%, rgb(13, 13, 13)) bottom left;
+}
+.game-name::after{
+  content: '';
+  position: absolute;
+  right: -20px;
+  top: 0;
+  height: 20px;
+  width: 20px;
+  background: radial-gradient(farthest-side at bottom right, transparent 97%, rgb(13, 13, 13)) bottom left;
 }

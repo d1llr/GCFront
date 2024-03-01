@@ -19,47 +19,22 @@ const Header = () => {
   }
 
   return (
-    <div id="header" class="wrapper fixed w-full">
-      <header className="p-4 w-full text-white gap-5 grid grid-cols-3 items-center bg-lightGray rounded-[20px]">
-        <div className="gap-5 flex flex-col">
-          <NavLink to="/games">
-            <img src={Logo} alt="logotype" className="max-w-[120px]"/>
-            {/* {import.meta.env.VITE_APP_DEVELOPMENT ?? ''} */}
 
-          </NavLink>
-          
-        </div>
-        {/* SOCIAL AND OLD BUTTON(SPAN) EXIT */}
-        {/* <div className="flex flex-row justify-between">
-          <div className="flex flex-row align-middle gap-2">
-            <a target="_blank" href="https://discord.gg/JFwaENGDxy">
-              <img src={Discord} alt="Discord" />
-            </a>
-            <a target="_blank" href="https://t.me/PacmanCoinRU">
-              <img src={TelegramRU} alt="TelegramRU" />
-            </a>
-            <a target="_blank" href="mailto:coin.pacman@gmail.com">
-              <img src={Mail} alt="Mail" />
-            </a>
-            <a target="_blank" href="https://twitter.com/PACMan_Token">
-              <img src={X} alt="X" />
-            </a>
-            <a target="_blank" href="https://t.me/PacmanCoinMain">
-              <img src={TelegramEN} alt="TelegramEN" />
-            </a>
+    <header className="fixed w-full mt-5">
+      <div className="wrapper">
+
+        <div id="header" className="p-4 gap-5 grid grid-cols-3 items-center bg-lightGray rounded-[20px] text-white">
+
+          <div className="gap-5 flex flex-col">
+            <NavLink to="/games" className="w-fit">
+              <img src={Logo} alt="logotype" className="max-w-[120px]" />
+              {/* {import.meta.env.VITE_APP_DEVELOPMENT ?? ''} */}
+
+            </NavLink>
+
           </div>
-          <span
-            onClick={() => {
-              handleDisconnect()
-              tokenService.removeUser()
-              navigate("/login")
-            }}
-            className="text-yellow text-xl cursor-pointer"
-          >
-          
-        </div> */}
 
-        <div className="flex flex-row gap-6 justify-center items-center text-xl font-orbitron">
+          <div className="flex flex-row gap-6 justify-center items-center text-xl font-orbitron">
             <NavLink
               to="/games"
               className={({ isActive }) =>
@@ -69,8 +44,8 @@ const Header = () => {
               Games
             </NavLink>
             {/* <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
-                          NFT
-                      </NavLink> */}
+                                NFT
+                            </NavLink> */}
             <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'text-yellow' : ''}>
               Tournaments
             </NavLink>
@@ -82,38 +57,74 @@ const Header = () => {
             >
               My account
             </NavLink>
+          </div>
+
+          <div className="flex flex-row justify-end gap-4">
+
+            <Wallet />
+
+            <button
+              onClick={() => {
+                handleDisconnect()
+                tokenService.removeUser()
+                navigate("/login")
+              }}
+              className="
+                h-[48px]
+                w-[48px]
+                bg-yellow 
+                text-xl 
+                cursor-pointer
+                rounded-[10px]
+                after:flex
+                after:items-center
+                after:justify-center
+                after:content-exit
+                after:w-full
+                after:h-full
+                after:mt-0.5
+              "
+            ></button>
+          </div>
         </div>
 
-        <div className="flex flex-row justify-end gap-4">
+      </div>
+    </header>
 
-          <Wallet />
 
-          <button
-            onClick={() => {
-              handleDisconnect()
-              tokenService.removeUser()
-              navigate("/login")
-            }}
-            className="
-              bg-yellow 
-              text-xl 
-              cursor-pointer
-              h-[48px]
-              w-[48px]
-              rounded-[10px]
-              after:flex
-              after:items-center
-              after:justify-center
-              after:content-exit
-              after:w-full
-              after:h-full
-              after:mt-0.5
-            "
-          ></button>
-        </div>
-      </header>
-    </div>
   )
 }
 
 export default Header
+
+
+
+{/* SOCIAL AND OLD BUTTON(SPAN) EXIT */ }
+{/* <div className="flex flex-row justify-between">
+  <div className="flex flex-row align-middle gap-2">
+    <a target="_blank" href="https://discord.gg/JFwaENGDxy">
+      <img src={Discord} alt="Discord" />
+    </a>
+    <a target="_blank" href="https://t.me/PacmanCoinRU">
+      <img src={TelegramRU} alt="TelegramRU" />
+    </a>
+    <a target="_blank" href="mailto:coin.pacman@gmail.com">
+      <img src={Mail} alt="Mail" />
+    </a>
+    <a target="_blank" href="https://twitter.com/PACMan_Token">
+      <img src={X} alt="X" />
+    </a>
+    <a target="_blank" href="https://t.me/PacmanCoinMain">
+      <img src={TelegramEN} alt="TelegramEN" />
+    </a>
+  </div>
+  <span
+    onClick={() => {
+      handleDisconnect()
+      tokenService.removeUser()
+      navigate("/login")
+    }}
+    className="text-yellow text-xl cursor-pointer"
+  >
+  
+</div> */}
