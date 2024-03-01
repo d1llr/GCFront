@@ -18,13 +18,19 @@ type IReg = {
 }
 
 
-type IEmailActions = {
-    type: 'SendCode' | "CheckCode",
+type IEmailSendCode = {
     name: string,
     username: string,
     email: string,
     password: string
 }
+
+
+
+type IEmailCheckCode = {
+    userCode: string,
+}
+
 
 type IUserState = {
     isLogged: boolean
@@ -102,14 +108,21 @@ export const UsersActions = createApi({
             }),
             transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
         }),
-        SendEmail: builder.mutation<string, IEmailActions>({
+        SendCode: builder.mutation<string, IEmailSendCode>({
             query: (body) => ({
-                url: '/api/auth/email',
+                url: '/api/auth/sendCode',
                 method: "POST",
-                body: body,
-                timeout:5000
+                body: body
             }),
-            
+
+        }),
+        checkCode: builder.mutation<string, IEmailCheckCode>({
+            query: (body) => ({
+                url: '/api/auth/checkCode',
+                method: "POST",
+                body: body
+            }),
+
         }),
         getUserInfo: builder.query<IUser, string | undefined>({
             query: (id) => ({
@@ -135,4 +148,4 @@ export const UsersActions = createApi({
     }),
 })
 
-export const { useRegisterRequestMutation, useLoginRequestMutation, useRefreshTokenMutation, useGetUserInfoQuery, useGetUserNameMutation, useGetUserBalanceQuery, useSendEmailMutation } = UsersActions
+export const { useRegisterRequestMutation, useLoginRequestMutation, useRefreshTokenMutation, useGetUserInfoQuery, useGetUserNameMutation, useGetUserBalanceQuery, useSendCodeMutation, useCheckCodeMutation } = UsersActions
