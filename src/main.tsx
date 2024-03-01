@@ -30,6 +30,10 @@ import { ChakraProvider } from "@chakra-ui/react"
 import { createClient, WagmiConfig, configureChains, Chain } from "wagmi"
 import { bsc, bscTestnet } from "@wagmi/core/chains"
 import { publicProvider } from "wagmi/providers/public"
+import Code from "./features/user/login/Code"
+import Attention from "./features/user/login/Attention"
+import RegConf from "./features//user/login/RegConf"
+
 
 const octaSpace = {
   id: 800001,
@@ -122,13 +126,24 @@ const router = createBrowserRouter([
       },
       {
         path: "*",
-        element: <Page404  />,
+        element: <Page404 />,
       },
     ],
   },
   {
     path: "/login",
     element: <Login />,
+  }, {
+    path: "/code",
+    element: <Code />,
+  },
+  {
+    path: "/attention",
+    element: <Attention />,
+  },
+  {
+    path: "/regconf",
+    element: <RegConf />,
   },
   {
     path: "/register",
