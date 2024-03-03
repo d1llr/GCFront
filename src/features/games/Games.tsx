@@ -18,47 +18,37 @@ const Games = () => {
     <div className="wrapper-content">
       <h1 className="font-orbitron w-fit text-yellow text-8xl font-extrabold">Games</h1>
 
-      <div className="grid grid-cols-3 2xl:gap-7 mt-10 md:gap-3">
+      <div className="grid grid-cols-3 gap-7 mt-10">
         {data?.map((item: IGames, index: number) => {
           return (
             <div key={index} className="bg-yellow bg-gameShards bg-no-repeat bg-right-top rounded-[20px] h-full">
 
-              <div className="
-                  game-name
-
-                  text-white 
-                  font-orbitron 
-                  py-3 pl-6 
-                  text-2xl 
-                  max-w-[50%] 
-                  bg-customBlack 
-                  rounded-br-3xl
-                ">
-                {item.name}
-              </div>
-
-              <div className="h-full overflow-hidden flex flex-col justify-between gap-4 py-6 px-6">
-                <div className="text-customBlack text-xl">
-                  {item.short_desc}
+              <div className="h-full overflow-hidden flex flex-col gap-4">
+                <div className="game-name text-white font-orbitron py-3 px-6 text-3xl max-w-fit bg-customBlack rounded-br-3xl">
+                  {item.name}
                 </div>
 
-                <button
-                  onClick={() => {
-                    navigate(`/games/${item.id}`)
-                  }}
-                  disabled={!item.active}
+                <div className="h-full overflow-hidden flex flex-col justify-between gap-6">
 
-                  className="w-full bg-customBlack text-yellow rounded-3xl mt-8 2xl:text-xl md:text-base font-bold 2xl:p-3 md:p-2 text-center cursor-pointer disabled:opacity-30"
-                >
-                  More detailed
-                </button>
+                  <div className="text-customBlack text-xl py-6 px-6 pb-0 font-medium">
+                    {item.short_desc}
+                  </div>
+
+                  <div className="py-6 px-6 pt-0">
+                    <button
+                      onClick={() => {
+                        navigate(`/games/${item.id}`)
+                      }}
+                      disabled={!item.active}
+                      className="w-full bg-customBlack text-yellow rounded-3xl 2xl:text-xl md:text-base font-bold 2xl:p-3 md:p-2 text-center cursor-pointer disabled:opacity-30"
+                    >
+                      More detailed
+                    </button>
+                  </div>
+                  
+                </div>
+
               </div>
-
-
-
-
-
-
 
             </div>
           )
@@ -69,17 +59,3 @@ const Games = () => {
 }
 
 export default Games
-
-
-{/* <div className="flex flex-col gap-2">
-                  <img
-                    src={"https://back.pacgc.pw" + item.image}
-                    alt="Фото игры"
-                  />
-                  <span className="text-yellow 2xl:text-2xl md:text-xl">
-                    {item.name}
-                  </span>
-                  <span className="text-white 2xl:text-xl md:text-base">
-                    {item.short_desc}
-                  </span>
-                </div> */}
