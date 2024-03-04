@@ -103,7 +103,7 @@ const Login = () => {
                                 ${errors.login ? 'is-invalid border border-rose-500' : 'border-none'}
                                 text-lg
                                 rounded-lg
-                                bg-inputGray
+                                bg-lightGray
                                 p-2 px-3
                                 font-chakra
                             `}
@@ -130,7 +130,7 @@ const Login = () => {
                             form-control 
                             ${errors.password ? 'is-invalid border border-rose-500' : 'border-none'} 
                             rounded-lg
-                            bg-inputGray
+                            bg-lightGray
                             flex flex-row 
                             items-center 
                             justify-between
