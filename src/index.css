@@ -69,3 +69,13 @@ header {
   width: 20px;
   background: radial-gradient(farthest-side at bottom right, transparent 97%, rgb(13, 13, 13)) bottom left;
 }
+
+.rounded_corner::before{
+  content: '';
+  position: absolute;
+  left: -20px;
+  bottom: 0;
+  height: 20px;
+  width: 20px;
+  background: radial-gradient(farthest-side at top left, transparent 97%, #FFF100) bottom left;
+}

@@ -1,151 +1,220 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState } from 'react';
+import { createRef, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import Logo from '../../../images/logo-game-center.svg'
-import { setUser, useLoginRequestMutation } from '../User.slice';
+import {setUser, useCheckCodeMutation, useLoginRequestMutation, useRegisterRequestMutation, useSendCodeMutation } from '../User.slice';
 import { NavLink, useNavigate } from 'react-router-dom';
 import tokenService from '../../../services/token.service';
 import { useAppDispatch } from '../../../app/hooks';
 import { isApiResponse } from '../../../helpers/isApiResponse';
 import Loader from '../../../helpers/Loader';
+import { UserSubmitForm } from '../register/Register';
+import SucessRegister from '../../../images/icons/SucessRegister.svg'
 
 
 
-const Code = () => {
-
-    type UserSubmitForm = {
-        login: string;
-        password: string;
-    };
-    console.log(process.env.NODE_ENV);
+const Code = (props: { userProps: UserSubmitForm }) => {
 
     const dispatch = useAppDispatch()
+    const [CheckCode, { isLoading, isSuccess: CheckCodeSuccess, isError, isUninitialized, error },] = useCheckCodeMutation()
+    const [SendCode, { isLoading: SendCodeLoading, isSuccess: SendCodeSuccess, isError: SendCodeIsError, isUninitialized: SendCodeUninitialized, error: SendCodeError }] = useSendCodeMutation()
+    const [registerUser, { isLoading: RegisterLoading, isSuccess: RegisterSuccess, isUninitialized: RegisterUninitialized }] = useRegisterRequestMutation()
+    const [loginUser, { isLoading: loginUserLoading, isSuccess: loginUserSuccess, isError: loginUserIsError, isUninitialized: loginUserIsUninitialized, error: loginUserError },] = useLoginRequestMutation()
 
-    const [passwordShown, setPasswordShown] = useState(false);
-    const togglePasswordVisiblity = () => {
-        setPasswordShown(prev => !prev);
+    const [user] = useState<UserSubmitForm>(props.userProps)
+
+    const [timer, setTimer] = useState<number>(60)
+    const [fetchable, setFetchable] = useState<boolean>(false)
+    useEffect(() => {
+        const interval = setInterval(() => setTimer(prev => prev - 1), 1000)
+        setTimeout(() => {
+            setFetchable(true)
+            clearInterval(interval)
+        }, 60000)
+    }, [])
+
+
+    const numerOfInputs = 4;
+
+    const [inputRefsArray] = useState(() =>
+        Array.from({ length: numerOfInputs }, () => createRef<HTMLInputElement>())
+    );
+
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const [letters, setLetters] = useState(() =>
+        Array.from({ length: numerOfInputs }, () => "")
+    );
+
+    const handleKeyPress = () => {
+        setCurrentIndex((prevIndex) => {
+            // calculate the next input index, next input after the final input will be again the first input. you can change the logic here as per your needs
+            const nextIndex = prevIndex < numerOfInputs - 1 ? prevIndex + 1 : 0;
+            const nextInput: any = inputRefsArray?.[nextIndex]?.current;
+            nextInput.focus();
+            nextInput.select();
+            return nextIndex;
+        });
     };
-    const [
-        loginUser, // This is the mutation trigger
-        { isLoading, isSuccess, isError, isUninitialized, error }, // This is the destructured mutation result
-    ] = useLoginRequestMutation()
 
-    const validationSchema = Yup.object().shape({
-        login: Yup.string()
-            .required('Email is required')
-            .min(6, 'Login must be at least 6 characters'),
-        password: Yup.string()
-            .required('Password is required')
-            .min(6, 'Password must be at least 6 characters')
-            .max(40, 'Password must not exceed 40 characters'),
-    });
+    useEffect(() => {
+        // focus the firs iput initially
+        if (inputRefsArray?.[0]?.current) {
+            inputRefsArray?.[0]?.current?.focus();
+        }
 
-    const validationSchemaCode = Yup.object().shape({
-        code: Yup.string()
-            .required('Code is required'),
-    });
+        // add the event listener for keyup keyboard event
+        window.addEventListener("keyup", handleKeyPress, false);
 
-    const {
-        register: registerCode,
-        handleSubmit: handleSubmitCode
-    } = useForm<{ code: string }>({
-        resolver: yupResolver(validationSchemaCode)
-    });
+        // remove the event listener when the component unmounts
+        return () => {
+            window.removeEventListener("keyup", handleKeyPress);
+        };
+    }, []);
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors }
-    } = useForm<UserSubmitForm>({
-        resolver: yupResolver(validationSchema)
-    });
+
 
     const navigate = useNavigate();
-    const onSubmit = async (data: UserSubmitForm) => {
-        console.log(JSON.stringify(data, null, 2));
-        await loginUser({
-            username: data.login,
-            password: data.password
+    const onSubmit = async () => {
+        let code = inputRefsArray.map(ref => ref?.current?.value).join('')
+        console.log(code);
+        await CheckCode({
+            userCode: code,
+            email: user.email
         })
             .unwrap()
-            .then(response => {
-                tokenService.setUser(response)
-                dispatch(setUser(true))
-                navigate('/')
+            .then(async (responce:any) => {
+                await registerUser({
+                    name: user.name,
+                    username: user.login,
+                    email: user.email,
+                    password: user.password
+                }).then((responce) => {
+                    console.log(responce);
+
+                })
+            })
+            .catch((error:any) => {
+                console.log(error);
             })
     };
 
+
+    const handleResendACode = async () => {
+        if (fetchable) {
+            await SendCode({
+                email: user.email,
+                username: user.login,
+                name: user.name,
+                password: user.password
+            })
+                .unwrap()
+                .then(() => {
+                    setTimer(60)
+                    setFetchable(false)
+                    const interval = setInterval(() => setTimer(prev => prev - 1), 1000)
+                    setTimeout(() => {
+                        setFetchable(true)
+                        clearInterval(interval)
+                    }, 60000)
+                })
+                .catch((error:any) => {
+                    console.log(error);
+                })
+
+        }
+        else {
+            console.log('Too many requests');
+        }
+    }
+
+
+    const handleLogin = async () => {
+        await loginUser({
+            username: user.login,
+            password: user.password
+        })
+            .unwrap()
+            .then((response:any) => {
+                if (response) {
+                    tokenService.setUser(response)
+                    dispatch(setUser(true))
+                    navigate('/')
+                }
+            })
+            .catch((error:any) => {
+                console.log(error);
+
+            })
+    }
+
     return (
         <div className="w-full flex flex-col gap-4 justify-center items-center">
-            <div className='w-fit p-3'>
-                <img src={Logo} alt="Logotype" />
-            </div>
-            <div className='flex flex-col gap-4 items-center max-w-md w-full'>
+            {!CheckCodeSuccess &&
+                <div className='flex flex-col gap-4 items-center max-w-md w-full'>
 
-                <form onSubmit={handleSubmit(onSubmit)} className={`flex flex-col p-2 gap-4 text-white mx-auto my-auto w-full`}>
-                    <h1 className="text-2xl font-bold text-center font-orbitron mb-2">
-                        Email confirmation code
-                    </h1>
+                    <form onSubmit={onSubmit} className={`flex flex-col p-2 gap-4 text-white mx-auto my-auto w-full`}>
+                        <h1 className="text-2xl font-bold text-center font-orbitron mb-2">
+                            Email confirmation code
+                        </h1>
 
-                    <div className="form-group flex flex-col">
-                        <label className="text-center pb-6">
-                            The code has been sent to you by email. If It’s been mising for a long time, check your spam folder.
-                        </label>
+                        <div className="form-group flex flex-col">
+                            <label className="text-center pb-6">
+                                The code has been sent to you by email. If It’s been mising for a long time, check your spam folder.
+                            </label>
 
-                        <div className="invalid-feedback text-red-500 text-sm mb-2 mt-1.5">{errors.login?.message}</div>
+                            <div className="flex flex-row justify-center items-center gap-[16px]">
 
-                        <div className="flex flex-row justify-center items-center gap-[16px]">
-                            {[...Array(4)].map(index => {
-                                return <input
-                                    key={index}
-                                    maxLength={1}
-                                    onKeyDown={(event) => {
-                                        if (/[0-9]/.test(event.key)) {
-                                            event.currentTarget.value = event.key
-                                                (event?.currentTarget?.nextElementSibling as HTMLElement)?.focus()
+                                {inputRefsArray.map((ref, index) => {
+                                    return (
+                                        <input
+                                            ref={ref}
+                                            key={index}
 
-                                        } else {
-                                            event.preventDefault();
-                                        }
-                                    }}
+                                            maxLength={1}
+                                            onChange={(e) => {
+                                                const { value } = e.target;
+                                                setLetters((letters) =>
+                                                    letters.map((letter, letterIndex) =>
+                                                        letterIndex === index ? value : letter
+                                                    )
+                                                );
+                                            }}
+                                            onClick={(e) => {
+                                                setCurrentIndex(index);
+                                                e.currentTarget.select();
+                                            }}
+                                            value={letters[index]}
+                                            max={"1"}
 
-                                    type="text"
-                                    {...registerCode('code')}
-                                    className={`
-                                    form-control 
-                                    focus:outline-0 
-                                    focus:ring-transparent
-                                    focus:border-rose-500
-                                    ${errors.code ? 'is-invalid border border-rose-500' : 'border-none'}
-                                    text-lg
-                                    rounded-lg
-                                    bg-lightGray
-                                    p-2 px-3
-                                    font-chakra
-                                    w-[42px]
-                                    h-[56px]
-                                    text-center
-                                `} />
-                            })}
+                                            type="text"
+                                            // {...registerCode(CodesEnum.code1)}
+                                            className={`form-control focus:outline-0 focus:ring-transparent focus:border-none text-lg rounded-lg bg-lightGray p-2 px-3 font-chakra w-[42px] h-[56px] text-center ${isError ? 'border-red-500 border-2' : 'border-0'}`}
+                                        />)
+                                })}
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div className="form-group flex flex-col pt-[16px]">
+                            {timer ?
+                                <span className="text-center">
+                                    {timer} seconds left to get new code
+                                </span>
+                                :
+                                <span onClick={() => handleResendACode()} className='underline text-center cursor-pointer'>
+                                    resend a code
+                                </span>
+                            }
+                            {
+                                SendCodeIsError && <span className='text-red-500'>Error with resending code</span>
+                            }
+                        </div>
 
-                    <div className="form-group flex flex-col pt-[16px]">
-                        <label className="
-                        text-center
-                        ">
-                            59 seconds left to get new code
-                        </label>
-                        <div className="invalid-feedback text-red-500 text-sm mb-2 mt-1.5" >{errors.password?.message}</div>
-                    </div>
 
-
-                    <div className="form-group mt-2">
-                        <button type="submit" className="
+                        <div className="form-group mt-2">
+                            <button type="button" className="
                             text-center 
                             bg-yellow 
                             text-black 
@@ -160,21 +229,37 @@ const Code = () => {
 
                             hover:bg-hoverYellow
                             transition-all
-                        ">
-                            {isUninitialized && "Log in"}
-                            {isLoading && <Loader />}
-                            {isSuccess && 'Success'}
-                            {isError && (isApiResponse(error) && [401, 402].includes(error.status) ? "Invalid login or password" : 'Server error, retry later')}
-                        </button>
+                        "
+                                onClick={() => onSubmit()}>
+                                {isUninitialized && "Log in"}
+                                {isLoading && <Loader />}
+                                {isError && (isApiResponse(error) && [401, 402].includes(error.status) ? "Invalid login or password" : 'Server error, retry later')}
+                            </button>
+                        </div>
+                    </form>
+                    <div>
+                        <h2 className='text-white text-xl hover:opacity-70 transition-all'>
+                        </h2>
+                        <h3 className='text-sm text-center text-urlGray hover:text-yellow transition-all'>
+                        </h3>
                     </div>
-                </form>
-                <div>
-                    <h2 className='text-white text-xl hover:opacity-70 transition-all'>
-                    </h2>
-                    <h3 className='text-sm text-center text-urlGray hover:text-yellow transition-all'>
-                    </h3>
-                </div>
-            </div>
+                </div>}
+            {CheckCodeSuccess &&
+                <div className="w-full flex flex-col gap-4 justify-center items-center">
+                    <div className="rounded-3xl max-w-[386px] w-full flex flex-col gap-7 p-6 items-center bg-[#272727]">
+
+                        <h1 className="text-center text-white text-2xl font-orbitron font-bold">
+                            You are registred
+                        </h1>
+
+                        <img src={SucessRegister} alt="Sucess register" />
+
+                        <button onClick={() => handleLogin()} className='p-2 font-orbitron text-xl font-bold text-black rounded-xl bg-yellow w-full'>log in</button>
+
+                    </div>
+
+
+                </div>}
         </div>);
 
 

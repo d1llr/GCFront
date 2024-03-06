@@ -9,6 +9,7 @@ export default {
     extend: {
       backgroundImage: {
         'gameShards': "url('/src/images/icons/game-item-shards.svg')",
+        'gameLeftToRightShards': "url('/src/images/icons/from-left-shards.svg')",
       },
       backgroundColor: {
         'yellow': '#FFF100'
@@ -18,7 +19,9 @@ export default {
         'hoverYellow': 'rgb(210, 199, 6)',
         'gray': '#898989',
         'lightGray': 'rgb(39, 39, 39)',
+        'lightGrayHover': 'rgba(98, 98, 98, 1)',
         'customBlack': 'rgb(13, 13, 13)',
+        'customBlackHover': 'rgb(27, 27, 27)',
         'urlGray': 'rgb(98, 98, 98)',
         'eyeBlack': 'rgba(0, 0, 0, 0.25)',
       },

@@ -26,10 +26,7 @@ const Login = () => {
     const togglePasswordVisiblity = () => {
         setPasswordShown(prev => !prev);
     };
-    const [
-        loginUser, // This is the mutation trigger
-        { isLoading, isSuccess, isError, isUninitialized, error }, // This is the destructured mutation result
-    ] = useLoginRequestMutation()
+    const [ loginUser, { isLoading, isSuccess, isError, isUninitialized, error },] = useLoginRequestMutation()
 
 
     const validationSchema = Yup.object().shape({

@@ -29,6 +29,7 @@ type IEmailSendCode = {
 
 type IEmailCheckCode = {
     userCode: string,
+    email: string
 }
 
 
@@ -108,12 +109,13 @@ export const UsersActions = createApi({
             }),
             transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
         }),
-        SendCode: builder.mutation<string, IEmailSendCode>({
+        SendCode: builder.mutation<any, IEmailSendCode>({
             query: (body) => ({
                 url: '/api/auth/sendCode',
                 method: "POST",
                 body: body
             }),
+            transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
 
         }),
         checkCode: builder.mutation<string, IEmailCheckCode>({
