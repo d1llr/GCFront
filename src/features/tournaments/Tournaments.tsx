@@ -18,130 +18,133 @@ const Tournaments = () => {
     //     return <Loader />
     // }
     return (
-        <div className="wrapper-content">
-            <h1 className="font-orbitron w-fit text-yellow text-8xl font-extrabold">Games</h1>
+        <div className="background-image-black">
+            <div className="wrapper-content">
+                <h1 className="font-orbitron w-fit text-yellow text-8xl font-extrabold">Games</h1>
 
-            <div className="grid grid-cols-3 gap-6 mt-10">
-                {data?.map((item: ITournaments, index: number) => {
-                    return (
-                        <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white">
+                <div className="grid grid-cols-3 gap-6 mt-10">
+                    {data?.map((item: ITournaments, index: number) => {
+                        return (
+                            <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white">
 
 
 
-                            <div className="flex flex-col w-full gap-6 justify-center">
-                                <div>
-                                    <div className="flex flex-row justify-between items-center gap-2" >
-                                        <div className="text-white font-orbitron text-3xl flex flex-col items-start">
-                                            <div>{item.name}</div>
-                                            <div>{item.id}</div>
+                                <div className="flex flex-col w-full gap-6 justify-center">
+                                    <div>
+                                        <div className="flex flex-row justify-between items-center gap-2" >
+                                            <div className="text-white font-orbitron text-3xl flex flex-col items-start">
+                                                <div>{item.name}</div>
+                                                <div>{item.id}</div>
+                                            </div>
+                                            <div className="text-gray">
+                                                28.03
+                                            </div>
                                         </div>
-                                        <div className="text-gray">
-                                            28.03
+                                        <span className="text-white text-base break-normal">
+                                            {item.description}
+                                        </span>
+
+                                    </div>
+                                    <div>
+                                        <ul>
+                                            <li className="flex flex-row justify-between">
+                                                <span className="text-yellow text-2xl">
+                                                    Goal
+                                                </span>
+                                                <span>
+                                                    {item.goal}
+                                                </span>
+                                            </li>
+                                            <li className="flex flex-row justify-between">
+                                                <span className="text-yellow text-2xl">
+                                                    Participants
+                                                </span>
+                                                <span>
+                                                    {item.participants}
+                                                </span>
+                                            </li>
+                                            <li className="flex flex-row justify-between">
+                                                <span className="text-yellow text-2xl">
+                                                    Bank
+                                                </span>
+                                                <span>
+                                                    {item.bank}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <button onClick={() => {
+                                        navigate(`/tournaments/${item.id}`);
+                                    }} className={`w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30`}
+                                        disabled={item.disabled}>
+                                        More datailed
+                                    </button>
+                                </div>
+                            </div>
+                        )
+                    })}
+                    {HistoryData?.map((item: ITournaments, index: number) => {
+                        return (
+                            <div key={index} className="border-yellow border-2 p-3 flex flex-row gap-2 text-white opacity-30">
+                                <div className="w-2/3">
+                                    <img src={import.meta.env.VITE_BACKEND_URL + item.image} alt="Фото игры" width={345} height={345} className="object-cover w-full h-full max-h-80" />
+                                </div>
+                                <div className="flex flex-col w-full gap-6 justify-center">
+                                    <div>
+                                        <div className="flex flex-row justify-between items-center gap-2" >
+                                            <span className="text-yellow text-3xl">
+                                                {item.name} | {item.id}
+                                            </span>
+                                            <span className="text-gray">
+                                                {item.daysLeft} days
+                                            </span>
                                         </div>
-                                    </div>
-                                    <span className="text-white text-base break-normal">
-                                        {item.description}
-                                    </span>
-
-                                </div>
-                                <div>
-                                    <ul>
-                                        <li className="flex flex-row justify-between">
-                                            <span className="text-yellow text-2xl">
-                                                Goal
-                                            </span>
-                                            <span>
-                                                {item.goal}
-                                            </span>
-                                        </li>
-                                        <li className="flex flex-row justify-between">
-                                            <span className="text-yellow text-2xl">
-                                                Participants
-                                            </span>
-                                            <span>
-                                                {item.participants}
-                                            </span>
-                                        </li>
-                                        <li className="flex flex-row justify-between">
-                                            <span className="text-yellow text-2xl">
-                                                Bank
-                                            </span>
-                                            <span>
-                                                {item.bank}
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <button onClick={() => {
-                                    navigate(`/tournaments/${item.id}`);
-                                }} className={`w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30`}
-                                    disabled={item.disabled}>
-                                    More datailed
-                                </button>
-                            </div>
-                        </div>
-                    )
-                })}
-                {HistoryData?.map((item: ITournaments, index: number) => {
-                    return (
-                        <div key={index} className="border-yellow border-2 p-3 flex flex-row gap-2 text-white opacity-30">
-                            <div className="w-2/3">
-                                <img src={import.meta.env.VITE_BACKEND_URL + item.image} alt="Фото игры" width={345} height={345} className="object-cover w-full h-full max-h-80" />
-                            </div>
-                            <div className="flex flex-col w-full gap-6 justify-center">
-                                <div>
-                                    <div className="flex flex-row justify-between items-center gap-2" >
-                                        <span className="text-yellow text-3xl">
-                                            {item.name} | {item.id}
+                                        <span className="text-white text-base break-normal">
+                                            {item.description}
                                         </span>
-                                        <span className="text-gray">
-                                            {item.daysLeft} days
-                                        </span>
-                                    </div>
-                                    <span className="text-white text-base break-normal">
-                                        {item.description}
-                                    </span>
 
+                                    </div>
+                                    <div>
+                                        <ul>
+                                            <li className="flex flex-row justify-between">
+                                                <span className="text-yellow text-2xl">
+                                                    Goal
+                                                </span>
+                                                <span>
+                                                    {item.goal}
+                                                </span>
+                                            </li>
+                                            <li className="flex flex-row justify-between">
+                                                <span className="text-yellow text-2xl">
+                                                    Participants
+                                                </span>
+                                                <span>
+                                                    {item.participants}
+                                                </span>
+                                            </li>
+                                            <li className="flex flex-row justify-between">
+                                                <span className="text-yellow text-2xl">
+                                                    Bank
+                                                </span>
+                                                <span>
+                                                    {item.bank}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <button onClick={() => {
+                                        navigate(`/tournaments/history/${item.id}`);
+                                    }} className={`w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30`}
+                                        disabled={item.disabled}>
+                                        More datailed
+                                    </button>
                                 </div>
-                                <div>
-                                    <ul>
-                                        <li className="flex flex-row justify-between">
-                                            <span className="text-yellow text-2xl">
-                                                Goal
-                                            </span>
-                                            <span>
-                                                {item.goal}
-                                            </span>
-                                        </li>
-                                        <li className="flex flex-row justify-between">
-                                            <span className="text-yellow text-2xl">
-                                                Participants
-                                            </span>
-                                            <span>
-                                                {item.participants}
-                                            </span>
-                                        </li>
-                                        <li className="flex flex-row justify-between">
-                                            <span className="text-yellow text-2xl">
-                                                Bank
-                                            </span>
-                                            <span>
-                                                {item.bank}
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <button onClick={() => {
-                                    navigate(`/tournaments/history/${item.id}`);
-                                }} className={`w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30`}
-                                    disabled={item.disabled}>
-                                    More datailed
-                                </button>
                             </div>
-                        </div>
-                    )
-                })}
-                {(data?.length == 0 && HistoryData?.length == 0) && <Error />}
+                        )
+                    })}
+                    {(data?.length == 0 && HistoryData?.length == 0) && <Error />}
+                </div>
+
             </div>
 
         </div>

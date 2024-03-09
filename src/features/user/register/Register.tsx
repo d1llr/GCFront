@@ -2,13 +2,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import Logo from '../../../images/logo-game-center.svg'
-import { useRegisterRequestMutation, useSendCodeMutation } from '../User.slice';
+import { useRegisterRequestMutation, useSendCodeUponRegisterMutation } from '../User.slice';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Loader from '../../../helpers/Loader';
 import { isApiError, isApiResponse } from '../../../helpers/isApiResponse';
 import { Modal, Button, CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
 import { useState } from 'react';
-import Code from '../login/Code';
+import Code from './Code';
 
 
 export type UserSubmitForm = {
@@ -25,9 +25,7 @@ const Register = () => {
   const navigate = useNavigate();
   const [registerUser, { isLoading: RegisterLoading, isSuccess: RegisterSuccess, isUninitialized: RegisterUninitialized }] = useRegisterRequestMutation()
 
-  const [SendCode, { isLoading: SendCodeLoading, isSuccess: SendCodeSuccess, isError: SendCodeIsError, isUninitialized: SendCodeUninitialized, error: SendCodeError }] = useSendCodeMutation()
-
-  const [CheckCode, { isLoading: CheckCodeLoading, isSuccess: CheckCodeSuccess, isError: CheckCodeIsError, isUninitialized: CheckCodeUninitialized, error: CheckCodeError },] = useSendCodeMutation()
+  const [SendCode, { isLoading: SendCodeLoading, isSuccess: SendCodeSuccess, isError: SendCodeIsError, isUninitialized: SendCodeUninitialized, error: SendCodeError }] = useSendCodeUponRegisterMutation()
   const [user, setUser] = useState<UserSubmitForm>()
 
 

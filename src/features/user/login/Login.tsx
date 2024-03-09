@@ -26,7 +26,7 @@ const Login = () => {
     const togglePasswordVisiblity = () => {
         setPasswordShown(prev => !prev);
     };
-    const [ loginUser, { isLoading, isSuccess, isError, isUninitialized, error },] = useLoginRequestMutation()
+    const [loginUser, { isLoading, isSuccess, isError, isUninitialized, error },] = useLoginRequestMutation()
 
 
     const validationSchema = Yup.object().shape({
@@ -106,7 +106,7 @@ const Login = () => {
                             `}
                             placeholder='Login or Email'
                         />
-                        
+
                     </div>
 
                     <div className="form-group flex flex-col">
@@ -133,7 +133,7 @@ const Login = () => {
                             justify-between
                             overflow-hidden
                         `}>
-                            
+
                             <input
                                 type={passwordShown ? "text" : "password"}
                                 {...register('password')}
@@ -173,33 +173,16 @@ const Login = () => {
                                 }
                             </i>
                         </div>
-                        
+
                     </div>
 
 
                     <div className="form-group mt-2">
-                        <button type="submit" className="
-                            text-center 
-                            bg-yellow 
-                            text-black 
-                            w-full 
-                            p-1 text-xl 
-                            font-bold 
-                            h-11 
-                            border-none 
-                            rounded-lg
-                            lowercase
-                            font-orbiton
-
-                            hover:bg-hoverYellow
-                            transition-all
-                        ">
-                            {isUninitialized && "Log in"}
-                            {isLoading && <Loader />}
-                            {isSuccess && 'Success'}
-                            {isError && (isApiResponse(error) && [401, 402].includes(error.status) ? "Invalid login or password" : 'Server error, retry later')}
+                        <button type="submit" className={`text-center bg-yellow ${isLoading && 'button_loading'}  text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg lowercase font-orbiton hover:bg-hoverYellow transition-al`}>
+                            {isError ? (isApiResponse(error) && [401, 402].includes(error.status) ? "Invalid login or password" : 'Server error, retry later') : "Log in"}
                         </button>
                     </div>
+
                 </form>
                 <div>
                     <h2 className='text-white text-xl hover:opacity-70 transition-all'>

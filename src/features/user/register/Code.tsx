@@ -3,13 +3,13 @@ import { createRef, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import Logo from '../../../images/logo-game-center.svg'
-import {setUser, useCheckCodeMutation, useLoginRequestMutation, useRegisterRequestMutation, useSendCodeMutation } from '../User.slice';
+import { setUser, useCheckCodeMutation, useLoginRequestMutation, useRegisterRequestMutation, useSendCodeUponRegisterMutation } from '../User.slice';
 import { NavLink, useNavigate } from 'react-router-dom';
 import tokenService from '../../../services/token.service';
 import { useAppDispatch } from '../../../app/hooks';
 import { isApiResponse } from '../../../helpers/isApiResponse';
 import Loader from '../../../helpers/Loader';
-import { UserSubmitForm } from '../register/Register';
+import { UserSubmitForm } from './Register';
 import SucessRegister from '../../../images/icons/SucessRegister.svg'
 
 
@@ -18,7 +18,7 @@ const Code = (props: { userProps: UserSubmitForm }) => {
 
     const dispatch = useAppDispatch()
     const [CheckCode, { isLoading, isSuccess: CheckCodeSuccess, isError, isUninitialized, error },] = useCheckCodeMutation()
-    const [SendCode, { isLoading: SendCodeLoading, isSuccess: SendCodeSuccess, isError: SendCodeIsError, isUninitialized: SendCodeUninitialized, error: SendCodeError }] = useSendCodeMutation()
+    const [SendCode, { isLoading: SendCodeLoading, isSuccess: SendCodeSuccess, isError: SendCodeIsError, isUninitialized: SendCodeUninitialized, error: SendCodeError }] = useSendCodeUponRegisterMutation()
     const [registerUser, { isLoading: RegisterLoading, isSuccess: RegisterSuccess, isUninitialized: RegisterUninitialized }] = useRegisterRequestMutation()
     const [loginUser, { isLoading: loginUserLoading, isSuccess: loginUserSuccess, isError: loginUserIsError, isUninitialized: loginUserIsUninitialized, error: loginUserError },] = useLoginRequestMutation()
 
@@ -84,7 +84,7 @@ const Code = (props: { userProps: UserSubmitForm }) => {
             email: user.email
         })
             .unwrap()
-            .then(async (responce:any) => {
+            .then(async (responce: any) => {
                 await registerUser({
                     name: user.name,
                     username: user.login,
@@ -95,7 +95,7 @@ const Code = (props: { userProps: UserSubmitForm }) => {
 
                 })
             })
-            .catch((error:any) => {
+            .catch((error: any) => {
                 console.log(error);
             })
     };
@@ -119,7 +119,7 @@ const Code = (props: { userProps: UserSubmitForm }) => {
                         clearInterval(interval)
                     }, 60000)
                 })
-                .catch((error:any) => {
+                .catch((error: any) => {
                     console.log(error);
                 })
 
@@ -136,14 +136,14 @@ const Code = (props: { userProps: UserSubmitForm }) => {
             password: user.password
         })
             .unwrap()
-            .then((response:any) => {
+            .then((response: any) => {
                 if (response) {
                     tokenService.setUser(response)
                     dispatch(setUser(true))
                     navigate('/')
                 }
             })
-            .catch((error:any) => {
+            .catch((error: any) => {
                 console.log(error);
 
             })

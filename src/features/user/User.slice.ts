@@ -109,7 +109,16 @@ export const UsersActions = createApi({
             }),
             transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
         }),
-        SendCode: builder.mutation<any, IEmailSendCode>({
+        SendCodeUponRegister: builder.mutation<any, IEmailSendCode>({
+            query: (body) => ({
+                url: '/api/auth/sendCodeUponRegister',
+                method: "POST",
+                body: body
+            }),
+            transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
+
+        }),
+        SendCode: builder.mutation<any, { email: string }>({
             query: (body) => ({
                 url: '/api/auth/sendCode',
                 method: "POST",
@@ -147,7 +156,27 @@ export const UsersActions = createApi({
                 headers: authHeader()
             }),
         }),
+
+        changePassword: builder.mutation<string, { email: string | undefined, password: string }>({
+            query: (body) => ({
+                url: `/api/user/changePassword`,
+                method: "POST",
+                body: body,
+                headers: authHeader()
+            }),
+        }),
     }),
 })
 
-export const { useRegisterRequestMutation, useLoginRequestMutation, useRefreshTokenMutation, useGetUserInfoQuery, useGetUserNameMutation, useGetUserBalanceQuery, useSendCodeMutation, useCheckCodeMutation } = UsersActions
+export const { 
+    useRegisterRequestMutation, 
+    useLoginRequestMutation, 
+    useRefreshTokenMutation, 
+    useGetUserInfoQuery, 
+    useGetUserNameMutation, 
+    useGetUserBalanceQuery, 
+    useSendCodeMutation, 
+    useSendCodeUponRegisterMutation, 
+    useCheckCodeMutation,
+    useChangePasswordMutation
+} = UsersActions

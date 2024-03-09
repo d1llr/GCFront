@@ -43,6 +43,7 @@ export default {
         '"Chakra Petch", sans-serif'
       ]
     },
+    
   },
   plugins: [
     require('flowbite/plugin')

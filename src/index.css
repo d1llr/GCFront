@@ -1,29 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
-@import url('https://fonts.cdnfonts.com/css/pf-beausans-pro');
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
+@import url("https://fonts.cdnfonts.com/css/pf-beausans-pro");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-*{
+* {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: 'Chakra Petch', sans-serif;
+  font-family: "Chakra Petch", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #0D0D0D;
   color: #0D0D0D;
-
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
-html, body, #root {
+
+html,
+body,
+#root {
   height: 100%;
   /* overflow: hidden; */
 }
@@ -37,22 +38,38 @@ header {
   color: #0D0D0D; */
 }
 
-.wrapper{
+.wrapper {
   max-width: 1600px;
   margin: 0 auto;
-  padding: 0 15px
+  padding: 0 15px;
 }
-.wrapper-content{
+
+.wrapper-content {
   max-width: 1600px;
-  margin: 12rem auto;
-  padding: 0 15px
+  padding: 12rem 15px;
+  margin: 0 auto;
+  /* padding: 0 15px */
 }
-.game-name{
+
+.background-image-black {
+  background-image: url("./images/darkbg.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+}
+
+.background-image-yellow {
+  background-image: url("./images/yellowbg.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+}
+
+.game-name {
   display: block;
   position: relative;
 }
-.game-name::before{
-  content: '';
+
+.game-name::before {
+  content: "";
   position: absolute;
   left: 0;
   bottom: -20px;
@@ -60,8 +77,9 @@ header {
   width: 20px;
   background: radial-gradient(farthest-side at bottom right, transparent 97%, rgb(13, 13, 13)) bottom left;
 }
-.game-name::after{
-  content: '';
+
+.game-name::after {
+  content: "";
   position: absolute;
   right: -20px;
   top: 0;
@@ -70,8 +88,8 @@ header {
   background: radial-gradient(farthest-side at bottom right, transparent 97%, rgb(13, 13, 13)) bottom left;
 }
 
-.rounded_corner::before{
-  content: '';
+.rounded_corner::before {
+  content: "";
   position: absolute;
   left: -20px;
   bottom: 0;
@@ -79,3 +97,50 @@ header {
   width: 20px;
   background: radial-gradient(farthest-side at top left, transparent 97%, #FFF100) bottom left;
 }
+
+.button_loading {
+  color: #FFF100 !important;
+  border: 1px solid #fff100;
+  position: relative;
+  background-color: #0D0D0D !important;
+
+}
+
+.button_loading::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border-radius: 500px;
+  position: absolute;
+  background: rgb(13, 13, 13);
+  animation: loadingAnimation 4s ease-out infinite;
+}
+
+@keyframes loadingAnimation {
+  0% {
+    top: -20%;
+    left: -3%;
+  }
+
+  35% {
+    top: -20%;
+    left: 97%;
+  }
+
+  45% {
+    top: 90%;
+    left: 97%;
+  }
+
+  85% {
+    top: 90%;
+    left: -3%;
+  }
+
+  100% {
+    top: -20%;
+    left: -3%;
+  }
+}
+
+/*# sourceMappingURL=index.css.map */

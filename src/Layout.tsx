@@ -3,6 +3,7 @@ import { useAppSelector } from "./app/hooks";
 import Header from "./features/header/Header"
 import { useEffect } from "react";
 import tokenService from "./services/token.service";
+import Footer from "./features/footer/Footer";
 function Layout() {
   const navigate = useNavigate();
   if (tokenService.getUser() === null) navigate('/login')
@@ -30,10 +31,11 @@ function Layout() {
 
   return (
     <>
-      
-      <main className="text-lg w-full h-full">
+
+      <main className="text-lg w-full h-dvh flex flex-col justify-between">
         <Header />
         <Outlet />
+        <Footer />
       </main>
     </>
   )
