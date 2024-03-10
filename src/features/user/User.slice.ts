@@ -17,6 +17,22 @@ type IReg = {
     password: string
 }
 
+
+type IEmailSendCode = {
+    name: string,
+    username: string,
+    email: string,
+    password: string
+}
+
+
+
+type IEmailCheckCode = {
+    userCode: string,
+    email: string
+}
+
+
 type IUserState = {
     isLogged: boolean
     wallet: null | string
@@ -93,13 +109,31 @@ export const UsersActions = createApi({
             }),
             transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
         }),
-        sendCodeOnEmail:builder.mutation<string, IReg>({
+        SendCodeUponRegister: builder.mutation<any, IEmailSendCode>({
             query: (body) => ({
-                url: 'api/auth/sendCodeOnEmail',
+                url: '/api/auth/sendCodeUponRegister',
                 method: "POST",
-                body: body,
+                body: body
             }),
             transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
+
+        }),
+        SendCode: builder.mutation<any, { email: string }>({
+            query: (body) => ({
+                url: '/api/auth/sendCode',
+                method: "POST",
+                body: body
+            }),
+            transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
+
+        }),
+        checkCode: builder.mutation<string, IEmailCheckCode>({
+            query: (body) => ({
+                url: '/api/auth/checkCode',
+                method: "POST",
+                body: body
+            }),
+
         }),
         getUserInfo: builder.query<IUser, string | undefined>({
             query: (id) => ({
@@ -122,7 +156,27 @@ export const UsersActions = createApi({
                 headers: authHeader()
             }),
         }),
+
+        changePassword: builder.mutation<string, { email: string | undefined, password: string }>({
+            query: (body) => ({
+                url: `/api/user/changePassword`,
+                method: "POST",
+                body: body,
+                headers: authHeader()
+            }),
+        }),
     }),
 })
 
-export const { useRegisterRequestMutation, useLoginRequestMutation, useRefreshTokenMutation, useGetUserInfoQuery, useGetUserNameMutation, useGetUserBalanceQuery, useSendCodeOnEmailMutation } = UsersActions
+export const { 
+    useRegisterRequestMutation, 
+    useLoginRequestMutation, 
+    useRefreshTokenMutation, 
+    useGetUserInfoQuery, 
+    useGetUserNameMutation, 
+    useGetUserBalanceQuery, 
+    useSendCodeMutation, 
+    useSendCodeUponRegisterMutation, 
+    useCheckCodeMutation,
+    useChangePasswordMutation
+} = UsersActions

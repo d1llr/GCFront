@@ -30,6 +30,11 @@ import { ChakraProvider } from "@chakra-ui/react"
 import { createClient, WagmiConfig, configureChains, Chain } from "wagmi"
 import { bsc, bscTestnet } from "@wagmi/core/chains"
 import { publicProvider } from "wagmi/providers/public"
+import Code from "./helpers/Code"
+import Attention from "./features/user/login/Attention"
+import RegConf from "./helpers/SuccessAction"
+import Recover from "./features/user/recover/Recover"
+
 
 const octaSpace = {
   id: 800001,
@@ -97,7 +102,7 @@ const router = createBrowserRouter([
         element: <Games />,
       },
       {
-        path: "/games/:gamesId",
+        path: "/games/:gameId",
         element: <Game />,
       },
       // {
@@ -122,13 +127,21 @@ const router = createBrowserRouter([
       },
       {
         path: "*",
-        element: <Page404  />,
+        element: <Page404 />,
       },
     ],
   },
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/recover",
+    element: <Recover />,
+  },
+  {
+    path: "/attention",
+    element: <Attention />,
   },
   {
     path: "/register",

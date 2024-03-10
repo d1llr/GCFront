@@ -16,6 +16,8 @@ import { useNavigate } from "react-router-dom"
 import IWallet from "./wallet.type"
 import { isApiResponse } from "../../../helpers/isApiResponse"
 import useWindowFocus from 'use-window-focus';
+import walletImage from '../../../images/icons/wallet.svg'
+import walletPacLogo from '../../../images/icons/pac-logo-wallet.svg'
 
 // wagmi
 import { bsc } from "@wagmi/core/chains"
@@ -85,6 +87,7 @@ const Wallet = memo(() => {
 
 
   const [mode, setMode] = useState<Mode>()
+  const [isWalletOpen, setIsWalletOpen] = useState<boolean>(false)
   const dispatch = useAppDispatch()
   const [connectWallet, { isLoading }] = useConnectWalletMutation()
 
@@ -287,7 +290,7 @@ const Wallet = memo(() => {
       })
       .catch((err) => {
         console.log(err);
-        navigate("/login")
+        // navigate("/login")
       })
   }, [])
 
@@ -297,137 +300,147 @@ const Wallet = memo(() => {
   };
 
   return account.isConnected ? (
-    <div className="flex flex-col gap-3">
-      <div className="bg-yellow p-3 flex-col flex gap-5">
-        <span className="text-black text-xl font-bold">Your game balance</span>
-        <span className="text-black self-end font-bold text-xl">
-          {balance} PAC
-        </span>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className={` flex-col text-white ${wallet ? "flex" : "hidden"
-            } mx-auto my-auto w-full gap-2`}
-        >
-          <div className={`form-group  flex-col ${mode ? "flex" : "hidden"}`}>
-            <label className="text-sm text-black">
-              Amount<b className="text-black">*</b>
-            </label>
-            <div
-              className={`form-control ${errors.amount ? "is-invalid border-red-500" : ""
-                } border-2 border-black bg-inherit p-1 px-3 flex flex-row items-center justify-between`}
-            >
-              <input
-                {...register("amount")}
-                type="number"
-                className={`form-control focus:outline-none text-black ${errors.amount ? "is-invalid" : ""
-                  } bg-inherit border-none focus:outline-none`}
-                placeholder="Amount"
-              />
-              <i className="cursor-pointer text-black">PAC</i>
-            </div>
-            <div className="invalid-feedback text-red-500 text-sm">
-              {errors.amount?.message}
-            </div>
-          </div>
-          {wallet && (
-            <div className="form-group w-full flex flex-row justify-between gap-2">
-              {mode === Mode.recharge ? (
-                <>
-                  <button
-                    className="bg-black p-1 w-full border-black text-sm text-white font-bold"
-                    onClick={() => setMode(undefined)}
-                  >
-                    Cancel
-                  </button>
-                  {needToSwitch ? (
-                    <button
-                      className="bg-black p-2 w-full border-black text-sm text-white font-bold"
-                      onClick={() => changeChain(bsc.id)}
-                    >
-                      Switch
-                    </button>
-                  ) : (
-                    <button
-                      type="submit"
-                      className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
-                    >
-                      {Mode.recharge}
-                    </button>
-                  )}
-                </>
-              ) : mode === Mode.withdraw ? (
-                <>
-                  <button
-                    className="bg-black p-1 w-full border-black text-sm text-white font-bold"
-                    onClick={() => setMode(undefined)}
-                  >
-                    Cancel
-                  </button>
-                  {needToSwitch ? (
-                    <button
-                      className="bg-black p-2 w-full border-black text-sm text-white font-bold"
-                      onClick={() => changeChain(bsc.id)}
-                    >
-                      Switch
-                    </button>
-                  ) : (
-                    <button
-                      type="submit"
-                      className="bg-inherit p-1 w-full border-2 border-black text-black font-bold"
-                    >
-                      {Mode.withdraw}
-                    </button>
-                  )}
-                </>
-              ) : (
-                <div
-                  className={`form-group w-full flex flex-row justify-between gap-2`}
-                >
-                  {needToSwitch ? (
-                    <button
-                      className="bg-black p-2 w-full border-black text-sm text-white font-bold"
-                      onClick={() => changeChain(bsc.id)}
-                    >
-                      Switch
-                    </button>
-                  ) : (
-                    <>
+    <div className="relative">
 
+      <button
+        className={`${isWalletOpen ? 'rounded_corner relative rounded-b-none' : ''} ring-0 flex flex-row items-center gap-2 px-4 font-orbitron font-extrabold w-full h-full text-customBlack bg-yellow text-base cursor-pointer rounded-[10px]`} onClick={() => setIsWalletOpen(prev => !prev)}
+      >
+        {isWalletOpen
+          ? ``
+          : <img src={walletImage} alt="wallet image" />
+        }
+        {isWalletOpen
+          ? <div className="font-orbitron text-lg text-customBlack font-extrabold">Your balance</div>
+          : `${balance} PAC`
+        }
+      </button >
+      {isWalletOpen
+        ?
+        <div className="wallet_container bg-gameLeftToRightShards bg-no-repeat bg-left-top absolute top-[3rem] right-0 w-96 bg-yellow flex flex-col items-end gap-4 p-5 rounded-[20px] rounded-tr-none">
+          <img className="max-w-[62px]" src={walletPacLogo} alt="Wallet pac logo" />
+          <div className="font-orbitron text-xl text-customBlack font-extrabold">{balance} PAC</div>
+          <div className="flex flex-row w-full gap-4">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className={` flex-col text-white ${wallet ? "flex" : "hidden"
+                } mx-auto my-auto w-full gap-2`}
+            >
+              <div className={`form-group flex-col ${mode ? "flex" : "hidden"} items-end`}>
+                <label className="text-sm font-bold text-black float-right ">
+                  Amount
+                </label>
+                <div className={`form-control ${errors.amount ? "is-invalid border-red-500" : ""} border-2 border-black bg-customBlack w-full px-1 rounded-lg flex flex-row items-center justify-between`} >
+                  <span className="cursor-pointer text-white text-sm">PAC</span>
+                  <input
+                    {...register("amount")}
+                    type="number"
+                    className={`form-control focus:ring-0 border-0 focus:outline-none text-white ${errors.amount ? "is-invalid" : ""} bg-customBlack p-1 border-none focus:outline-none text-end`}
+                    placeholder="Amount"
+                  />
+                </div>
+                <div className="invalid-feedback text-red-500 text-sm">
+                  {errors.amount?.message}
+                </div>
+                <div className="invalid-feedback text-red-500 text-sm" >
+                  {isErrorWithdrawBalance &&
+                    isApiResponse(errorWithdrawBalance) &&
+                    errorWithdrawBalance.data.message}
+                </div>
+              </div>
+              {wallet && (
+                <div className="form-group w-full flex flex-row justify-between gap-2">
+                  {mode === Mode.recharge ? (
+                    <>
                       <button
-                        className="bg-black p-1 w-full border-black text-sm text-white font-bold"
-                        onClick={() => setMode(Mode.recharge)}
+                        className="w-full bg-lightGray py-2 text-white rounded-lg hover:bg-lightGrayHover"
+                        onClick={() => setMode(undefined)}
                       >
-                        {Mode.recharge}
+                        Cancel
                       </button>
-                      <button
-                        className={
-                          neededAccount()
-                            ? "bg-black p-1 w-full border-black text-sm text-white font-bold"
-                            : "bg-inherit p-1 w-full border-2 border-black text-black font-bold disabled:opacity-30"
-                        }
-                        onClick={() => {
-                          setMode(Mode.withdraw)
-                        }}
-                      >
-                        {Mode.withdraw}
-                      </button>
+                      {needToSwitch ? (
+                        <button
+                          className="bg-black p-2 w-full border-black text-sm text-white font-bold"
+                          onClick={() => changeChain(bsc.id)}
+                        >
+                          Switch
+                        </button>
+                      ) : (
+                        <button
+                          type="submit"
+                          className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover"
+                        >
+                          {Mode.recharge}
+                        </button>
+                      )}
                     </>
+                  ) : mode === Mode.withdraw ? (
+                    <>
+                      <button
+                        className="w-full bg-lightGray py-2 text-white rounded-lg hover:bg-lightGrayHover"
+                        onClick={() => setMode(undefined)}
+                      >
+                        Cancel
+                      </button>
+                      {needToSwitch ? (
+                        <button
+                          className="bg-black p-2 w-full border-black text-sm text-white font-bold"
+                          onClick={() => changeChain(bsc.id)}
+                        >
+                          Switch
+                        </button>
+                      ) : (
+                        <button
+                          type="submit"
+                          className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover"
+                        >
+                          {Mode.withdraw}
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <div
+                      className={`form-group w-full flex flex-row justify-between gap-2`}
+                    >
+                      {needToSwitch ? (
+                        <button
+                          className="bg-black p-2 w-full border-black text-sm text-white font-bold"
+                          onClick={() => changeChain(bsc.id)}
+                        >
+                          Switch
+                        </button>
+                      ) : (
+                        <>
+
+                          <button
+                            className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover"
+                            onClick={() => setMode(Mode.recharge)}
+                          >
+                            {Mode.recharge}
+                          </button>
+                          <button
+                            className={"w-full bg-lightGray py-2 text-white rounded-lg hover:bg-lightGrayHover"}
+                            onClick={() => {
+                              setMode(Mode.withdraw)
+                            }}
+                          >
+                            {Mode.withdraw}
+                          </button>
+                        </>
+                      )}
+                    </div>
                   )}
                 </div>
               )}
-
-            </div>
-          )}
-          <div className="invalid-feedback text-red-500 text-sm" >
-            {isErrorWithdrawBalance &&
-              isApiResponse(errorWithdrawBalance) &&
-              errorWithdrawBalance.data.message}
+              <span className="text-sm text-black text-center opacity-2/3">
+                Withdrawals may take a long time, please wait at least 30 minutes
+              </span>
+            </form>
           </div>
-        </form>
-      </div>
-      <span className="text-sm text-white opacity-2/3">
-        Withdrawals may take a long time, please wait at least 30 minutes
-      </span>
+
+
+        </div>
+        : ''
+      }
     </div>
   ) : (
     <div>
@@ -441,7 +454,17 @@ const Wallet = memo(() => {
         </button>
       ) : (
         <button
-          className="text-xl text-black font-bold bg-yellow p-3 flex-col flex gap-5 w-full items-center text-center"
+          className="
+          px-8
+          font-orbitron
+          font-extrabold
+          w-full
+          h-full
+          text-customBlack
+          bg-yellow 
+          text-base
+          cursor-pointer
+          rounded-[10px]"
           onClick={() => handleConnectWallet()}
         >
           {isLoading && <Loader />}

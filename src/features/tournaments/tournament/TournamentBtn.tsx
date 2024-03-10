@@ -84,13 +84,13 @@ const TournamentBtn: FC<ButtonProps> = ({
     }
   }, [transactionConfirmed])
 
-  useEffect(() =>{
+  useEffect(() => {
     txLoading &&
-    notification(
-      'Warning!',
-      'Do not reload the page until the transaction is completed',
-      'warning'
-    )
+      notification(
+        'Warning!',
+        'Do not reload the page until the transaction is completed',
+        'warning'
+      )
   }, [txLoading])
 
   useEffect(() => {
@@ -103,31 +103,25 @@ const TournamentBtn: FC<ButtonProps> = ({
   if (tournamentChainId !== chain?.id) {
     return (
       <button
-        className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
+        className="text-center bg-yellow text-black w-full p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-al  disabled:opacity-30"
         onClick={() => changeChain(tournamentChainId)}
-        disabled={isDisconnected}
+        disabled={!isDisconnected}
       >
-        {`Switch to ${symbols.hasOwnProperty(tournamentChainId)
-            ? symbols[tournamentChainId as keyof typeof symbols]
-            : symbols.default
-          }`}
+        {`Participate`}
       </button>
     )
   }
 
   return (
     <button
-      className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 "
+      className="text-center bg-yellow text-black w-full p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-al  disabled:opacity-30"
       onClick={() => sendTransaction?.()}
       disabled={!sendTransaction || isDisconnected}
     >
       {
         txLoading ? <Loader />
           :
-          `Participate in the tournament for ${amount} ${symbols.hasOwnProperty(tournamentChainId)
-            ? symbols[tournamentChainId as keyof typeof symbols]
-            : symbols.default
-          }`}
+          `qd`}
     </button>
   )
 }

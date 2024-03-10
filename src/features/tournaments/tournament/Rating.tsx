@@ -23,60 +23,56 @@ const Rating = (props: IRat) => {
     if (isLoading) {
         return <Loader />
     }
-    if (isError) {
-        return <Error />
-    }
-    if (!data) {
-        return <Error />
-    }
 
-    return (
-        <table className="gap-2 flex flex-col w-full h-full" key={'123'}>
-            <thead>
-                <tr className="text-yellow w-full flex flex-row items-center text-xl text-center" key={'123'}>
-                    <th className="w-1/4 text-center">Rating</th>
-                    <th className="w-1/4 text-center">Earned</th>
-                    <th className="w-1/4 text-center leading-4">Games count</th>
-                    <th className="w-1/4 text-center">Login</th>
-                </tr>
-            </thead>
-            <tbody className="gap-1 flex flex-col">
-                {
-                    isSuccess && data?.map((item: IRating, index: number) => {
-                        return tokenService.getUser()?.username == item.username ?
-                            <tr className="text-black border-t-2 border-b-2 border-yellow w-full flex flex-row py-1 text-base bg-yellow font-medium" key={index}>
-                                <td className="w-1/4 text-center">
-                                    #{index + 1}
-                                </td>
-                                <td className="w-1/4 text-center">
-                                    {item.earned} PAC
-                                </td>
-                                <td className="w-1/4 text-center">
-                                    {item.games_count}
-                                </td>
-                                <td className="w-1/4 text-center">
-                                    {item.username}
-                                </td>
-                            </tr>
-                            : <tr className="text-white border-t-2 border-b-2 border-gray w-full flex flex-row py-1 text-base font-medium" key={index}>
-                                <td className="w-1/4 text-center">
-                                    #{index + 1}
-                                </td>
-                                <td className="w-1/4 text-center">
-                                    {item.earned} PAC
-                                </td>
-                                <td className="w-1/4 text-center">
-                                    {item.games_count}
-                                </td>
-                                <td className="w-1/4 text-center  ">
-                                    {item.username}
-                                </td>
-
-                            </tr>
-                    })
-                }
-            </tbody>
-        </table>
+    return data && (
+        <div className="flex flex-col gap-10 font-orbitron ">
+            <h2 className="w-fit text-yellow text-8xl font-extrabold">Players Rating</h2>
+            <table className="gap-2 flex flex-col w-full h-full" key={'123'}>
+                <thead>
+                    <tr className="text-white w-full flex flex-row items-center text-4xl text-center p-5 font-bold" key={'123'}>
+                        <th className="w-1/4 text-start">Rating</th>
+                        <th className="w-1/4 text-start">Login</th>
+                        <th className="w-1/4 text-start leading-4">Games count</th>
+                        <th className="w-1/4 text-start">Earned</th>
+                    </tr>
+                </thead>
+                <tbody className="gap-3 flex flex-col">
+                    {
+                        isSuccess && data?.map((item: IRating, index: number) => {
+                            return tokenService.getUser()?.username == item.username ?
+                                <tr className="text-black bg-yellow w-full flex flex-row p-5 text-2xl font-medium rounded-2xl" key={index}>
+                                    <td className="w-1/4 text-start">
+                                        #{index + 1}
+                                    </td>
+                                    <td className="w-1/4 text-start">
+                                        {item.username}
+                                    </td>
+                                    <td className="w-1/4 text-start">
+                                        {item.games_count}
+                                    </td>
+                                    <td className="w-1/4 text-start">
+                                        {item.earned} PAC
+                                    </td>
+                                </tr>
+                                : <tr className="text-white bg-lightGray w-full flex flex-row p-5 text-2xl font-medium rounded-2xl" key={index}>
+                                    <td className="w-1/4 text-start">
+                                        #{index + 1}
+                                    </td>
+                                    <td className="w-1/4 text-start">
+                                        {item.username}
+                                    </td>
+                                    <td className="w-1/4 text-start">
+                                        {item.games_count}
+                                    </td>
+                                    <td className="w-1/4 text-start">
+                                        {item.earned} PAC
+                                    </td>
+                                </tr>
+                        })
+                    }
+                </tbody>
+            </table>
+        </div>
     );
 }
 

@@ -11,7 +11,7 @@ import { useRemoveWalletMutation } from "../header/wallet/wallet.slice"
 import Wallet from "../header/wallet/Wallet"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { useAccount, useDisconnect } from "wagmi"
-
+import pencil_icon from '../../images/icons/pencil.svg'
 const User = () => {
   const { isConnected } = useAccount()
   const { disconnectAsync } = useDisconnect()
@@ -42,48 +42,71 @@ const User = () => {
   }
 
   return (
-    <div className="flex flex-col gap-9">
-      <h2 className="w-fit decoration-dotted underline text-yellow text-2xl">
-        My account
-      </h2>
-      <div className="flex flex-col gap-2 max-w-lg">
-        <div className="flex flex-col text-white w-full">
-          <h3 className="text-sm">Your name</h3>
-          <span className="px-3  py-2 border-yellow border-2">
-            {data?.name}
-          </span>
-        </div>
-        <div className="flex flex-col text-white w-full">
-          <h3 className="text-sm">Email</h3>
-          <span className="px-3  py-2 border-yellow border-2">
-            {data?.email}
-          </span>
-        </div>
-        <div className="flex flex-col text-white w-full">
-          <h3 className="text-sm">Login</h3>
-          <span className="px-3  py-2 border-yellow border-2">
-            {data?.username}
-          </span>
-        </div>
-        <div className="flex flex-col text-white w-full">
-          <h3 className="text-sm">Wallet</h3>
-          <span className="px-3 py-2 border-yellow border-2">
-            {tokenService.getWallet() ?? "Wallet isnt connected"}
-          </span>
-        </div>
-      </div>
-      <div className="flex flex-col gap-5 max-w-lg">
-        <Wallet />
-        {/* <button
-          className={`w-full text-black text-center bg-yellow p-4 font-bold ${
-            !isConnected && "d-none"
-          }`}
-          onClick={() => handleRemoveWallet()}
-        >
-          {isConnected && "Disconnect wallet"}
+    <div className="background-image-black">
+      <div className="wrapper-content">
+        <h1 className="font-orbitron w-fit text-yellow text-8xl font-extrabold">My account</h1>
+        <div className="flex flex-row gap-4 w-full mt-10">
+          <div className="flex flex-col p-8 bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold w-1/3">
+            <div className="flex flex-row justify-between items-center">
+              <h2 className="text-yellow text-3xl">
+                Your data
+              </h2>
+              <span className="w-5 h-5">
+                <img src={pencil_icon} alt="pencil" />
+              </span>
+            </div>
+            <div className="flex flex-row justify-between text-2xl">
+              <span>
+                Your name
+              </span>
+              <span className="font-chakra font-normal">
+                {data?.name}
+              </span>
+            </div>
+            <div className="flex flex-row justify-between">
+              <span>
+                Email
+              </span>
+              <span className="font-chakra font-normal">
+                {data?.email}
+              </span>
+            </div>
+            <div className="flex flex-row justify-between">
+              <span>
+                Login
+              </span>
+              <span className="font-chakra font-normal">
+                {data?.username}
+              </span>
+            </div>
+            <div className="flex flex-row justify-between">
+              <span>
+                Password
+              </span>
+              <span className="font-chakra font-normal">
+                **************
+              </span>
+            </div>
+          </div>
 
-          {isLoadingRemoveWallet && <Loader />}
-        </button> */}
+          <div className="flex flex-col p-8 bg-lightGray rounded-3xl text-white font-orbitron gap-5 w-1/3">
+            <div className="flex flex-row justify-between">
+              <h2 className="text-yellow text-3xl">
+                2FA
+              </h2>
+
+            </div>
+            <div className="flex flex-row justify-between text-2xl">
+              <span>
+                Status
+              </span>
+              <span className="font-chakra font-normal">
+                Enabled
+              </span>
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
   )

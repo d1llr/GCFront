@@ -39,6 +39,18 @@ const HistoryTournament = () => {
 
     }
 
+
+    const getDate = (createdAt: string, daysLeft: string) => {
+
+        let res = new Date(createdAt);
+
+        // Add ten days to specified date
+        res.setDate(res.getDate() + Number(daysLeft));
+
+        console.log(res);
+        return res.toDateString()
+    }
+
     if (!data) {
         return <Page404 />
     }
@@ -46,88 +58,91 @@ const HistoryTournament = () => {
         return <Page404 />
     }
     return (
-        <div className="flex flex-row gap-20">
-            <div className="text-white flex flex-col gap-5 w-3/4">
-                <h2 onClick={() => { navigate(`/tournaments`) }}
-                    className="w-fit decoration-dotted underline text-yellow text-2xl flex flex-row items-center cursor-pointer"
-                >
-                    <IoChevronBack />
-                    <span>
-                        Outdated Tournaments
-                    </span>
-                </h2>
-                <div className="flex flex-row gap-6 mt-7 w-2/3">
-                    <div className="flex flex-row gap-5">
-                        <div className="w-1/2">
-                            <img src={ import.meta.env.VITE_BACKEND_URL + data?.image} alt="Фото" className="object-cover w-full" />
-                        </div>
-                        <div className="flex flex-col gap-2 h-full justify-between w-1/2">
-                            <div className="flex flex-col gap-2 text-white">
-                                <span className="text-yellow text-2xl">
-                                    {data?.name}
+        <div className="background-image-yellow">
+            <div className="wrapper-content">
+                <div className="flex flex-col gap-[150px] justify-between h-full">
+                    <div className="flex flex-col gap-8 font-orbitron">
+                        <h1 className="font-orbitron w-2/3 text-yellow text-8xl font-extrabold">{data?.name}</h1>
+                        <div className="w-2/5 font-medium text-[32px] text-white leading-10">{data?.goal}</div>
+                        <div className="flex flex-col gap-2 w-1/2">
+                            <div className="flex flex-row items-center gap-2">
+                                <span className="text-yellow text-2xl font-bold">
+                                    Ended:
                                 </span>
-                                <span className="text-xl">
-                                    {data?.description}
+                                <span className="text-white text-2xl font-bold">
+                                    {getDate(data?.createdAt, data?.daysLeft)}
                                 </span>
                             </div>
-                            <div>
-                                <ul>
-                                    <li className="flex flex-row justify-between">
-                                        <span className="text-yellow text-2xl">
-                                            Goal
-                                        </span>
-                                        <span>
-                                            {data?.goal}
-                                        </span>
-                                    </li>
-                                    <li className="flex flex-row justify-between">
-                                        <span className="text-yellow text-2xl">
-                                            Participants
-                                        </span>
-                                        <span>
-                                            {data?.participants}
-                                        </span>
-                                    </li>
-                                    <li className="flex flex-row justify-between">
-                                        <span className="text-yellow text-2xl">
-                                            Bank
-                                        </span>
-                                        <span>
-                                            {data?.bank}
-                                        </span>
-                                    </li>
-                                </ul>
+                            <div className="flex flex-row items-center gap-2">
+                                <span className="text-yellow text-2xl font-bold">
+                                    Game:
+                                </span>
+                                <span className="text-white text-2xl font-bold">
+                                    {data?.game}
+                                </span>
                             </div>
-                            {data?.players?.split(',').includes(tokenService.getUser()?.id.toString()) ?
-                                <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center disabled:opacity-30">
-                                    See you next time
-                                </button>
-                                :
-                                <button className="w-full text-black bg-yellow text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 " onClick={() => handleParticipate()}>
-                                    See you next time
-                                </button>}
                         </div>
                     </div>
-                </div>
-                <div className="flex flex-col gap-5">
-                    <h1 className="text-yellow text-2xl decoration-dotted underline">
-                        Tournament Rules
-                    </h1>
-                    <span>
-                        {data?.description}
-                    </span>
-                </div>
-            </div>
-            <div className="w-1/4 relative">
-                <h2 className="w-fit decoration-dotted underline text-yellow text-2xl z-0 pointer-events-none select-none p-2">
-                    Player rating
-                </h2>
-                <div className="flex flex-row gap-6 mt-10 z-0 h-full" >
-                    <Rating tournament_id={data?.id} typeTR={"history"} />
-                </div>
+                    <div className="flex flex-col gap-10 font-orbitron ">
+                        <h2 className="w-fit text-yellow text-8xl font-extrabold">Awards</h2>
+                        <div className="flex flex-row gap-2 w-full justify-between">
+                            {[...Array(5)].map((el, index) => {
+                                return (
+                                    <div className="flex flex-col gap-10">
+                                        <span className="text-5xl text-white font-bold">
+                                            #{index + 1} place
+                                        </span>
+                                        <span className="text-[32px] font-bold text-yellow">
+                                            100 PAC
+                                        </span>
+                                    </div>)
+                            })}
+                        </div>
 
-            </div>
-        </div >);
+                    </div>
+                    <div className="flex flex-col gap-10 font-orbitron ">
+                        <h2 className="w-fit text-yellow text-8xl font-extrabold">Details</h2>
+                        <div className="flex flex-row gap-5 w-full justify-between">
+                            <div className="flex flex-col gap-4 bg-lightGray justify-center items-center py-10 rounded-2xl w-1/4">
+                                <span className="text-[32px] text-yellow font-bold ">
+                                    Game
+                                </span>
+                                <span className="text-2xl font-normal text-white font-chakra">
+                                    {data?.game}
+                                </span>
+                            </div>
+                            <div className="flex flex-col gap-4 bg-lightGray justify-center items-center py-10 rounded-2xl w-1/4">
+                                <span className="text-[32px] text-yellow font-bold">
+                                    Start
+                                </span>
+                                <span className="text-2xl font-normal text-white font-chakra">
+                                    {new Date(data?.createdAt).toDateString()}
+                                </span>
+                            </div>
+                            <div className="flex flex-col gap-4 bg-lightGray justify-center items-center py-10 rounded-2xl w-1/4">
+                                <span className="text-[32px] text-yellow font-bold">
+                                    Finish
+                                </span>
+                                <span className="text-2xl font-normal text-white font-chakra">
+                                    {getDate(data?.createdAt, data?.daysLeft)}
+                                </span>
+                            </div>
+                            <div className="flex flex-col gap-4 bg-lightGray justify-center items-center py-10 rounded-2xl w-1/4">
+                                <span className="text-[32px] text-yellow font-bold">
+                                    Participants
+                                </span>
+                                <span className="text-2xl font-normal text-white font-chakra">
+                                    {data?.participants}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <Rating tournament_id={data?.id} typeTR={"active"} />
+                </div>
+            </div >
+
+        </div>);
 }
 
 export default HistoryTournament;
