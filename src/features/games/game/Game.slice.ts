@@ -1,15 +1,15 @@
 // Need to use the React-specific entry point to allow generating React hooks
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import IGames from "./Game.type";
-import IHistory from "./Game.type";
+import { IGame, IHistory, ITournamentsActiveAndHistory } from "./Game.type";
 import authHeader from '../../../services/accessHeaders';
+import ITournaments from '../../tournaments/Tournaments.type';
 
 // Define a service using a base URL and expected endpoints
 export const GameSlice = createApi({
   reducerPath: 'GameSlice',
-  baseQuery: fetchBaseQuery({ baseUrl:  import.meta.env.VITE_BACKEND_URL }),
+  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
   endpoints: (builder) => ({
-    GetGameById: builder.query<IGames, string | undefined>({
+    GetGameById: builder.query<IGame, string | undefined>({
       query: (id) => ({
         url: `/api/games/${id}`,
         headers: authHeader()
@@ -23,9 +23,15 @@ export const GameSlice = createApi({
         headers: authHeader()
       }),
     }),
+    getTournaments: builder.mutation<ITournamentsActiveAndHistory, string | undefined>({
+      query: (code) => ({
+        url: `/api/tournaments/activeAndHistory/all/${code}`,
+        headers: authHeader()
+      }),
+    }),
   }),
 })
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useGetGameByIdQuery, useGetUserGameHistoryMutation } = GameSlice
+export const { useGetGameByIdQuery, useGetUserGameHistoryMutation, useGetTournamentsMutation } = GameSlice

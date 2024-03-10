@@ -20,7 +20,7 @@ const Header = () => {
 
   return (
 
-    <header className="fixed w-full mt-5">
+    <header className="fixed w-full mt-5 z-40">
       <div className="wrapper">
 
         <div id="header" className="p-4 gap-5 grid grid-cols-3 items-center bg-lightGray rounded-[20px] text-white">

@@ -102,7 +102,7 @@ const router = createBrowserRouter([
         element: <Games />,
       },
       {
-        path: "/games/:gamesId",
+        path: "/games/:gameId",
         element: <Game />,
       },
       // {

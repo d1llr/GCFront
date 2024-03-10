@@ -46,7 +46,7 @@ const User = () => {
       <div className="wrapper-content">
         <h1 className="font-orbitron w-fit text-yellow text-8xl font-extrabold">My account</h1>
         <div className="flex flex-row gap-4 w-full mt-10">
-          <div className="flex flex-col p-5 bg-lightGray rounded-lg text-white gap-5 font-orbitron font-bold w-1/3">
+          <div className="flex flex-col p-8 bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold w-1/3">
             <div className="flex flex-row justify-between items-center">
               <h2 className="text-yellow text-3xl">
                 Your data
@@ -89,7 +89,7 @@ const User = () => {
             </div>
           </div>
 
-          <div className="flex flex-col p-4 bg-lightGray rounded-lg text-white font-orbitron gap-5 w-1/3">
+          <div className="flex flex-col p-8 bg-lightGray rounded-3xl text-white font-orbitron gap-5 w-1/3">
             <div className="flex flex-row justify-between">
               <h2 className="text-yellow text-3xl">
                 2FA

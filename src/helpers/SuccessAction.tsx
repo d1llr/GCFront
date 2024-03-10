@@ -4,7 +4,7 @@ const SuccessAction = (props: { h1: string, button: string, buttonAction: () => 
     const { h1, button, buttonAction } = props
 
     return (
-        <div className="w-full flex flex-col gap-4 justify-center items-center">
+        <div className="w-full flex flex-col gap-4 mt-5 justify-center items-center">
             <div className="rounded-3xl max-w-[386px] w-full flex flex-col gap-7 p-6 items-center bg-[#272727]">
 
                 <h1 className="text-center text-white text-2xl font-orbitron font-bold">

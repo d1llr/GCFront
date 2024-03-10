@@ -19,7 +19,7 @@ const Footer = () => {
         await disconnectAsync()
     }
     return (
-        <footer className="w-full mb-5">
+        <footer className="w-full pb-5">
             <div className="wrapper">
 
                 <div id="header" className="p-8 grid grid-flow-col items-center bg-lightGray rounded-[20px] text-white">
@@ -35,7 +35,7 @@ const Footer = () => {
 
                     <div className="flex flex-col gap-2 justify-center items-center text-16 font-orbitron">
                         <div className="flex flex-row gap-6">
-                            <div className="flex flex-row gap-2">
+                            <div className="flex flex-row gap-3 text-base">
                                 <NavLink
                                     to="/games"
                                     className={({ isActive }) =>
@@ -59,7 +59,7 @@ const Footer = () => {
                                     My account
                                 </NavLink>
                             </div>
-                            <div className="flex flex-row gap-2">
+                            <div className="flex flex-row gap-3 text-base">
                                 <NavLink
                                     to=""
                                     className={({ isActive }) =>
@@ -85,9 +85,9 @@ const Footer = () => {
                             </div>
                         </div>
                         <div className="shrink grow-3">
-                            <span className="text-gray font-chakra">
+                            <a href="https://www.mexc.com/ru-RU/exchange/PACOIN_USDT" target="_blank" className="text-gray font-chakra font-bold">
                                 Withdrawal of coins to MEXC
-                            </span>
+                            </a>
                         </div>
                     </div>
 

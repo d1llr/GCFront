@@ -194,12 +194,12 @@ const Register = () => {
               </div>
               <div className="form-group flex flex-col">
                 <label className="
-              text-md 
-              after:content-['*']
-              after:inline
-              after:text-yellow
-              after:font-beausans
-              mb-1
+                                text-md 
+                                after:content-['*']
+                                after:inline
+                                after:text-yellow
+                                after:font-beausans
+                                mb-1
             ">Login</label>
 
                 <div className="invalid-feedback text-red-500 text-sm mb-2">{errors.login?.message}</div>
