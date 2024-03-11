@@ -1,4 +1,5 @@
 import Logo from "../../images/logo-game-center.svg"
+import ExitIcon from "../../images/icons/exit-account.svg"
 import Discord from "../../images/icons/discord.svg"
 import TelegramRU from "../../images/icons/tg_ru.svg"
 import TelegramEN from "../../images/icons/tg_eng.svg"
@@ -9,6 +10,7 @@ import { useNavigate } from "react-router-dom"
 import tokenService from "../../services/token.service"
 import Wallet from "./wallet/Wallet"
 import { useDisconnect } from "wagmi"
+
 
 const Header = () => {
   const { disconnectAsync } = useDisconnect()
@@ -23,9 +25,9 @@ const Header = () => {
     <header className="fixed w-full mt-5 z-40">
       <div className="wrapper">
 
-        <div id="header" className="p-4 gap-5 grid grid-cols-3 items-center bg-lightGray rounded-[20px] text-white">
+        <div id="header" className="p-4 gap-5 flex justify-between items-center bg-lightGray rounded-[20px] text-white">
 
-          <div className="gap-5 flex flex-col">
+          <div className="gap-5 flex flex-col w-full max-w-[25%] max-[1050px]:max-w-[fit-content]">
             <NavLink to="/games" className="w-fit">
               <img src={Logo} alt="logotype" className="max-w-[120px]" />
               {/* {import.meta.env.VITE_APP_DEVELOPMENT ?? ''} */}
@@ -69,22 +71,10 @@ const Header = () => {
                 tokenService.removeUser()
                 navigate("/login")
               }}
-              className="
-                h-[48px]
-                w-[48px]
-                bg-yellow 
-                text-xl 
-                cursor-pointer
-                rounded-[10px]
-                after:flex
-                after:items-center
-                after:justify-center
-                after:content-exit
-                after:w-full
-                after:h-full
-                after:mt-0.5
-              "
-            ></button>
+              className="default_icon_btn"
+            >
+              <img src={ExitIcon} alt="Exit" />
+            </button>
           </div>
         </div>
 

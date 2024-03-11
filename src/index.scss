@@ -4,6 +4,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 * {
   box-sizing: border-box;
 }
@@ -98,14 +99,14 @@ header {
   background: radial-gradient(farthest-side at top left, transparent 97%, #FFF100) bottom left;
 }
 
-.default_btn {
+.default_btn{
   cursor: pointer;
-  color: rgb(13, 13, 13);
+  color: rgb(13 13 13);
   width: 100%;
   height: 100%;
   padding: 0.5rem 2rem;
-  font-size: 1.25rem;
-  line-height: 1.75rem;
+  font-size: 1.25rem/* 20px */;
+  line-height: 1.75rem/* 28px */;
   font-weight: 700;
   /* height: 2.75rem; */
   border: none;
@@ -115,33 +116,34 @@ header {
   background: #FFF100;
   transition: all 0.3s ease;
 }
-
-.default_btn:hover {
+.default_btn:hover{
   background: rgb(210, 199, 6);
   transition: all 0.3s ease;
 }
 
-.default_icon_btn {
+
+.default_icon_btn{
   background: #FFF100;
-  font-size: 1.25rem;
-  line-height: 1.75rem;
+  font-size: 1.25rem/* 20px */;
+  line-height: 1.75rem/* 28px */;
   cursor: pointer;
   border-radius: 10px;
+
   min-width: 48px;
   max-width: 48px;
   min-height: 48px;
   max-height: 48px;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
   transition: all 0.3s ease;
 }
-
-.default_icon_btn img {
+.default_icon_btn img{
   max-width: 48px;
 }
-
-.default_icon_btn:hover {
+.default_icon_btn:hover{
   background: rgb(210, 199, 6);
   transition: all 0.3s ease;
 }
@@ -151,12 +153,11 @@ header {
   border: 1px solid #fff100;
   position: relative;
   background-color: #0D0D0D !important;
-}
 
+}
 .button_loading:hover {
-  background: #0D0D0D !important;
+  background: #0D0D0D!important;
 }
-
 .button_loading::before {
   content: "";
   width: 20px;
@@ -172,21 +173,26 @@ header {
     top: -20%;
     left: -3%;
   }
+
   35% {
     top: -20%;
     left: 97%;
   }
+
   45% {
     top: 90%;
     left: 97%;
   }
+
   85% {
     top: 90%;
     left: -3%;
   }
+
   100% {
     top: -20%;
     left: -3%;
   }
 }
+
 /*# sourceMappingURL=index.css.map */

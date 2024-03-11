@@ -178,8 +178,8 @@ const Login = () => {
 
 
                     <div className="form-group mt-2">
-                        <button type="submit" className={`text-center bg-yellow ${isLoading && 'button_loading'}  text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg lowercase font-orbiton hover:bg-hoverYellow transition-al`}>
-                            {isError ? (isApiResponse(error) && [401, 402].includes(error.status) ? "Invalid login or password" : 'Server error, retry later') : "Log in"}
+                        <button type="submit" className={`default_btn ${isLoading && 'button_loading'}`}>
+                            {isError ? (isApiResponse(error) && [401, 402].includes(error.status) ? "Invalid login or password" : 'Server error, retry later') : "log in"}
                         </button>
                     </div>
 

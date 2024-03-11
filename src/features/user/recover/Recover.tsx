@@ -186,7 +186,7 @@ const Recover = () => {
                                     placeholder='Email'
                                 />
                             </div>
-                            <button type="submit" className={`text-center bg-yellow ${SendCodeLoading && 'button_loading'} text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg font-orbiton hover:bg-hoverYellow transition-al`}>
+                            <button type="submit" className={`${SendCodeLoading && 'button_loading'} default_btn`}>
                                 Continue
                             </button>
                         </form>
@@ -260,7 +260,7 @@ const Recover = () => {
                                 />
 
                             </div>
-                            <button type="submit" className={`text-center bg-yellow ${SendCodeLoading && 'button_loading'} text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg font-orbiton hover:bg-hoverYellow transition-al`}>
+                            <button type="submit" className={`${SendCodeLoading && 'button_loading'} default_btn`}>
                                 Continue
                             </button>
                         </form>
