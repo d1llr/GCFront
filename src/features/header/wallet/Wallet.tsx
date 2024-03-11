@@ -290,7 +290,7 @@ const Wallet = memo(() => {
       })
       .catch((err) => {
         console.log(err);
-        navigate("/login")
+        // navigate("/login")
       })
   }, [])
 
@@ -443,7 +443,7 @@ const Wallet = memo(() => {
       }
     </div>
   ) : (
-    <div>
+    <div className="max-[920px]:w-full">
       {account.isConnected ? (
         <button
           className="text-xl text-black font-bold bg-yellow p-3 flex-col flex gap-5 w-full items-center text-center"
@@ -454,11 +454,7 @@ const Wallet = memo(() => {
         </button>
       ) : (
         <button
-          className="
-          default_btn
-          px-8
-          text-base
-          rounded-[10px]"
+          className="default_btn px-8 text-base rounded-[10px] max-[920px]:text-[16px]"
           onClick={() => handleConnectWallet()}
         >
           {isLoading && <Loader />}

@@ -5,6 +5,17 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@mixin keyframes($name) {
+  @keyframes #{$name} {
+    @content;
+  }
+}
+
+@mixin animate($animation, $duration, $method, $times) {
+  animation: $animation $duration $method $times;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -14,9 +25,9 @@ body {
   font-family: "Chakra Petch", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  // background: #0D0D0D;
+  background: #0D0D0D;
   color: #0D0D0D;
-  overflow: inherit;
+  overflow-x: hidden;
 }
 
 code {
@@ -99,14 +110,18 @@ header {
   background: radial-gradient(farthest-side at top left, transparent 97%, #FFF100) bottom left;
 }
 
-.default_btn{
+.default_btn {
   cursor: pointer;
   color: rgb(13 13 13);
   width: 100%;
   height: 100%;
   padding: 0.5rem 2rem;
-  font-size: 1.25rem/* 20px */;
-  line-height: 1.75rem/* 28px */;
+  font-size: 1.25rem
+    /* 20px */
+  ;
+  line-height: 1.75rem
+    /* 28px */
+  ;
   font-weight: 700;
   /* height: 2.75rem; */
   border: none;
@@ -116,16 +131,21 @@ header {
   background: #FFF100;
   transition: all 0.3s ease;
 }
-.default_btn:hover{
+
+.default_btn:hover {
   background: rgb(210, 199, 6);
   transition: all 0.3s ease;
 }
 
 
-.default_icon_btn{
+.default_icon_btn {
   background: #FFF100;
-  font-size: 1.25rem/* 20px */;
-  line-height: 1.75rem/* 28px */;
+  font-size: 1.25rem
+    /* 20px */
+  ;
+  line-height: 1.75rem
+    /* 28px */
+  ;
   cursor: pointer;
   border-radius: 10px;
 
@@ -139,31 +159,76 @@ header {
   align-items: center;
 
   transition: all 0.3s ease;
-  img{
+
+  img {
     max-width: 48px;
+  }
+
+  &:hover {
+    background: rgb(210, 199, 6);
+    transition: all 0.3s ease;
   }
 }
 
-.default_icon_btn:hover{
-  background: rgb(210, 199, 6);
+.mobile_icon_button {
+  background: #FFF100;
+  font-size: 1.25rem
+    /* 20px */
+  ;
+  line-height: 1.75rem
+    /* 28px */
+  ;
+  cursor: pointer;
+  border-radius: 10px;
+
+  min-width: 48px;
+  max-width: 48px;
+  min-height: 48px;
+  max-height: 48px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   transition: all 0.3s ease;
+
+  img {
+    max-width: 48px;
+  }
+
+  &:hover {
+    background: rgb(210, 199, 6);
+    transition: all 0.3s ease;
+  }
 }
 
+
+
 @media screen and (max-width: 600px) {
-  .default_icon_btn{
+  .default_icon_btn {
     border-radius: 7px;
-  
+
     min-width: 38px;
     max-width: 38px;
     min-height: 38px;
     max-height: 38px;
 
     transition: all 0.3s ease;
-    img{
+
+    img {
       max-width: 38px;
     }
   }
 
+
+
+}
+
+@media screen and (max-width: 920px) {
+  .default_btn {
+    padding: 0.5rem 1rem;
+    width: 100%;
+  }
 }
 
 
@@ -176,9 +241,11 @@ header {
   background-color: #0D0D0D !important;
 
 }
+
 .button_loading:hover {
-  background: #0D0D0D!important;
+  background: #0D0D0D !important;
 }
+
 .button_loading::before {
   content: "";
   width: 20px;
@@ -218,6 +285,68 @@ header {
 
 
 
-.mob_burger{
-  
+#mob_menu {
+  position: fixed;
+  right: 0;
+  top: 20px;
+  background: rgb(39, 39, 39);
+  width: 283px;
+  height: calc(100svh - 20px);
+  border-radius: 15px 0px 0px 15px;
+  padding: 16px 16px 32px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+
+  .default_icon_btn {
+    max-width: 42px;
+    max-height: 42px;
+    min-width: 42px;
+    min-height: 42px;
+
+    img {
+      max-width: 42px;
+    }
+  }
 }
+@media screen and (min-width: 920px) {
+  #mob_menu{
+    display: none;
+  }
+}
+@media screen and (max-width: 920px) {
+  .mob_element_open {
+    transform: translateX(0vw);
+  
+    @include keyframes(openMobElement) {
+      from {
+        transform: translateX(100vw);
+      }
+  
+      to {
+        transform: translateX(0vw);
+      }
+  
+    }
+  
+    @include animate(openMobElement, 0.5s, ease, 1);
+  }
+  
+  .mob_element_close {
+    transform: translateX(100vw);
+    @include keyframes(closeMobElement) {
+      from {
+        transform: translateX(0vw);
+      }
+      
+      to {
+        transform: translateX(100vw);
+      }
+  
+    }
+  
+    @include animate(closeMobElement, 0.5s, ease, 1);
+  }
+}
+

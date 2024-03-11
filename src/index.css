@@ -13,8 +13,9 @@ body {
   font-family: "Chakra Petch", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #0D0D0D;
   color: #0D0D0D;
-  overflow: inherit;
+  overflow-x: hidden;
 }
 
 code {
@@ -138,8 +139,30 @@ header {
 .default_icon_btn img {
   max-width: 48px;
 }
-
 .default_icon_btn:hover {
+  background: rgb(210, 199, 6);
+  transition: all 0.3s ease;
+}
+
+.mobile_icon_button {
+  background: #FFF100;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  cursor: pointer;
+  border-radius: 10px;
+  min-width: 48px;
+  max-width: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+.mobile_icon_button img {
+  max-width: 48px;
+}
+.mobile_icon_button:hover {
   background: rgb(210, 199, 6);
   transition: all 0.3s ease;
 }
@@ -155,6 +178,12 @@ header {
   }
   .default_icon_btn img {
     max-width: 38px;
+  }
+}
+@media screen and (max-width: 920px) {
+  .default_btn {
+    padding: 0.5rem 1rem;
+    width: 100%;
   }
 }
 .button_loading {
@@ -198,5 +227,60 @@ header {
   100% {
     top: -20%;
     left: -3%;
+  }
+}
+#mob_menu {
+  position: fixed;
+  right: 0;
+  top: 20px;
+  background: rgb(39, 39, 39);
+  width: 283px;
+  height: calc(100svh - 20px);
+  border-radius: 15px 0px 0px 15px;
+  padding: 16px 16px 32px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+}
+#mob_menu .default_icon_btn {
+  max-width: 42px;
+  max-height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+}
+#mob_menu .default_icon_btn img {
+  max-width: 42px;
+}
+
+@media screen and (min-width: 920px) {
+  #mob_menu {
+    display: none;
+  }
+}
+@media screen and (max-width: 920px) {
+  .mob_element_open {
+    transform: translateX(0vw);
+    animation: openMobElement 0.5s ease 1;
+  }
+  @keyframes openMobElement {
+    from {
+      transform: translateX(100vw);
+    }
+    to {
+      transform: translateX(0vw);
+    }
+  }
+  .mob_element_close {
+    transform: translateX(100vw);
+    animation: closeMobElement 0.5s ease 1;
+  }
+  @keyframes closeMobElement {
+    from {
+      transform: translateX(0vw);
+    }
+    to {
+      transform: translateX(100vw);
+    }
   }
 }/*# sourceMappingURL=index.css.map */
