@@ -25,6 +25,8 @@ const Game = () => {
   const [tournaments, setTournaments] = useState<ITournamentsActiveAndHistory>()
 
   useEffect(() => {
+    console.log(data?.code);
+    
     if (GameDataSuccess)
       getTournaments(data?.code)
         .unwrap()
@@ -42,54 +44,7 @@ const Game = () => {
 
   const [gameHistory, setGameHistory] = useState<IHistory[]>()
   const [historyError, setHistoryError] = useState<boolean>(false)
-  type penis = {
-    title: string;
-    data: string;
-    reward: number;
-    balance: number
-  }
-  const previousdata: penis[] = [{
-    title: "initial match",
-    data: "28.02.2024",
-    reward: +10,
-    balance: 100,
-  },
-  {
-    title: "initial match",
-    data: "28.02.2024",
-    reward: -10,
-    balance: 100000,
-  },
-  {
-    title: "initial match",
-    data: "28.02.2024",
-    reward: +10,
-    balance: 100000,
-  },
-  {
-    title: "initial match",
-    data: "28.02.2024",
-    reward: +10,
-    balance: 100000,
-  },
-  {
-    title: "initial match",
-    data: "28.02.2024",
-    reward: -10,
-    balance: 100000,
-  },
-  {
-    title: "initial match",
-    data: "28.02.2024",
-    reward: +10,
-    balance: 100000,
-  },
-  {
-    title: "initial match",
-    data: "28.02.2024",
-    reward: -10,
-    balance: 100000,
-  }]
+
   useEffect(() => {
     if (GameDataSuccess)
       getUserHistory({
@@ -123,9 +78,9 @@ const Game = () => {
             <div className="w-2/5 font-semibold text-2xl text-white">{data?.short_desc}</div>
             <div>
               <ul className="flex flex-row gap-3">
-                {data?.links?.android && <li className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow"><img src={android_icon} alt="not found" className=""></img></li>}
-                {data?.links?.windows && <li className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow"><img src={win} alt="not found" className=""></img></li>}
-                {data?.links?.web && <li className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow"><img src={web} alt="not found" className=""></img></li>}
+                {data?.links?.android && <a href={data?.links?.android} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow"><img src={android_icon} alt="not found" className=""></img></a>}
+                {data?.links?.windows && <a href={data?.links?.windows} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow"><img src={win} alt="not found" className=""></img></a>}
+                {data?.links?.web && <a href={data?.links?.web} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow"><img src={web} alt="not found" className=""></img></a>}
               </ul>
             </div>
           </div>
@@ -240,7 +195,7 @@ const Game = () => {
                     return (
                       <li className={`px-10 py-5 mt-4 w-full gap-2 rounded-2xl font-bold bg-lightGray grid grid-cols-4 font-orbitron text-white text-2xl`}>
                         <span>{item.title}</span>
-                        <span>{item.createdAt}</span>
+                        <span>{new Date(item?.createdAt).toDateString()}</span>
                         {item.isWinner ?
                           <span className="text-green-500">+{item.match_cost} PAC</span>
                           :

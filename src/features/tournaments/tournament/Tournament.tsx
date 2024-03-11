@@ -18,9 +18,9 @@ const Tournament = () => {
   const { data, isLoading, isError, error, refetch, isSuccess } = useGetTournamentByIdQuery(params.tournamentId)
   // console.log(data?.players?.split(','));
 
-  if (isLoading) {
-    return <Loader />
-  }
+  // if (isLoading) {
+  //   return <Loader />
+  // }
 
   if (!data) {
     return <Page404 navigateTo={'/tournaments'} />
@@ -112,7 +112,7 @@ const Tournament = () => {
                   Game
                 </span>
                 <span className="text-2xl font-normal text-white font-chakra">
-                  {data?.game}
+                  {data?.game_name}
                 </span>
               </div>
               <div className="flex flex-col gap-4 bg-lightGray justify-center items-center py-10 rounded-2xl w-1/4">

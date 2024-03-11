@@ -17,7 +17,7 @@ export type IUniversalCode = {
     email: string
 }
 
-const Code = (props: { userProps: IUniversalCode, setCheckingResult: Dispatch<SetStateAction<boolean | undefined>> }) => {
+const Code = (props: { userProps: IUniversalCode, setCheckingResult: Dispatch<SetStateAction<boolean | undefined>>, h1?: string }) => {
 
 
     // api requests
@@ -133,7 +133,7 @@ const Code = (props: { userProps: IUniversalCode, setCheckingResult: Dispatch<Se
 
                     <div className="form-group flex flex-col">
                         <label className="text-center pb-6">
-                            The code has been sent to you by email. If It’s been mising for a long time, check your spam folder.
+                            {props.h1 ?  props.h1 : 'The code has been sent to you by email. If It’s been mising for a long time, check your spam folder.'}
                         </label>
 
                         <div className="flex flex-row justify-center items-center gap-[16px]">

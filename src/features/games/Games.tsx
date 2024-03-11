@@ -9,9 +9,9 @@ const Games = () => {
   const navigate = useNavigate()
 
 
-  if (isLoading) {
-    return <Loader />
-  }
+  // if (isLoading) {
+  //   return <Loader />
+  // }
   return (
     <div className="background-image-black">
       <div className="wrapper-content">
