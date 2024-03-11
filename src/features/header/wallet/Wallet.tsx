@@ -454,7 +454,7 @@ const Wallet = memo(() => {
         </button>
       ) : (
         <button
-          className="default_btn px-8 text-base rounded-[10px] max-[920px]:text-[16px]"
+          className="yellow_btn px-8 text-base rounded-[10px] max-[920px]:text-[16px]"
           onClick={() => handleConnectWallet()}
         >
           {isLoading && <Loader />}

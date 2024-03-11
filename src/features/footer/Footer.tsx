@@ -39,36 +39,34 @@ const Footer = () => {
                         <div className="flex flex-row gap-6 max-[1170px]:flex-wrap max-[1170px]:justify-center max-[1170px]:gap-2">
                             <div className="flex flex-row gap-3 text-base flex-wrap justify-center">
                                 <NavLink
-                                    to=""
+                                    to="https://pac-project.com/"
                                     className={({ isActive }) =>
-                                        isActive ? "text-yellow" : ""
+                                        isActive ? "text-yellow" : "hover:text-yellow"
                                     }
                                 >
                                     Offical website
                                 </NavLink>
-                                <NavLink to='' className={({ isActive }) => isActive ? 'text-yellow' : ''}>
+                                <NavLink to='https://www.pacex.io/#/' className={({ isActive }) => isActive ? 'text-yellow' : 'hover:text-yellow'}>
                                     PAC Exchange
                                 </NavLink>
                                 <NavLink
-                                    to=""
+                                    to="https://t.me/AIFastBrain_bot?start=2099954707"
                                     className={({ isActive }) =>
-                                        isActive ? "text-yellow" : ""
+                                        isActive ? "text-yellow" : "hover:text-yellow"
                                     }
                                 >
                                     AI Bot
 
                                 </NavLink>
                                 <NavLink
-                                    to="https://t.me/AIFastBrain_bot?start=2099954707"
+                                    to="https://www.mexc.com/ru-RU/exchange/PACOIN_USDT"
                                     target="_blank"
                                     className={({ isActive }) =>
-                                        isActive ? "text-yellow" : ""
+                                        isActive ? "text-yellow" : "hover:text-yellow"
                                     }
                                 >
                                     Trade on MEXC
                                 </NavLink>
-                               
-                                
                                 
                             </div>
                         </div>
@@ -81,16 +79,16 @@ const Footer = () => {
 
                     <div className="flex flex-row justify-end gap-4">
 
-                        <a className="default_icon_btn" href="">
+                        <a className="yellow_icon_btn" href="https://t.me/PacmanCoinRU">
                             <img src={tg_ru} alt="telegram ru" />
                         </a>
-                        <a className="default_icon_btn" href="">
+                        <a className="yellow_icon_btn" href="https://t.me/PacmanCoinMain">
                             <img src={tg_en} alt="telegram en" />
                         </a>
-                        <a className="default_icon_btn" href="">
+                        <a className="yellow_icon_btn" href="https://discord.gg/JFwaENGDxy">
                             <img src={discord} alt="discord" />
                         </a>
-                        <a className="default_icon_btn" href="">
+                        <a className="yellow_icon_btn" href="https://twitter.com/Token_Pac">
                             <img src={x} alt="social X" />
                         </a>
 

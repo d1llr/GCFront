@@ -319,7 +319,7 @@ const Register = () => {
               <div className="form-group">
                 <button
                   type="submit"
-                  className={`${SendCodeLoading && 'button_loading'} default_btn`}
+                  className={`${SendCodeLoading && 'button_loading'} yellow_btn`}
                 >
                   {SendCodeUninitialized && "Sign up"}
                   {/* {SendCodeLoading && <Loader />} */}

@@ -186,7 +186,7 @@ const Recover = () => {
                                     placeholder='Email'
                                 />
                             </div>
-                            <button type="submit" className={`${SendCodeLoading && 'button_loading'} default_btn`}>
+                            <button type="submit" className={`${SendCodeLoading && 'button_loading'} yellow_btn`}>
                                 Continue
                             </button>
                         </form>
@@ -260,7 +260,7 @@ const Recover = () => {
                                 />
 
                             </div>
-                            <button type="submit" className={`${SendCodeLoading && 'button_loading'} default_btn`}>
+                            <button type="submit" className={`${SendCodeLoading && 'button_loading'} yellow_btn`}>
                                 Continue
                             </button>
                         </form>

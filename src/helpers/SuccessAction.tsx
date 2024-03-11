@@ -13,7 +13,7 @@ const SuccessAction = (props: { h1: string, button: string, buttonAction: () => 
 
                 <img src={SucessRegister} alt="Sucess register" />
 
-                <button className='default_btn' onClick={buttonAction}>{button}</button>
+                <button className='yellow_btn' onClick={buttonAction}>{button}</button>
 
             </div>
 

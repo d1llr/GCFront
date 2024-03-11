@@ -88,7 +88,7 @@ const Header = () => {
                 tokenService.removeUser()
                 navigate("/login")
               }}
-              className="default_icon_btn"
+              className="yellow_icon_btn"
             >
               <img src={ExitIcon} alt="Exit" />
             </button>
@@ -99,7 +99,7 @@ const Header = () => {
               onClick={() => {
                 dispatch(setMobBurger())
               }}
-              className="default_icon_btn"
+              className="yellow_icon_btn"
             >
               <img src={BurgerOpen} alt="Open burger" />
             </button>
@@ -109,6 +109,7 @@ const Header = () => {
 
       </div>
 
+            
 
       <div id="mob_menu" className={`${mobBurger ? 'mob_element_open' : 'mob_element_close'}`}>
         <div className="flex flex-col gap-[50px]">
@@ -171,16 +172,16 @@ const Header = () => {
         
         <div className="flex flex-row justify-start gap-3">
 
-            <a className="default_icon_btn" href="">
+            <a className="yellow_icon_btn" href="">
                 <img src={tg_ru} alt="telegram ru" />
             </a>
-            <a className="default_icon_btn" href="">
+            <a className="yellow_icon_btn" href="">
                 <img src={tg_en} alt="telegram en" />
             </a>
-            <a className="default_icon_btn" href="">
+            <a className="yellow_icon_btn" href="">
                 <img src={discord} alt="discord" />
             </a>
-            <a className="default_icon_btn" href="">
+            <a className="yellow_icon_btn" href="">
                 <img src={x} alt="social X" />
             </a>
 
