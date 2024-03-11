@@ -18,6 +18,14 @@ interface ButtonProps {
   amount: string
   postRequest: () => Promise<void>
 }
+
+export const symbols = {
+  800001: "OCTA",
+  1972: "REDE",
+  default: "PAC",
+}
+
+
 const TournamentBtn: FC<ButtonProps> = ({
   transferTo,
   tournamentChainId,
@@ -46,12 +54,6 @@ const TournamentBtn: FC<ButtonProps> = ({
     isSuccess: transactionConfirmed,
   } = useWaitForTransaction({ confirmations: 1, hash: transactionData?.hash })
   // ===========================================
-
-  const symbols = {
-    800001: "OCTA",
-    1972: "REDE",
-    default: "PAC",
-  }
 
   function notification(
     title: string,
@@ -121,7 +123,7 @@ const TournamentBtn: FC<ButtonProps> = ({
       {
         txLoading ? <Loader />
           :
-          `qd`}
+          `Participate`}
     </button>
   )
 }

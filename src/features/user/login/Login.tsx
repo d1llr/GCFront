@@ -97,7 +97,7 @@ const Login = () => {
                                 focus:outline-0 
                                 focus:ring-transparent
                                 focus:border-rose-500
-                                ${errors.login ? 'is-invalid border border-rose-500' : 'border-none'}
+                                ${errors.login || isError ? 'is-invalid border border-rose-500' : 'border-none'}
                                 text-lg
                                 rounded-lg
                                 bg-lightGray
@@ -125,7 +125,7 @@ const Login = () => {
 
                         <div className={`
                             form-control 
-                            ${errors.password ? 'is-invalid border border-rose-500' : 'border-none'} 
+                            ${(errors.password || isError) ? 'is-invalid border border-rose-500' : 'border-none'} 
                             rounded-lg
                             bg-lightGray
                             flex flex-row 
@@ -179,7 +179,7 @@ const Login = () => {
 
                     <div className="form-group mt-2">
                         <button type="submit" className={`text-center bg-yellow ${isLoading && 'button_loading'}  text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg lowercase font-orbiton hover:bg-hoverYellow transition-al`}>
-                            {isError ? (isApiResponse(error) && [401, 402].includes(error.status) ? "Invalid login or password" : 'Server error, retry later') : "Log in"}
+                            Log in
                         </button>
                     </div>
 

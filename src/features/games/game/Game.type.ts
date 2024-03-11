@@ -26,11 +26,13 @@ export interface ITournamentsActiveAndHistory {
         goal: string,
         daysLeft: string,
         cost: string,
-        id: string
+        id: string,
+        game_name: string
     }[],
     history: {
         name: string,
         id: string,
-        createdAt: string
+        createdAt: string,
+        game_name: string
     }[],
 }
