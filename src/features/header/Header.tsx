@@ -1,5 +1,6 @@
 import Logo from "../../images/logo-game-center.svg"
 import ExitIcon from "../../images/icons/exit-account.svg"
+import BurgerOpen from "../../images/icons/mob-burger-open.svg"
 import Discord from "../../images/icons/discord.svg"
 import TelegramRU from "../../images/icons/tg_ru.svg"
 import TelegramEN from "../../images/icons/tg_eng.svg"
@@ -27,16 +28,16 @@ const Header = () => {
 
         <div id="header" className="p-4 gap-5 flex justify-between items-center bg-lightGray rounded-[20px] text-white">
 
-          <div className="gap-5 flex flex-col w-full max-w-[25%] max-[1050px]:max-w-[fit-content]">
+          <div className="gap-5 flex flex-col w-full max-w-[25%] max-[1050px]:max-w-[fit-content] max-w-[920px]:hidden">
             <NavLink to="/games" className="w-fit">
-              <img src={Logo} alt="logotype" className="max-w-[120px]" />
+              <img src={Logo} alt="logotype" className="max-w-[120px] max-[600px]:max-w-[95px]" />
               {/* {import.meta.env.VITE_APP_DEVELOPMENT ?? ''} */}
 
             </NavLink>
 
           </div>
 
-          <div className="flex flex-row gap-6 justify-center items-center text-xl font-orbitron">
+          <div className="flex flex-row gap-6 justify-center items-center text-xl font-orbitron max-[920px]:hidden">
             <NavLink
               to="/games"
               className={({ isActive }) =>
@@ -61,7 +62,7 @@ const Header = () => {
             </NavLink>
           </div>
 
-          <div className="flex flex-row justify-end gap-4">
+          <div className="flex flex-row justify-end gap-4 max-[920px]:hidden">
 
             <Wallet />
 
@@ -76,6 +77,13 @@ const Header = () => {
               <img src={ExitIcon} alt="Exit" />
             </button>
           </div>
+
+          <div id="burger_open">
+              <button class="default_icon_btn">
+                <img src={BurgerOpen} alt="Open burger" />
+              </button>
+          </div>
+
         </div>
 
       </div>

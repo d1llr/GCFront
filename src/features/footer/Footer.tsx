@@ -35,31 +35,7 @@ const Footer = () => {
 
                     <div className="flex flex-col gap-2 justify-center items-center text-16 font-orbitron max-[920px]:gap-8">
                         <div className="flex flex-row gap-6 max-[1170px]:flex-wrap max-[1170px]:justify-center max-[1170px]:gap-2">
-                            <div className="flex flex-row gap-3 text-base">
-                                <NavLink
-                                    to="/games"
-                                    className={({ isActive }) =>
-                                        isActive ? "text-yellow" : ""
-                                    }
-                                >
-                                    Games
-                                </NavLink>
-                                {/* <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
-                                  NFT
-                              </NavLink> */}
-                                <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'text-yellow' : ''}>
-                                    Tournaments
-                                </NavLink>
-                                <NavLink
-                                    to="/user"
-                                    className={({ isActive }) =>
-                                        isActive ? "text-yellow" : ""
-                                    }
-                                >
-                                    My account
-                                </NavLink>
-                            </div>
-                            <div className="flex flex-row gap-3 text-base max-[440px]:flex-wrap max-[440px]:justify-center">
+                            <div className="flex flex-row gap-3 text-base flex-wrap justify-center">
                                 <NavLink
                                     to=""
                                     className={({ isActive }) =>
@@ -68,9 +44,6 @@ const Footer = () => {
                                 >
                                     Offical website
                                 </NavLink>
-                                {/* <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
-                                  NFT
-                              </NavLink> */}
                                 <NavLink to='' className={({ isActive }) => isActive ? 'text-yellow' : ''}>
                                     PAC Exchange
                                 </NavLink>
@@ -82,13 +55,24 @@ const Footer = () => {
                                 >
                                     AI Bot
                                 </NavLink>
+                                <NavLink
+                                    to=""
+                                    className={({ isActive }) =>
+                                        isActive ? "text-yellow" : ""
+                                    }
+                                >
+                                    Trade on MEXC
+                                </NavLink>
+                               
+                                
+                                
                             </div>
                         </div>
-                        <div className="shrink grow-3">
+                        {/* <div className="shrink grow-3">
                             <a href="https://www.mexc.com/ru-RU/exchange/PACOIN_USDT" target="_blank" className="text-gray font-chakra font-bold">
                                 Withdrawal of coins to MEXC
                             </a>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="flex flex-row justify-end gap-4">
