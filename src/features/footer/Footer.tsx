@@ -50,18 +50,19 @@ const Footer = () => {
                                 <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'text-yellow' : ''}>
                                     Tournaments
                                 </NavLink>
-                                <NavLink
+                                {/* <NavLink
                                     to="/user"
                                     className={({ isActive }) =>
                                         isActive ? "text-yellow" : ""
                                     }
                                 >
                                     My account
-                                </NavLink>
+                                </NavLink> */}
                             </div>
                             <div className="flex flex-row gap-3 text-base">
                                 <NavLink
-                                    to=""
+                                    to="https://pac-project.com/"
+                                    target="_blank"
                                     className={({ isActive }) =>
                                         isActive ? "text-yellow" : ""
                                     }
@@ -71,11 +72,12 @@ const Footer = () => {
                                 {/* <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                                   NFT
                               </NavLink> */}
-                                <NavLink to='' className={({ isActive }) => isActive ? 'text-yellow' : ''}>
+                                <NavLink to='https://www.pacex.io/' target="_blank" className={({ isActive }) => isActive ? 'text-yellow' : ''}>
                                     PAC Exchange
                                 </NavLink>
                                 <NavLink
-                                    to=""
+                                    to="https://t.me/AIFastBrain_bot?start=2099954707"
+                                    target="_blank"
                                     className={({ isActive }) =>
                                         isActive ? "text-yellow" : ""
                                     }
@@ -92,10 +94,19 @@ const Footer = () => {
                     </div>
 
                     <div className="flex flex-row justify-end gap-4">
-                        <img src={tg_ru} alt="tg_ru" />
-                        <img src={tg_en} alt="tg_en" />
-                        <img src={discord} alt="discord" />
-                        <img src={x} alt="x" />
+                        <a href="https://t.me/PacmanCoinRU" target="_blank">
+                            <img src={tg_ru} alt="tg_ru" />
+                        </a>
+                        <a href="https://t.me/PacmanCoinMain" target="_blank">
+                            <img src={tg_en} alt="tg_en" />
+                        </a>
+                        <a href="https://discord.com/invite/JFwaENGDxy" target="_blank" >
+                            <img src={discord} alt="discord" />
+                        </a>
+                        <a href="https://twitter.com/Token_Pac" target="_blank" >
+                            <img src={x} alt="x" />
+                        </a>
+
                     </div>
                 </div>
 

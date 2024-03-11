@@ -16,6 +16,12 @@ const Tournaments = () => {
     // if (isLoading) {
     //     return <Loader />
     // }
+    function convertISO8601ToDDMM(isoDate: string) {
+        const date = new Date(isoDate);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed, so we add 1
+        return `${day}.${month}`;
+    }
     return (
         <div className="background-image-black">
             <div className="wrapper-content">
@@ -87,7 +93,7 @@ const Tournaments = () => {
                                                 {item.name} | {item.id}
                                             </span>
                                             <span className="p-2 text-base font-bold flex flex-col juistify-center text-center items-center rounded-3xl text-white w-1/3 h-10 bg-[#898989]">
-                                                Completed {item.createdAt.substring(5, 10).replace('-', '.')}
+                                                Completed {convertISO8601ToDDMM(item.createdAt)}
                                             </span>
                                         </div>
                                     </div>
