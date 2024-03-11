@@ -10,6 +10,7 @@ import { WalletActions } from '../features/header/wallet/wallet.slice';
 import websocketReducer from './websocket/websocketSlice';
 import { socketMiddleware } from './websocket/websocketMiddleware';
 import { Socket } from './websocket/Socket';
+import { mobBurger } from '../features/header/Header.slice';
 
 const websocketMiddleware = socketMiddleware(new Socket());
 
@@ -24,6 +25,7 @@ export const store = configureStore({
     GetTournamentById: GetTournamentById.reducer,
     WalletActions: WalletActions.reducer,
     websocket: websocketReducer,
+    mobBurger:mobBurger.reducer 
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(

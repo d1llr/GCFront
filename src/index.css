@@ -13,7 +13,6 @@ body {
   font-family: "Chakra Petch", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0D0D0D;
   color: #0D0D0D;
   overflow: inherit;
 }
@@ -200,5 +199,4 @@ header {
     top: -20%;
     left: -3%;
   }
-}
-/*# sourceMappingURL=index.css.map */
+}/*# sourceMappingURL=index.css.map */

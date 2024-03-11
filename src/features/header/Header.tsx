@@ -11,11 +11,20 @@ import { useNavigate } from "react-router-dom"
 import tokenService from "../../services/token.service"
 import Wallet from "./wallet/Wallet"
 import { useDisconnect } from "wagmi"
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { setMobBurger } from "./Header.slice"
+
 
 
 const Header = () => {
+  // const mobBurgerOpen = false;
   const { disconnectAsync } = useDisconnect()
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const mobBurger = useAppSelector(state => state.mobBurger.open)
+  // const [mobBurger, setMobBurger] = useState<boolean>(false)
+
 
   const handleDisconnect = async () => {
     await disconnectAsync()
@@ -78,8 +87,13 @@ const Header = () => {
             </button>
           </div>
 
-          <div id="burger_open">
-              <button class="default_icon_btn">
+          <div id="burger_open" className="min-[920px]:hidden">
+              <button 
+                onClick={() => {
+                  dispatch(setMobBurger())  
+                }}
+                className="default_icon_btn"
+              >
                 <img src={BurgerOpen} alt="Open burger" />
               </button>
           </div>
