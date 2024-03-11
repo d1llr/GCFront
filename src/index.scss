@@ -14,7 +14,7 @@ body {
   font-family: "Chakra Petch", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0D0D0D;
+  // background: #0D0D0D;
   color: #0D0D0D;
   overflow: inherit;
 }
@@ -167,6 +167,8 @@ header {
 }
 
 
+
+
 .button_loading {
   color: #FFF100 !important;
   border: 1px solid #fff100;
@@ -214,4 +216,8 @@ header {
   }
 }
 
-/*# sourceMappingURL=index.css.map */
+
+
+.mob_burger{
+  
+}

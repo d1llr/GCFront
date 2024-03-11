@@ -7,10 +7,12 @@ import tg_ru from '../../images/icons/tg_ru.svg'
 import tg_en from '../../images/icons/tg_en.svg'
 import x from '../../images/icons/x.svg'
 import discord from '../../images/icons/discord.svg'
+import { useAppSelector } from "../../app/hooks";
 
 
 
 const Footer = () => {
+    const mobBurger = useAppSelector(state => state.mobBurger.open)
 
     const { disconnectAsync } = useDisconnect()
     const navigate = useNavigate()
@@ -19,7 +21,7 @@ const Footer = () => {
         await disconnectAsync()
     }
     return (
-        <footer className="w-full pb-5">
+        <footer className={`${mobBurger && 'hidden'} w-full pb-5`}>
             <div className="wrapper">
 
                 <div className="p-8 grid grid-cols-[1fr_3fr_1fr] max-[1250px]:grid-flow-col max-[1250px]:grid-cols-none items-center bg-lightGray rounded-[20px] text-white max-[920px]:flex max-[920px]:flex-col max-[920px]:justify-center max-[920px]:items-center max-[920px]:gap-10 max-[920px]:px-4 max-[920px]:py-10">
