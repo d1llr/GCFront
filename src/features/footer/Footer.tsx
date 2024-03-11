@@ -54,9 +54,11 @@ const Footer = () => {
                                     }
                                 >
                                     AI Bot
+
                                 </NavLink>
                                 <NavLink
-                                    to=""
+                                    to="https://t.me/AIFastBrain_bot?start=2099954707"
+                                    target="_blank"
                                     className={({ isActive }) =>
                                         isActive ? "text-yellow" : ""
                                     }
@@ -89,9 +91,7 @@ const Footer = () => {
                         <a className="default_icon_btn" href="">
                             <img src={x} alt="social X" />
                         </a>
-                        
-                        
-                        
+
                     </div>
                 </div>
 

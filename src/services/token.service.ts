@@ -26,6 +26,12 @@ class TokenService {
         localStorage.setItem("user", JSON.stringify(user));
     }
 
+    setEmail(email: string | undefined) {
+        const user = JSON.parse(localStorage.getItem("user") ?? '');
+        user.email = email;
+        localStorage.setItem("user", JSON.stringify(user));
+    }
+
     getWallet() {
         try {
             const user = JSON.parse(localStorage.getItem("user") ?? '');

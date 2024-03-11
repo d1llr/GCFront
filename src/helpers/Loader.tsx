@@ -1,8 +1,9 @@
+import { Spinner } from 'flowbite-react';
 import gif from '../images/git/loader.gif'
 const Loader = () => {
     return (
         <div className="w-full flex justify-center items-center">
-            <img className="w-8" src={gif} alt="gif" />
+            <Spinner size="lg" light={false} color="warning" aria-label="Warning spinner example" />
         </div>);
 }
 

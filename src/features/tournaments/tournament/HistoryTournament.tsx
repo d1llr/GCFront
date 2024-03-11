@@ -11,6 +11,7 @@ import tokenService from "../../../services/token.service";
 import Rating from "./Rating";
 import Loader from "../../../helpers/Loader";
 import Page404 from "../../../helpers/Page404";
+import { symbols } from "./TournamentBtn";
 const HistoryTournament = () => {
     let params = useParams();
     const navigate = useNavigate();
@@ -40,15 +41,38 @@ const HistoryTournament = () => {
     }
 
 
-    const getDate = (createdAt: string, daysLeft: string) => {
+    const getDate = (createdAt: string, daysLeft?: string) => {
 
         let res = new Date(createdAt);
+        if (daysLeft) {
+            res.setDate(res.getDate() + Number(daysLeft));
 
+            console.log(res);
+            return res.toDateString()
+        }
+        else {
+
+            console.log(res);
+            return res.toDateString()
+        }
         // Add ten days to specified date
-        res.setDate(res.getDate() + Number(daysLeft));
+    }
 
-        console.log(res);
-        return res.toDateString()
+    const getStartDate = (createdAt: string, daysLeft?: string) => {
+
+        let res = new Date(createdAt);
+        if (daysLeft) {
+            res.setDate(res.getDate() - Number(daysLeft));
+
+            console.log(res);
+            return res.toDateString()
+        }
+        else {
+
+            console.log(res);
+            return res.toDateString()
+        }
+        // Add ten days to specified date
     }
 
     if (!data) {
@@ -70,7 +94,7 @@ const HistoryTournament = () => {
                                     Ended:
                                 </span>
                                 <span className="text-white text-2xl font-bold">
-                                    {getDate(data?.createdAt, data?.daysLeft)}
+                                    {getDate(data?.createdAt)}
                                 </span>
                             </div>
                             <div className="flex flex-row items-center gap-2">
@@ -78,7 +102,7 @@ const HistoryTournament = () => {
                                     Game:
                                 </span>
                                 <span className="text-white text-2xl font-bold">
-                                    {data?.game}
+                                    {data?.game_name}
                                 </span>
                             </div>
                         </div>
@@ -86,14 +110,17 @@ const HistoryTournament = () => {
                     <div className="flex flex-col gap-10 font-orbitron ">
                         <h2 className="w-fit text-yellow text-8xl font-extrabold">Awards</h2>
                         <div className="flex flex-row gap-2 w-full justify-between">
-                            {[...Array(5)].map((el, index) => {
+                            {data?.awards.split(',').map((el, index) => {
                                 return (
                                     <div className="flex flex-col gap-10">
                                         <span className="text-5xl text-white font-bold">
                                             #{index + 1} place
                                         </span>
                                         <span className="text-[32px] font-bold text-yellow">
-                                            100 PAC
+                                            {el} {symbols.hasOwnProperty(data?.chainID)
+                                                ? symbols[data?.chainID as keyof typeof symbols]
+                                                : symbols.default
+                                            }
                                         </span>
                                     </div>)
                             })}
@@ -108,7 +135,7 @@ const HistoryTournament = () => {
                                     Game
                                 </span>
                                 <span className="text-2xl font-normal text-white font-chakra">
-                                    {data?.game}
+                                    {data?.game_name}
                                 </span>
                             </div>
                             <div className="flex flex-col gap-4 bg-lightGray justify-center items-center py-10 rounded-2xl w-1/4">
@@ -116,7 +143,7 @@ const HistoryTournament = () => {
                                     Start
                                 </span>
                                 <span className="text-2xl font-normal text-white font-chakra">
-                                    {new Date(data?.createdAt).toDateString()}
+                                    {getStartDate(data?.createdAt, data?.daysLeft)}
                                 </span>
                             </div>
                             <div className="flex flex-col gap-4 bg-lightGray justify-center items-center py-10 rounded-2xl w-1/4">
@@ -124,7 +151,7 @@ const HistoryTournament = () => {
                                     Finish
                                 </span>
                                 <span className="text-2xl font-normal text-white font-chakra">
-                                    {getDate(data?.createdAt, data?.daysLeft)}
+                                    {getDate(data?.createdAt)}
                                 </span>
                             </div>
                             <div className="flex flex-col gap-4 bg-lightGray justify-center items-center py-10 rounded-2xl w-1/4">
@@ -138,7 +165,7 @@ const HistoryTournament = () => {
                         </div>
 
                     </div>
-                    <Rating tournament_id={data?.id} typeTR={"active"} />
+                    <Rating tournament_id={data?.id} typeTR={"history"} />
                 </div>
             </div >
 
