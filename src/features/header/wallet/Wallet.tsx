@@ -455,15 +455,9 @@ const Wallet = memo(() => {
       ) : (
         <button
           className="
+          default_btn
           px-8
-          font-orbitron
-          font-extrabold
-          w-full
-          h-full
-          text-customBlack
-          bg-yellow 
           text-base
-          cursor-pointer
           rounded-[10px]"
           onClick={() => handleConnectWallet()}
         >

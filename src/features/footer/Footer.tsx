@@ -22,58 +22,39 @@ const Footer = () => {
         <footer className="w-full pb-5">
             <div className="wrapper">
 
-                <div id="header" className="p-8 grid grid-flow-col items-center bg-lightGray rounded-[20px] text-white">
+                <div className="p-8 grid grid-cols-[1fr_3fr_1fr] max-[1250px]:grid-flow-col max-[1250px]:grid-cols-none items-center bg-lightGray rounded-[20px] text-white max-[920px]:flex max-[920px]:flex-col max-[920px]:justify-center max-[920px]:items-center max-[920px]:gap-10 max-[920px]:px-4 max-[920px]:py-10">
 
                     <div className="gap-5 flex flex-col">
                         <NavLink to="/games" className="w-fit">
-                            <img src={Logo} alt="logotype" className="max-w-[120px]" />
+                            <img src={Logo} alt="logotype" className="w-full max-w-[120px] max-[920px]:max-w-[320px] max-[600px]:max-w-[153px]" />
                             {/* {import.meta.env.VITE_APP_DEVELOPMENT ?? ''} */}
 
                         </NavLink>
 
                     </div>
 
-                    <div className="flex flex-col gap-2 justify-center items-center text-16 font-orbitron">
-                        <div className="flex flex-row gap-6">
-                            <div className="flex flex-row gap-3 text-base">
+                    <div className="flex flex-col gap-2 justify-center items-center text-16 font-orbitron max-[920px]:gap-8">
+                        <div className="flex flex-row gap-6 max-[1170px]:flex-wrap max-[1170px]:justify-center max-[1170px]:gap-2">
+                            <div className="flex flex-row gap-3 text-base flex-wrap justify-center">
                                 <NavLink
-                                    to="/games"
-                                    className={({ isActive }) =>
-                                        isActive ? "text-yellow" : ""
-                                    }
-                                >
-                                    Games
-                                </NavLink>
-                                {/* <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
-                                  NFT
-                              </NavLink> */}
-                                <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'text-yellow' : ''}>
-                                    Tournaments
-                                </NavLink>
-                                {/* <NavLink
-                                    to="/user"
-                                    className={({ isActive }) =>
-                                        isActive ? "text-yellow" : ""
-                                    }
-                                >
-                                    My account
-                                </NavLink> */}
-                            </div>
-                            <div className="flex flex-row gap-3 text-base">
-                                <NavLink
-                                    to="https://pac-project.com/"
-                                    target="_blank"
+                                    to=""
                                     className={({ isActive }) =>
                                         isActive ? "text-yellow" : ""
                                     }
                                 >
                                     Offical website
                                 </NavLink>
-                                {/* <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
-                                  NFT
-                              </NavLink> */}
-                                <NavLink to='https://www.pacex.io/' target="_blank" className={({ isActive }) => isActive ? 'text-yellow' : ''}>
+                                <NavLink to='' className={({ isActive }) => isActive ? 'text-yellow' : ''}>
                                     PAC Exchange
+                                </NavLink>
+                                <NavLink
+                                    to=""
+                                    className={({ isActive }) =>
+                                        isActive ? "text-yellow" : ""
+                                    }
+                                >
+                                    AI Bot
+
                                 </NavLink>
                                 <NavLink
                                     to="https://t.me/AIFastBrain_bot?start=2099954707"
@@ -82,29 +63,33 @@ const Footer = () => {
                                         isActive ? "text-yellow" : ""
                                     }
                                 >
-                                    AI Bot
+                                    Trade on MEXC
                                 </NavLink>
+                               
+                                
+                                
                             </div>
                         </div>
-                        <div className="shrink grow-3">
+                        {/* <div className="shrink grow-3">
                             <a href="https://www.mexc.com/ru-RU/exchange/PACOIN_USDT" target="_blank" className="text-gray font-chakra font-bold">
                                 Withdrawal of coins to MEXC
                             </a>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="flex flex-row justify-end gap-4">
-                        <a href="https://t.me/PacmanCoinRU" target="_blank">
-                            <img src={tg_ru} alt="tg_ru" />
+
+                        <a className="default_icon_btn" href="">
+                            <img src={tg_ru} alt="telegram ru" />
                         </a>
-                        <a href="https://t.me/PacmanCoinMain" target="_blank">
-                            <img src={tg_en} alt="tg_en" />
+                        <a className="default_icon_btn" href="">
+                            <img src={tg_en} alt="telegram en" />
                         </a>
-                        <a href="https://discord.com/invite/JFwaENGDxy" target="_blank" >
+                        <a className="default_icon_btn" href="">
                             <img src={discord} alt="discord" />
                         </a>
-                        <a href="https://twitter.com/Token_Pac" target="_blank" >
-                            <img src={x} alt="x" />
+                        <a className="default_icon_btn" href="">
+                            <img src={x} alt="social X" />
                         </a>
 
                     </div>

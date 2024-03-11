@@ -178,6 +178,7 @@ const Login = () => {
 
 
                     <div className="form-group mt-2">
+
                         <button type="submit" className={`text-center bg-yellow ${isLoading && 'button_loading'}  text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg lowercase font-orbiton hover:bg-hoverYellow transition-al`}>
                             Log in
                         </button>
