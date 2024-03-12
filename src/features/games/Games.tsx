@@ -39,7 +39,7 @@ const Games = () => {
                           navigate(`/games/${item.id}`)
                         }}
                         disabled={!item.active}
-                        className="w-full bg-customBlack font-orbitron font-semibold text-yellow rounded-3xl 2xl:text-xl md:text-base font-bold p-3 2xl:p-3 md:p-2 text-center cursor-pointer disabled:text-[#898989] disabled:bg-[#1B1B1B]"
+                        className="w-full bg-customBlack font-orbitron font-semibold text-yellow rounded-3xl 2xl:text-xl md:text-base font-bold p-3 2xl:p-3 md:p-2 text-center cursor-pointer disabled:text-[#898989] disabled:bg-[#1B1B1B] hover:bg-[#1B1B1B]"
                       >
                         {item.active ? 'More detailed' : 'Under development'}
                       </button>
