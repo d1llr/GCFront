@@ -21,7 +21,7 @@ const Footer = () => {
         await disconnectAsync()
     }
     return (
-        <footer className={`${mobBurger && 'hidden'} w-full pb-5`}>
+        <footer className={`${mobBurger ? 'mob_element_close' : 'mob_element_open'} w-full pb-5`}>
             <div className="wrapper">
 
                 <div className="p-8 grid grid-cols-[1fr_3fr_1fr] max-[1250px]:grid-flow-col max-[1250px]:grid-cols-none items-center bg-lightGray rounded-[20px] text-white max-[920px]:flex max-[920px]:flex-col max-[920px]:justify-center max-[920px]:items-center max-[920px]:gap-10 max-[920px]:px-4 max-[920px]:py-10">
@@ -67,9 +67,6 @@ const Footer = () => {
                                 >
                                     Trade on MEXC
                                 </NavLink>
-
-
-
                             </div>
                         </div>
                         {/* <div className="shrink grow-3">

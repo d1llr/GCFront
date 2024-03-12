@@ -13,10 +13,10 @@ body {
   font-family: "Chakra Petch", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #0D0D0D;
   background: #0D0D0D;
-
-  overflow: inherit;
+  color: #0D0D0D;
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
 code {
@@ -39,6 +39,16 @@ header {
   color: #0D0D0D; */
 }
 
+button {
+  cursor: pointer;
+}
+
+button, button img, a img {
+  -webkit-user-select: none !important;
+  -moz-user-select: none;
+  user-select: none;
+}
+
 .wrapper {
   max-width: 1600px;
   margin: 0 auto;
@@ -47,9 +57,14 @@ header {
 
 .wrapper-content {
   max-width: 1600px;
-  padding: 12rem 15px;
+  padding: 10rem 15px 6rem 15px;
   margin: 0 auto;
   /* padding: 0 15px */
+}
+@media screen and (max-width: 920px) {
+  .wrapper-content {
+    padding: 8rem 15px 6rem 15px;
+  }
 }
 
 .background-image-black {
@@ -101,8 +116,67 @@ header {
   background: radial-gradient(farthest-side at top left, transparent 97%, #FFF100) bottom left;
 }
 
-.default_btn {
-  cursor: pointer;
+.filter_btn {
+  color: rgb(13, 13, 13);
+  font-family: "Orbitron", sans-serif;
+  font-size: 16px;
+  line-height: 100%;
+  font-weight: 800;
+  border-radius: 10px;
+  border: 1px solid rgb(255, 241, 0);
+  color: rgb(255, 241, 0);
+  padding: 12px 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+@media screen and (max-width: 920px) {
+  .filter_btn {
+    font-size: 12px;
+  }
+}
+.filter_btn.active {
+  background: rgb(255, 241, 0);
+  color: rgb(13, 13, 13);
+  transition: all 0.3s ease;
+}
+.filter_btn:hover {
+  background: rgb(207, 196, 3);
+  border: 1px solid rgb(207, 196, 3);
+  color: rgb(13, 13, 13);
+  transition: all 0.3s ease;
+}
+
+.black_btn {
+  width: 100%;
+  background: rgb(13, 13, 13);
+  color: rgb(255, 241, 0);
+  text-align: center;
+  font-family: "Orbitron", sans-serif;
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 600;
+  border-radius: 48px;
+  padding: 12px 0;
+  transition: all 0.2s ease;
+}
+@media screen and (max-width: 920px) {
+  .black_btn {
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+.black_btn:disabled {
+  color: rgb(137, 137, 137);
+  background: rgb(27, 27, 27);
+}
+.black_btn:hover {
+  background: rgb(27, 27, 27);
+  transition: all 0.2s ease;
+}
+
+.yellow_btn {
   color: rgb(13, 13, 13);
   width: 100%;
   height: 100%;
@@ -110,7 +184,6 @@ header {
   font-size: 1.25rem;
   line-height: 1.75rem;
   font-weight: 700;
-  /* height: 2.75rem; */
   border: none;
   border-radius: 0.5rem;
   font-family: "Orbitron", sans-serif;
@@ -118,13 +191,41 @@ header {
   background: #FFF100;
   transition: all 0.3s ease;
 }
+@media screen and (max-width: 920px) {
+  .yellow_btn .yellow_btn {
+    padding: 0.5rem 1rem;
+    width: 100%;
+  }
+}
 
-.default_btn:hover {
+.yellow_btn:hover {
   background: rgb(210, 199, 6);
   transition: all 0.3s ease;
 }
 
-.default_icon_btn {
+.yellow_icon_btn {
+  background: #FFF100;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  border-radius: 10px;
+  min-width: 48px;
+  max-width: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+.yellow_icon_btn img {
+  max-width: 48px;
+}
+.yellow_icon_btn:hover {
+  background: rgb(210, 199, 6);
+  transition: all 0.3s ease;
+}
+
+.mobile_icon_button {
   background: #FFF100;
   font-size: 1.25rem;
   line-height: 1.75rem;
@@ -139,17 +240,8 @@ header {
   align-items: center;
   transition: all 0.3s ease;
 }
-.default_icon_btn img {
-  max-width: 48px;
-}
-
-.default_icon_btn:hover {
-  background: rgb(210, 199, 6);
-  transition: all 0.3s ease;
-}
-
 @media screen and (max-width: 600px) {
-  .default_icon_btn {
+  .mobile_icon_button {
     border-radius: 7px;
     min-width: 38px;
     max-width: 38px;
@@ -157,10 +249,18 @@ header {
     max-height: 38px;
     transition: all 0.3s ease;
   }
-  .default_icon_btn img {
+  .mobile_icon_button img {
     max-width: 38px;
   }
 }
+.mobile_icon_button img {
+  max-width: 48px;
+}
+.mobile_icon_button:hover {
+  background: rgb(210, 199, 6);
+  transition: all 0.3s ease;
+}
+
 .button_loading {
   color: #FFF100 !important;
   border: 1px solid #fff100;
@@ -202,5 +302,103 @@ header {
   100% {
     top: -20%;
     left: -3%;
+  }
+}
+#mob_menu {
+  position: fixed;
+  right: 0;
+  top: 20px;
+  background: rgb(39, 39, 39);
+  width: 283px;
+  height: calc(100svh - 20px);
+  border-radius: 15px 0px 0px 15px;
+  padding: 16px 16px 32px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+}
+#mob_menu .yellow_icon_btn {
+  max-width: 42px;
+  max-height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+}
+#mob_menu .yellow_icon_btn img {
+  max-width: 42px;
+}
+
+@media screen and (min-width: 920px) {
+  #mob_menu {
+    display: none;
+  }
+}
+@media screen and (max-width: 920px) {
+  .mob_element_open {
+    transform: translateX(0vw);
+    animation: openMobElement 0.5s ease 1;
+  }
+  @keyframes openMobElement {
+    from {
+      transform: translateX(100vw);
+    }
+    to {
+      transform: translateX(0vw);
+    }
+  }
+  .mob_element_close {
+    transform: translateX(100vw);
+    animation: closeMobElement 0.5s ease 1;
+  }
+  @keyframes closeMobElement {
+    from {
+      transform: translateX(0vw);
+    }
+    to {
+      transform: translateX(100vw);
+    }
+  }
+}
+#error-page {
+  position: relative;
+  height: 100vh;
+}
+#error-page::before, #error-page::after {
+  display: block;
+  content: "";
+  background: url("/src/images/big-black-shards.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 100%;
+  height: 100%;
+  max-width: 50%;
+  z-index: -1;
+}
+@media screen and (max-width: 700px) {
+  #error-page::before, #error-page::after {
+    max-width: 80%;
+  }
+}
+#error-page::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#error-page::after {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: rotate(180deg);
+}
+#error-page .yellow_btn {
+  width: 100%;
+  max-width: 500px;
+  font-size: 24px;
+  padding: 24px 0px;
+}
+@media screen and (max-width: 700px) {
+  #error-page .yellow_btn {
+    font-size: 16px;
+    padding: 16px 0px;
   }
 }/*# sourceMappingURL=index.css.map */

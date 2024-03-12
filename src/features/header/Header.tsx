@@ -1,11 +1,18 @@
 import Logo from "../../images/logo-game-center.svg"
 import ExitIcon from "../../images/icons/exit-account.svg"
 import BurgerOpen from "../../images/icons/mob-burger-open.svg"
+import BurgerClose from "../../images/icons/mob-burger-close.svg"
 import Discord from "../../images/icons/discord.svg"
 import TelegramRU from "../../images/icons/tg_ru.svg"
 import TelegramEN from "../../images/icons/tg_eng.svg"
 import Mail from "../../images/icons/mail.svg"
 import X from "../../images/icons/x.svg"
+
+import tg_ru from '../../images/icons/tg_ru.svg'
+import tg_en from '../../images/icons/tg_en.svg'
+import x from '../../images/icons/x.svg'
+import discord from '../../images/icons/discord.svg'
+
 import { NavLink } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 import tokenService from "../../services/token.service"
@@ -33,7 +40,7 @@ const Header = () => {
   return (
 
     <header className="fixed w-full mt-5 z-40">
-      <div className="wrapper">
+      <div className={`${mobBurger ? 'mob_element_close' : 'mob_element_open'} wrapper`}>
 
         <div id="header" className="p-4 gap-5 flex justify-between items-center bg-lightGray rounded-[20px] text-white">
 
@@ -81,7 +88,7 @@ const Header = () => {
                 tokenService.removeUser()
                 navigate("/login")
               }}
-              className="default_icon_btn"
+              className="yellow_icon_btn"
             >
               <img src={ExitIcon} alt="Exit" />
             </button>
@@ -92,7 +99,8 @@ const Header = () => {
               onClick={() => {
                 dispatch(setMobBurger())
               }}
-              className="default_icon_btn"
+              className="yellow_icon_btn"
+
             >
               <img src={BurgerOpen} alt="Open burger" />
             </button>
@@ -101,8 +109,88 @@ const Header = () => {
         </div>
 
       </div>
-    </header>
 
+            
+
+      <div id="mob_menu" className={`${mobBurger ? 'mob_element_open' : 'mob_element_close'}`}>
+        <div className="flex flex-col gap-[50px]">
+          <div className="flex justify-between items-start">
+            <NavLink to="/games" className="w-fit">
+              <img src={Logo} alt="logotype" className="max-w-[95px]" />
+            </NavLink>
+            <button
+              onClick={() => {
+                dispatch(setMobBurger())
+              }}
+              className="pl-4 mt-2"
+            >
+              <img src={BurgerClose} alt="Close burger" />
+            </button>
+          </div>
+          <div className="flex gap-2 justify-between">
+            <Wallet />
+
+            <button
+              onClick={() => {
+                handleDisconnect()
+                tokenService.removeUser()
+                navigate("/login")
+              }}
+              className="mobile_icon_button"
+            >
+              <img src={ExitIcon} alt="Exit" />
+            </button>
+          </div>
+          <div className="flex flex-col gap-4">
+            <NavLink
+              to="/games"
+              className={({ isActive }) =>
+              `font-orbitron text-[16px] font-extrabold ${isActive ? "text-yellow" : "text-white"}`
+              }
+            >
+              Games
+            </NavLink>
+            <NavLink 
+              to='/tournaments' 
+              className={({ isActive }) => 
+                `font-orbitron text-[16px] font-extrabold ${isActive ? 'text-yellow' : 'text-white'}`
+              }
+            >
+              Tournaments
+            </NavLink>
+            <NavLink
+              to="/user"
+              className={({ isActive }) =>
+                `font-orbitron text-[16px] font-extrabold ${isActive ? "text-yellow" : "text-white"}`
+              }
+            >
+              My account
+
+            </NavLink>
+
+          </div>
+        </div>
+        
+        <div className="flex flex-row justify-start gap-3">
+
+            <a className="yellow_icon_btn" href="">
+                <img src={tg_ru} alt="telegram ru" />
+            </a>
+            <a className="yellow_icon_btn" href="">
+                <img src={tg_en} alt="telegram en" />
+            </a>
+            <a className="yellow_icon_btn" href="">
+                <img src={discord} alt="discord" />
+            </a>
+            <a className="yellow_icon_btn" href="">
+                <img src={x} alt="social X" />
+            </a>
+
+        </div>
+
+      </div>
+
+    </header>
 
   )
 }

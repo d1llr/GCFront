@@ -6,28 +6,29 @@ export default {
     'node_modules/flowbite-react/lib/esm/**/*.js',
   ],
   theme: {
-    screens: {
-      '1170px': '1170px',
-      // => @media (min-width: 640px) { ... }
+    // screens: {
+    //   '1170px': '1170px',
+    //   // => @media (min-width: 640px) { ... }
 
-      'laptop': '1024px',
-      // => @media (min-width: 1024px) { ... }
+    //   'laptop': '1024px',
+    //   // => @media (min-width: 1024px) { ... }
 
-      'desktop': '1280px',
-      // => @media (min-width: 1280px) { ... }
-    },
+    //   'desktop': '1280px',
+    //   // => @media (min-width: 1280px) { ... }
+    // },
     extend: {
       backgroundImage: {
         'gameShards': "url('/src/images/icons/game-item-shards.svg')",
         'gameLeftToRightShards': "url('/src/images/icons/from-left-shards.svg')",
       },
       backgroundColor: {
-        'yellow': '#FFF100'
+        'yellow': 'rgb(255, 241, 0)'
       },
       colors: {
-        'yellow': '#FFF100',
+        'yellow': 'rgb(255, 241, 0)',
         'hoverYellow': 'rgb(210, 199, 6)',
         'gray': '#898989',
+        'textGray': 'rgb(137, 137, 137)',
         'lightGray': 'rgb(39, 39, 39)',
         'lightGrayHover': 'rgba(98, 98, 98, 1)',
         'customBlack': 'rgb(13, 13, 13)',
