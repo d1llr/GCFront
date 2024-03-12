@@ -321,10 +321,7 @@ const Register = () => {
                   type="submit"
                   className={`${SendCodeLoading && 'button_loading'} yellow_btn`}
                 >
-                  {SendCodeUninitialized && "Sign up"}
-                  {/* {SendCodeLoading && <Loader />} */}
-                  {/* {SendCodeIsError && (isApiResponse(SendCodeIsError) && [405].includes(SendCodeIsError.status) && "Server error, retry later")} */}
-                  {SendCodeIsError && "Server error, retry later"}
+                  Sign up
                 </button>
               </div>
               <span className='text-red-500 text-center'>

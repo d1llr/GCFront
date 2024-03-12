@@ -77,7 +77,7 @@ const ChangeEmail = () => {
                     })
             }
             else {
-                navigate("/user")
+                navigate("/login")
             }
         }
     }, [])

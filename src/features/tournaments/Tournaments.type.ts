@@ -19,7 +19,7 @@ export default interface ITournaments {
 }
 
 
-export default interface ITournament {
+export  interface ITournament {
     id: string,
     disabled: boolean,
     image: string,

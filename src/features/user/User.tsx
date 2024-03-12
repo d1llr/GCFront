@@ -18,7 +18,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
-import { Modal } from 'flowbite-react';
+import { Modal, ModalFooter } from 'flowbite-react';
 
 
 const User = () => {
@@ -120,6 +120,60 @@ const User = () => {
         console.log(err);
 
       })
+  }
+
+  const Theme = {
+    "root": {
+      "base": "fixed top-0 right-0 left-0 z-50 h-modal h-screen overflow-y-auto overflow-x-hidden md:inset-0 md:h-full",
+      "show": {
+        "on": "flex bg-gray-900 bg-opacity-50 dark:bg-opacity-80",
+        "off": "hidden"
+      },
+      "sizes": {
+        "sm": "max-w-sm",
+        "md": "max-w-md",
+        "lg": "max-w-lg",
+        "xl": "max-w-xl",
+        "2xl": "max-w-2xl",
+        "3xl": "max-w-3xl",
+        "4xl": "max-w-4xl",
+        "5xl": "max-w-5xl",
+        "6xl": "max-w-6xl",
+        "7xl": "max-w-7xl"
+      },
+      "positions": {
+        "top-left": "items-start justify-start",
+        "top-center": "items-start justify-center",
+        "top-right": "items-start justify-end",
+        "center-left": "items-center justify-start",
+        "center": "items-center justify-center",
+        "center-right": "items-center justify-end",
+        "bottom-right": "items-end justify-end",
+        "bottom-center": "items-end justify-center",
+        "bottom-left": "items-end justify-start"
+      }
+    },
+    "content": {
+      "base": "relative h-full w-full p-4 md:h-auto",
+      "inner": "relative rounded-3xl bg-white shadow dark:bg-gray-700 flex flex-col max-h-[90vh]"
+    },
+    "body": {
+      "base": "p-6 flex-1 overflow-auto rounded-2xl",
+      "popup": ""
+    },
+    "header": {
+      "base": "flex hidden items-start justify-between rounded-t dark:border-gray-600 border-b p-5",
+      "popup": "p-2 border-b-0",
+      "title": "text-xl font-medium text-gray-900 dark:text-white",
+      "close": {
+        "base": "ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white",
+        "icon": "h-5 w-5 d-none"
+      }
+    },
+    "footer": {
+      "base": "flex items-center space-x-2 rounded-b border-gray-200 p-6 dark:border-gray-600",
+      "popup": "border-t"
+    }
   }
 
   return (
@@ -226,26 +280,27 @@ const User = () => {
             <button className=" text-center text-yellow w-1/2 bg-customBlack hover:bg-customBlackHover p-3 rounded-xl text-base" onClick={() => setOpenModal(true)}>
               Delete
             </button>
-            <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup >
+            <Modal show={openModal} theme={Theme} size="md" onClose={() => setOpenModal(false)} popup className="bg-black opacity-1 bg-opacity-1 rounded-2xl" >
               <Modal.Header className=" bg-lightGray" />
-              <Modal.Body className=" bg-lightGray text-white">
-                <div className="text-center bg-lightGray">
-                  <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              <Modal.Body className=" bg-lightGray text-white font-orbitron ">
+                <div className="text-center bg-lightGray flex flex-col gap-5">
+                  <h3 className="text-lg font-normal text-gray-500 dark:text-gray-400">
                     Are you sure you want to delete your account?
                   </h3>
-                  <h2>
+                  <h2 className="font-chakra">
                     The deleted account cannot be restored
                   </h2>
                   <div className="flex justify-center gap-4">
-                    <button color="failure" onClick={() => handleDeleteAccount()}>
+                    <button color="failure" onClick={() => handleDeleteAccount()} className="yellow_btn text-sm">
                       Delete
                     </button>
-                    <button color="gray" onClick={() => setOpenModal(false)}>
+                    <button color="gray" onClick={() => setOpenModal(false)} className="gray_btn text-xl">
                       Cancel
                     </button>
                   </div>
                 </div>
               </Modal.Body>
+
             </Modal>
           </div>
           {/* <div className="flex flex-col p-8 bg-lightGray rounded-3xl text-white font-orbitron gap-5 w-1/3">

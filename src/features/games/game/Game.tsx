@@ -1,5 +1,5 @@
 "use client"
-import { useNavigate, useParams } from "react-router-dom"
+import { NavLink, useNavigate, useParams } from "react-router-dom"
 import { useGetGameByIdQuery, useGetTournamentsMutation, useGetUserGameHistoryMutation } from "./Game.slice"
 import web from "../../../images/icons/web_icon.svg"
 import android_icon from "../../../images/icons/android_icon.svg"
@@ -26,7 +26,7 @@ const Game = () => {
 
   useEffect(() => {
     console.log(data?.code);
-    
+
     if (GameDataSuccess)
       getTournaments(data?.code)
         .unwrap()
@@ -84,9 +84,9 @@ const Game = () => {
               </ul>
             </div>
           </div>
-          {TournamentsDataSuccess &&
-            <div className="mt-12">
-              <h2 className="font-orbitron w-fit text-yellow text-8xl mt-2 font-extrabold">Tournaments</h2>
+          <div className="mt-12">
+            <h2 className="font-orbitron w-fit text-yellow text-8xl mt-2 font-extrabold">Tournaments</h2>
+            {TournamentsDataSuccess ? (
               <div className="text-xl font-semibold grid grid-cols-3 gap-6 mt-10">
                 {tournaments?.active.map((item, index: number) => {
                   return (
@@ -175,12 +175,27 @@ const Game = () => {
                     </div>
                   )
                 })}
-              </div>
-            </div>}
-          {
-            gameHistory &&
-            <div className="flex flex-col gap-10">
-              <h2 className="font-orbitron w-fit text-yellow text-8xl font-extrabold">Game History</h2>
+              </div>)
+              : (
+                <div className="bg-lightGray rounded-[30px] flex flex-col items-center mt-10 gap-10 px-6 pt-16 pb-12 max-[920px]:pt-8 max-[920px]:pb-6">
+                  <div className="flex flex-col items-center gap-5">
+                    <div className="font-orbitron text-white text-center text-[28px] leading-[35px] max-[920px]:text-[18px] max-[920px]:leading-[23px]">
+                      There have been no tournaments for this game yet, but they will appear soon.
+                    </div>
+                    <div className="font-chakra text-textGray text-[26px] leading-[34px] text-center max-[920px]:text-[16px] max-[920px]:leading-[21px]">
+                      You can participate in other tournaments
+                    </div>
+                  </div>
+                  <NavLink className="black_btn max-w-[475px]" to="/tournaments">
+                    All tournaments
+                  </NavLink>
+                </div>)
+            }
+          </div>
+
+          <div className="flex flex-col gap-10">
+            <h2 className="font-orbitron w-fit text-yellow text-8xl font-extrabold">Game History</h2>
+            {gameHistory ? (
               <div>
                 <div>
                   <ul className="px-10 grid grid-cols-4 font-orbitron font-bold text-white text-3xl">
@@ -208,7 +223,26 @@ const Game = () => {
                 </ul>
               </div>
 
-            </div>}
+            ) : (
+              <div className="bg-lightGray rounded-[30px] flex flex-col items-center gap-10 px-6 pt-16 pb-12 max-[920px]:pt-8 max-[920px]:pb-6">
+                <div className="flex flex-col items-center gap-5">
+                  <div className="font-orbitron text-white text-center text-[28px] leading-[35px] max-[920px]:text-[18px] max-[920px]:leading-[23px]">
+                    You haven't played this game yet. Play at least once to see the rating
+                  </div>
+                  <div className="font-chakra text-textGray text-[26px] leading-[34px] text-center max-[920px]:text-[16px] max-[920px]:leading-[21px]">
+                    Start playing
+                  </div>
+                </div>
+                <ul className="flex flex-row justify-center items-center gap-3">
+
+                  {data?.links?.android && <a href={data?.links?.android} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow hover:bg-hoverYellow"><img src={android_icon} alt="not found" className=""></img></a>}
+                  {data?.links?.windows && <a href={data?.links?.windows} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow hover:bg-hoverYellow"><img src={win} alt="not found" className=""></img></a>}
+                  {data?.links?.web && <a href={data?.links?.web} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow hover:bg-hoverYellow"><img src={web} alt="not found" className=""></img></a>}
+                </ul>
+              </div>
+            )}
+
+          </div>
         </div>
       </div >
 

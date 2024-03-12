@@ -173,7 +173,7 @@ const Code = (props: { userProps: IUniversalCode, setCheckingResult: Dispatch<Se
                             </span>
                             :
                             <span onClick={() => handleResendACode()} className='underline text-center cursor-pointer'>
-                                resend a code {SendCodeLoading && <span className='p-2'><Spinner size="sm" /></span>}
+                                Send the code again {SendCodeLoading && <span className='p-2'><Spinner size="sm" /></span>}
                             </span>
                         }
                         {
