@@ -67,7 +67,6 @@ const Footer = () => {
                                 >
                                     Trade on MEXC
                                 </NavLink>
-                                
                             </div>
                         </div>
                         {/* <div className="shrink grow-3">
@@ -79,16 +78,16 @@ const Footer = () => {
 
                     <div className="flex flex-row justify-end gap-4">
 
-                        <a className="yellow_icon_btn" href="https://t.me/PacmanCoinRU">
+                        <a className="default_icon_btn" href="https://t.me/PacmanCoinRU">
                             <img src={tg_ru} alt="telegram ru" />
                         </a>
-                        <a className="yellow_icon_btn" href="https://t.me/PacmanCoinMain">
+                        <a className="default_icon_btn" href="https://t.me/PacmanCoinMain">
                             <img src={tg_en} alt="telegram en" />
                         </a>
-                        <a className="yellow_icon_btn" href="https://discord.gg/JFwaENGDxy">
+                        <a className="default_icon_btn" href="https://discord.gg/JFwaENGDxy">
                             <img src={discord} alt="discord" />
                         </a>
-                        <a className="yellow_icon_btn" href="https://twitter.com/Token_Pac">
+                        <a className="default_icon_btn" href="https://twitter.com/Token_Pac">
                             <img src={x} alt="social X" />
                         </a>
 

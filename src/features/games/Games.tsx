@@ -75,6 +75,7 @@ const Games = () => {
                         }}
                         disabled={!item.active}
                         className="black_btn"
+
                       >
                         {item.active ? 'More detailed' : 'Under development'}
                       </button>

@@ -76,6 +76,8 @@ button, button img, a img {
 .background-image-yellow {
   background-image: url("./images/yellowbg.png");
   background-repeat: no-repeat;
+  background-size: contain;
+  background-size: 50% 20%;
   background-position: top right;
 }
 

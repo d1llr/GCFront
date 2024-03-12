@@ -108,7 +108,7 @@ const HistoryTournament = () => {
                         </div>
                     </div>
                     <div className="flex flex-col gap-10 font-orbitron ">
-                        <h2 className="w-fit text-yellow text-8xl font-extrabold">Awards</h2>
+                        <h2 className="w-fit text-yellow text-8xl font-extrabold">Rewards</h2>
                         <div className="flex flex-row gap-2 w-full justify-between">
                             {data?.awards.split(',').map((el, index) => {
                                 return (

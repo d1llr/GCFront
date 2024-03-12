@@ -78,9 +78,9 @@ const Game = () => {
             <div className="w-2/5 font-semibold text-2xl text-white">{data?.short_desc}</div>
             <div>
               <ul className="flex flex-row gap-3">
-                {data?.links?.android && <a href={data?.links?.android} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow"><img src={android_icon} alt="not found" className=""></img></a>}
-                {data?.links?.windows && <a href={data?.links?.windows} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow"><img src={win} alt="not found" className=""></img></a>}
-                {data?.links?.web && <a href={data?.links?.web} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow"><img src={web} alt="not found" className=""></img></a>}
+                {data?.links?.android && <a href={data?.links?.android} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow hover:bg-hoverYellow"><img src={android_icon} alt="not found" className=""></img></a>}
+                {data?.links?.windows && <a href={data?.links?.windows} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow hover:bg-hoverYellow"><img src={win} alt="not found" className=""></img></a>}
+                {data?.links?.web && <a href={data?.links?.web} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow hover:bg-hoverYellow"><img src={web} alt="not found" className=""></img></a>}
               </ul>
             </div>
           </div>

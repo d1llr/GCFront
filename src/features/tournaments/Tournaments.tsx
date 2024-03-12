@@ -53,7 +53,7 @@ const Tournaments = () => {
                                                     Game
                                                 </span>
                                                 <span className="font-orbitron font-bold ">
-                                                    {item.game}
+                                                    {item.game_name}
                                                 </span>
                                             </li>
                                             <li className="flex flex-row justify-between">
@@ -76,8 +76,8 @@ const Tournaments = () => {
                                     </div>
                                     <button onClick={() => {
                                         navigate(`/tournaments/${item.id}`);
-                                    }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30`}>
-                                        More datailed
+                                    }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 hover:bg-[#1B1B1B]`}>
+                                        More detailed
                                     </button>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@ const Tournaments = () => {
                                                 {item.name} | {item.id}
                                             </span>
                                             <span className="p-2 text-base font-bold flex flex-col juistify-center text-center items-center rounded-3xl text-white w-1/3 h-10 bg-[#898989]">
-                                                Completed {convertISO8601ToDDMM(item.createdAt)}
+                                                Ended {convertISO8601ToDDMM(item.createdAt)}
                                             </span>
                                         </div>
                                     </div>
@@ -102,14 +102,14 @@ const Tournaments = () => {
                                             Game
                                         </span>
                                         <span>
-                                            {item.game}
+                                            {item.game_name}
                                         </span>
                                     </div>
                                     <HistotyTournamentRating tournament_id={item.id} typeTR="history" />
                                     <button onClick={() => {
                                         navigate(`/tournaments/history/${item.id}`);
-                                    }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30`}>
-                                        More datailed
+                                    }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 hover:bg-[#1B1B1B]`}>
+                                        More detailed
                                     </button>
                                 </div>
                             </div>

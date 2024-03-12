@@ -45,7 +45,7 @@ const Header = () => {
         <div id="header" className="p-4 gap-5 flex justify-between items-center bg-lightGray rounded-[20px] text-white">
 
           <div className="gap-5 flex flex-col w-full max-w-[25%] max-[1050px]:max-w-[fit-content] max-w-[920px]:hidden">
-            <NavLink to="/games" className="w-fit">
+            <NavLink to="/games" className="w-fit hover:text-yellow">
               <img src={Logo} alt="logotype" className="max-w-[120px] max-[600px]:max-w-[95px]" />
               {/* {import.meta.env.VITE_APP_DEVELOPMENT ?? ''} */}
 
@@ -57,7 +57,7 @@ const Header = () => {
             <NavLink
               to="/games"
               className={({ isActive }) =>
-                isActive ? "text-yellow" : ""
+                isActive ? "text-yellow" : "hover:text-yellow"
               }
             >
               Games
@@ -65,13 +65,13 @@ const Header = () => {
             {/* <NavLink to='/nft' className={({ isActive }) => isActive ? 'w-fit decoration-dotted underline' : ''}>
                                 NFT
                             </NavLink> */}
-            <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'text-yellow' : ''}>
+            <NavLink to='/tournaments' className={({ isActive }) => isActive ? 'text-yellow' : 'hover:text-yellow'}>
               Tournaments
             </NavLink>
             <NavLink
               to="/user"
               className={({ isActive }) =>
-                isActive ? "text-yellow" : ""
+                isActive ? "text-yellow" : "hover:text-yellow"
               }
             >
               My account
@@ -100,6 +100,7 @@ const Header = () => {
                 dispatch(setMobBurger())
               }}
               className="yellow_icon_btn"
+
             >
               <img src={BurgerOpen} alt="Open burger" />
             </button>
