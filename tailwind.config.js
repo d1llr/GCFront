@@ -17,12 +17,25 @@ export default {
     //   // => @media (min-width: 1280px) { ... }
     // },
     extend: {
+      keyframes: {
+        loading: {
+          '0%, 100%': { transform: 'rotate(-3deg)' },
+          '50%': { transform: 'rotate(3deg)' },
+        }
+      },
+      animation: {
+        loading: 'loading 4s ease-out infinite',
+      },
       backgroundImage: {
         'gameShards': "url('/src/images/icons/game-item-shards.svg')",
         'gameLeftToRightShards': "url('/src/images/icons/from-left-shards.svg')",
       },
       backgroundColor: {
-        'yellow': 'rgb(255, 241, 0)'
+        'yellow': 'rgb(255, 241, 0)',
+        'hoverYellow': 'rgb(210, 199, 6)',
+        'gray': '#898989',
+        'hoverGray': '#626262',
+        'lighterGray': 'rgb(27, 27, 27)',
       },
       colors: {
         'yellow': 'rgb(255, 241, 0)',
