@@ -12,7 +12,7 @@ import Loader from "../../../helpers/Loader"
 import 'swiper/css';
 import { IHistory, ITournamentsActiveAndHistory } from "./Game.type"
 import { Swiper, SwiperSlide } from 'swiper/react';
-import ITournaments from "../../tournaments/Tournaments.type";
+import { ITournaments } from "../../tournaments/Tournaments.type";
 import Error from "../../../helpers/Error";
 import HistotyTournamentRating from "./HistotyTournamentRating"
 
@@ -72,10 +72,10 @@ const Game = () => {
   return (
     <div className="background-image-yellow">
       <div className="wrapper-content">
-        <div className="flex flex-col gap-12 justify-between">
-          <div className="flex flex-col gap-8">
-            <h1 className="font-orbitron w-fit text-yellow text-8xl font-extrabold">{data?.name}</h1>
-            <div className="w-2/5 font-semibold text-2xl text-white">{data?.short_desc}</div>
+        <div className="flex flex-col lg:md:gap-12 gap-8 justify-between">
+          <div className="flex flex-col lg:md:gap-8 gap-4">
+            <h1 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">{data?.name}</h1>
+            <div className="lg:md:w-2/5 w-full sm:w-4/5 font-semibold lg:md:text-2xl text-base text-white">{data?.short_desc}</div>
             <div>
               <ul className="flex flex-row gap-3">
                 {data?.links?.android && <a href={data?.links?.android} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow hover:bg-hoverYellow"><img src={android_icon} alt="not found" className=""></img></a>}
@@ -84,10 +84,10 @@ const Game = () => {
               </ul>
             </div>
           </div>
-          <div className="mt-12">
-            <h2 className="font-orbitron w-fit text-yellow text-8xl mt-2 font-extrabold">Tournaments</h2>
+          <div className="lg:md:mt-12">
+            <h2 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl mt-2 font-extrabold">Tournaments</h2>
             {TournamentsDataSuccess ? (
-              <div className="text-xl font-semibold grid grid-cols-3 gap-6 mt-10">
+              <div className="text-xl font-semibold grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 mt-10">
                 {tournaments?.active.map((item, index: number) => {
                   return (
                     <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full">
@@ -153,7 +153,7 @@ const Game = () => {
                               {item.name} | {item.id}
                             </span>
                             <span className="p-2 text-base font-bold flex flex-col juistify-center text-center items-center rounded-3xl text-white w-1/3 h-10 bg-[#898989]">
-                              Completed {item.createdAt.substring(5, 10).replace('-', '.')}
+                              Ended {item.createdAt.substring(5, 10).replace('-', '.')}
                             </span>
                           </div>
                         </div>
@@ -177,7 +177,7 @@ const Game = () => {
                 })}
               </div>)
               : (
-                <div className="bg-lightGray rounded-[30px] flex flex-col items-center mt-10 gap-10 px-6 pt-16 pb-12 max-[920px]:pt-8 max-[920px]:pb-6">
+                <div className="bg-lightGray rounded-[30px] flex flex-col items-center lg:md:mt-10 mt-3 gap-10 px-6 pt-16 pb-12 max-[920px]:pt-8 max-[920px]:pb-6">
                   <div className="flex flex-col items-center gap-5">
                     <div className="font-orbitron text-white text-center text-[28px] leading-[35px] max-[920px]:text-[18px] max-[920px]:leading-[23px]">
                       There have been no tournaments for this game yet, but they will appear soon.
@@ -193,12 +193,12 @@ const Game = () => {
             }
           </div>
 
-          <div className="flex flex-col gap-10">
-            <h2 className="font-orbitron w-fit text-yellow text-8xl font-extrabold">Game History</h2>
+          <div className="flex flex-col lg:md:gap-10 gap-2">
+            <h2 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">Game History</h2>
             {gameHistory ? (
               <div>
                 <div>
-                  <ul className="px-10 grid grid-cols-4 font-orbitron font-bold text-white text-3xl">
+                  <ul className="px-10 lg:md:grid grid-cols-4 font-orbitron font-bold text-white text-3xl hidden">
                     <li>Title</li>
                     <li>Data</li>
                     <li>Reward</li>
@@ -208,15 +208,38 @@ const Game = () => {
                 <ul className="">
                   {gameHistory?.map((item, index) => {
                     return (
-                      <li className={`px-10 py-5 mt-4 w-full gap-2 rounded-2xl font-bold bg-lightGray grid grid-cols-4 font-orbitron text-white text-2xl`}>
-                        <span>{item.title}</span>
-                        <span>{new Date(item?.createdAt).toDateString()}</span>
-                        {item.isWinner ?
-                          <span className="text-green-500">+{item.match_cost} PAC</span>
-                          :
-                          <span className="text-red-500">-{item.match_cost} PAC</span>
-                        }
-                        <span>*** PAC</span>
+                      <li className={`lg:md:px-10 lg:md:py-5 sm:px-6 sm:py-3 p-4 mt-4 w-full gap-2 rounded-2xl font-bold bg-lightGray lg:md:grid lg:md:grid-cols-4 flex flex-col font-orbitron text-white lg:md:text-2xl sm:text-lg text-sm`}>
+                        <div className="flex flex-row justify-between items-center">
+                          <span className="lg:md:hidden">
+                            Title
+                          </span>
+                          <span>{item.title}</span>
+                        </div>
+                        <div className="flex flex-row justify-between items-center">
+                          <span className="lg:md:hidden">
+                            Data
+                          </span>
+                          <span>{new Date(item?.createdAt).toDateString()}</span>
+
+                        </div>
+                        <div className="flex flex-row justify-between items-center">
+                          <span className="lg:md:hidden">
+                            Reward
+                          </span>
+                          {item.isWinner ?
+                            <span className="text-green-500">+{item.match_cost} PAC</span>
+                            :
+                            <span className="text-red-500">-{item.match_cost} PAC</span>
+                          }
+
+                        </div>
+                        <div className="flex flex-row justify-between items-center">
+                          <span className="lg:md:hidden">
+                            Balance
+                          </span>
+                          <span>*** PAC</span>
+
+                        </div>
                       </li>
                     )
                   })}

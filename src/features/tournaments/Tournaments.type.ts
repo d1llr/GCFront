@@ -1,4 +1,4 @@
-export default interface ITournaments {
+export interface ITournaments {
     id: string,
     disabled: boolean,
     image: string,
@@ -40,4 +40,4 @@ export  interface ITournament {
 
 
 
-export default interface IRating { username: string, earned: number, games_count: number }
+export interface IRating { username: string, earned: number, games_count: number }

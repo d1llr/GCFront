@@ -1,6 +1,6 @@
 import Loader from "../../../helpers/Loader";
 import { useGetRatingQuery } from "./Tournament.slice";
-import IRating from '../Tournaments.type'
+import { IRating } from '../Tournaments.type'
 import { useGetUserInfoQuery, useGetUserNameMutation } from "../../user/User.slice";
 import { ReactNode, useEffect } from "react";
 import tokenService from "../../../services/token.service";
@@ -25,11 +25,11 @@ const Rating = (props: IRat) => {
     }
 
     return data && (
-        <div className="flex flex-col gap-10 font-orbitron ">
-            <h2 className="w-fit text-yellow text-8xl font-extrabold">Players Rating</h2>
+        <div className="flex flex-col lg:md:gap-10 gap-4 font-orbitron ">
+            <h2 className="w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">Players Rating</h2>
             <table className="gap-2 flex flex-col w-full h-full" key={'123'}>
                 <thead>
-                    <tr className="text-white w-full flex flex-row items-center text-4xl text-center p-5 font-bold" key={'123'}>
+                    <tr className="text-white w-full lg:md:flex flex-row hidden items-center text-4xl text-center p-5 font-bold" key={'123'}>
                         <th className="w-1/4 text-start">Rating</th>
                         <th className="w-1/4 text-start">Login</th>
                         <th className="w-1/4 text-start leading-4">Games count</th>
@@ -40,32 +40,72 @@ const Rating = (props: IRat) => {
                     {
                         isSuccess && data?.map((item: IRating, index: number) => {
                             return tokenService.getUser()?.username == item.username ?
-                                <tr className="text-black bg-yellow w-full flex flex-row p-5 text-2xl font-medium rounded-2xl" key={index}>
-                                    <td className="w-1/4 text-start">
-                                        #{index + 1}
+                                <tr className="text-black bg-yellow w-full flex lg:md:flex-row flex-col p-5 lg:md:text-2xl sm:text-lg text-sm font-medium rounded-2xl" key={index}>
+                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                        <span className="lg:md:hidden">
+                                            Rating
+                                        </span>
+                                        <span>
+                                            #{index + 1}
+                                        </span>
                                     </td>
-                                    <td className="w-1/4 text-start">
-                                        {item.username}
+                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                        <span className="lg:md:hidden">
+                                            Login
+                                        </span>
+                                        <span>
+                                            {item.username}
+                                        </span>
                                     </td>
-                                    <td className="w-1/4 text-start">
-                                        {item.games_count}
+                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                        <span className="lg:md:hidden">
+                                            Games count
+                                        </span>
+                                        <span>
+                                            {item.games_count}
+                                        </span>
                                     </td>
-                                    <td className="w-1/4 text-start">
-                                        {item.earned} PAC
+                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                        <span className="lg:md:hidden">
+                                            Earned
+                                        </span>
+                                        <span>
+                                            {item.earned} PAC
+                                        </span>
                                     </td>
                                 </tr>
-                                : <tr className="text-white bg-lightGray w-full flex flex-row p-5 text-2xl font-medium rounded-2xl" key={index}>
-                                    <td className="w-1/4 text-start">
-                                        #{index + 1}
+                                : <tr className="text-white bg-lightGray w-full flex lg:md:flex-row flex-col  p-5 lg:md:text-2xl sm:text-lg text-sm font-medium rounded-2xl" key={index}>
+                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                        <span className="lg:md:hidden">
+                                            Rating
+                                        </span>
+                                        <span>
+                                            #{index + 1}
+                                        </span>
                                     </td>
-                                    <td className="w-1/4 text-start">
-                                        {item.username}
+                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                        <span className="lg:md:hidden">
+                                            Login
+                                        </span>
+                                        <span>
+                                            {item.username}
+                                        </span>
                                     </td>
-                                    <td className="w-1/4 text-start">
-                                        {item.games_count}
+                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                        <span className="lg:md:hidden">
+                                            Games count
+                                        </span>
+                                        <span>
+                                            {item.games_count}
+                                        </span>
                                     </td>
-                                    <td className="w-1/4 text-start">
-                                        {item.earned} PAC
+                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                        <span className="lg:md:hidden">
+                                            Earned
+                                        </span>
+                                        <span>
+                                            {item.earned} PAC
+                                        </span>
                                     </td>
                                 </tr>
                         })

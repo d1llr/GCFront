@@ -35,10 +35,10 @@ const HistotyTournamentRating = (props: IRat) => {
                     isSuccess && data?.map((item, index: number) => {
                         return index < 3 && (
                             <tr className="flex flex-row justify-between" key={index}>
-                                <span className="text-2xl font-bold text-white">
+                                <span className="lg:md:text-2xl sm:text-lg text-base font-bold text-white">
                                     #{index + 1} place
                                 </span>
-                                <span className="text-[20px] font-bold text-yellow">
+                                <span className="lg:md:text-[20px] sm:text-lg text-base font-bold text-yellow">
                                     {item.username}
                                 </span>
                             </tr>
