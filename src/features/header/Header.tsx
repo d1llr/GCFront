@@ -80,7 +80,7 @@ const Header = () => {
 
           <div className="flex flex-row justify-end gap-4 max-[920px]:hidden">
 
-            <Wallet />
+            <Wallet padding="p-1" />
 
             <button
               onClick={() => {
@@ -128,7 +128,7 @@ const Header = () => {
             </button>
           </div>
           <div className="flex gap-2 justify-between">
-            <Wallet />
+            <Wallet padding="p-1" />
 
             <button
               onClick={() => {

@@ -351,19 +351,20 @@ a img {
   width: 20px;
   height: 20px;
   border-radius: 500px;
+  overflow: hidden;
   position: absolute;
-  background: rgb(13, 13, 13);
+  background: inherit;
   animation: loadingAnimation 4s ease-out infinite;
 }
 
 @keyframes loadingAnimation {
   0% {
-    top: -20%;
+    top: -10%;
     left: -3%;
   }
 
   35% {
-    top: -20%;
+    top: -10%;
     left: 97%;
   }
 
@@ -378,7 +379,7 @@ a img {
   }
 
   100% {
-    top: -20%;
+    top: -10%;
     left: -3%;
   }
 }

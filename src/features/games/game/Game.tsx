@@ -214,7 +214,7 @@ const Game = () => {
                         {item.isWinner ?
                           <span className="text-green-500">+{item.match_cost} PAC</span>
                           :
-                          <span className="text-red-500">{item.match_cost} PAC</span>
+                          <span className="text-red-500">-{item.match_cost} PAC</span>
                         }
                         <span>*** PAC</span>
                       </li>

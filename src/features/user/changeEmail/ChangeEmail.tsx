@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import Logo from '../../../images/logo-game-center.svg'
-import { setUser, useChangeEmailMutation, useChangePasswordMutation, useLoginRequestMutation, useSendCodeMutation } from '../User.slice';
+import { setUser, useChangeEmailMutation, useChangePasswordMutation, useLoginRequestMutation, useSendCodeMutation, useSendCodeUponRegisterMutation, useSendCodeWithEmailValidationMutation } from '../User.slice';
 import { useEffect, useState } from 'react';
 import Code from '../../../helpers/Code';
 import SuccessAction from '../../../helpers/SuccessAction';
@@ -24,7 +24,9 @@ const ChangeEmail = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate();
 
+    const [SendCodeWithEmailValidation, { isLoading: SendCodeWithEmailValidationLoading, isSuccess: SendCodeWithEmailValidationSuccess, isError: SendCodeWithEmailValidationIsError, isUninitialized: SendCodeWithEmailValidationIsUninitialized, error: SendCodeWithEmailValidationError }] = useSendCodeWithEmailValidationMutation()
     const [SendCode, { isLoading: SendCodeLoading, isSuccess: SendCodeSuccess, isError: SendCodeIsError, isUninitialized: SendCodeUninitialized, error: SendCodeError }] = useSendCodeMutation()
+
     const [changePassword, { isLoading: changePasswordLoading, isSuccess: changePasswordSuccess, isError: changePasswordIsError, isUninitialized: changePasswordIsUninitialized, error: changePasswordError }] = useChangePasswordMutation()
     const [changeEmail, { isLoading: changeEmailLoading, isSuccess: changeEmailSuccess, isError: changeEmailIsError, isUninitialized: changeEmailIsUninitialized, error: changeEmailError }] = useChangeEmailMutation()
 
@@ -103,7 +105,7 @@ const ChangeEmail = () => {
 
     const onSubmit = async (data: email) => {
         setUserData({ email: data.email })
-        await SendCode({
+        await SendCodeWithEmailValidation({
             email: data.email,
         })
             .unwrap()
@@ -174,14 +176,16 @@ const ChangeEmail = () => {
                             <div className="form-group flex flex-col">
                                 <label className="text-md after:content-['*'] after:inline after:text-yellow after:font-beausans mb-1">Email</label>
                                 <div className="invalid-feedback text-red-500 text-sm mb-2">{errors.email?.message}</div>
+                                <div className="invalid-feedback text-red-500 text-sm mb-2">{SendCodeWithEmailValidationIsError && 'Email already in use'}</div>
+
                                 <input
                                     type="text"
                                     {...register('email')}
-                                    className={` ${errors.email ? 'is-invalid border border-rose-500' : 'border-none'} form-control  focus:outline-0  focus:ring-transparent focus:border-rose-500 text-lg rounded-lg bg-lightGray p-2 px-3 font-chakra `}
+                                    className={` ${errors.email || SendCodeWithEmailValidationIsError ? 'is-invalid border border-rose-500' : 'border-none'} form-control  focus:outline-0  focus:ring-transparent focus:border-rose-500 text-lg rounded-lg bg-lightGray p-2 px-3 font-chakra `}
                                     placeholder='Email'
                                 />
                             </div>
-                            <button type="submit" className={`text-center bg-yellow ${SendCodeLoading && 'button_loading'} text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg font-orbiton hover:bg-hoverYellow transition-al`}>
+                            <button type="submit" className={`text-center bg-yellow ${SendCodeWithEmailValidationLoading && 'button_loading'} text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg font-orbiton hover:bg-hoverYellow transition-al`}>
                                 Continue
                             </button>
                         </form>

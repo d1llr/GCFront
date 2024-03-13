@@ -118,6 +118,15 @@ export const UsersActions = createApi({
             transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
 
         }),
+        SendCodeWithEmailValidation: builder.mutation<any, { email: string }>({
+            query: (body) => ({
+                url: '/api/auth/SendCodeWithEmailValidation',
+                method: "POST",
+                body: body
+            }),
+            transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
+
+        }),
         SendCode: builder.mutation<any, { email: string }>({
             query: (body) => ({
                 url: '/api/auth/sendCode',
@@ -209,6 +218,7 @@ export const {
     useGetUserBalanceQuery,
     useSendCodeMutation,
     useSendCodeUponRegisterMutation,
+    useSendCodeWithEmailValidationMutation,
     useCheckCodeMutation,
     useChangePasswordMutation,
     useChangeUserDataMutation,

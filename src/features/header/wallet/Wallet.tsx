@@ -37,7 +37,11 @@ enum Mode {
   switch = "Switch",
 }
 
-const Wallet = memo(() => {
+interface IWalletProps {
+  padding: string
+}
+
+const Wallet = memo((props: IWalletProps) => {
   const toast = useToast()
   const { connectAsync } = useConnect()
   const { disconnectAsync } = useDisconnect()
@@ -454,7 +458,7 @@ const Wallet = memo(() => {
         </button>
       ) : (
         <button
-          className="yellow_btn px-8 text-base rounded-[10px] max-[920px]:text-[16px]"
+          className={`yellow_btn px-8 ${props.padding} text-base rounded-[10px] max-[920px]:text-[16px]`}
           onClick={() => handleConnectWallet()}
         >
           {isLoading && <Loader />}

@@ -26,7 +26,7 @@ const User = () => {
   const navigate = useNavigate();
   const { disconnectAsync } = useDisconnect()
   const { data, isLoading, isError, error, refetch } = useGetUserInfoQuery(tokenService.getUser()?.id)
-  const [changeUserData, { isError: changeUserDataIsError, isLoading: changeUserDataLoading, isSuccess: changeUserDataIsSuccess, isUninitialized: changeUserDataIsUninitialized, },] = useChangeUserDataMutation()
+  const [changeUserData, { isError: changeUserDataIsError, isLoading: changeUserDataLoading, isSuccess: changeUserDataIsSuccess, isUninitialized: changeUserDataIsUninitialized, error: ChangeUserDataError, reset },] = useChangeUserDataMutation()
   const [deleteAccount, { isError: deleteAccountIsError, isLoading: deleteAccountLoading, isSuccess: deleteAccountIsSuccess, isUninitialized: deleteAccountIsUninitialized, },] = useDeleteAccountMutation()
 
   const [removeWalletApi, { isError: isErrorRemoveWallet, isLoading: isLoadingRemoveWallet, isSuccess, isUninitialized, },] = useRemoveWalletMutation()
@@ -83,7 +83,7 @@ const User = () => {
   const {
     register,
     handleSubmit,
-    reset,
+    reset: FormErrorsReset,
     formState: { errors }
   } = useForm<UserSubmitForm>({
     resolver: yupResolver(validationSchema)
@@ -102,7 +102,7 @@ const User = () => {
         refetch()
       })
       .catch(err => {
-        console.log(err);
+
       })
   }
 
@@ -187,8 +187,8 @@ const User = () => {
                 Your data
               </h2>
               <button className="w-5 h-5" onClick={() => setMode(Mode.changeUserData)}>
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="yellow" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M16.684 3.95095L17.8609 2.75804C18.3244 2.28839 18.8746 1.91587 19.4801 1.66174C20.0857 1.4076 20.7346 1.27684 21.39 1.27692C22.0454 1.27699 22.6944 1.4079 23.2998 1.66217C23.9053 1.91644 24.4554 2.28909 24.9188 2.75885C25.3822 3.2286 25.7497 3.78626 26.0004 4.39998C26.2512 5.01371 26.3802 5.67148 26.3801 6.33574C26.38 6.99999 26.2509 7.65773 26 8.2714C25.7491 8.88507 25.3815 9.44264 24.918 9.91229L23.741 11.102M16.684 3.95095C16.684 3.95095 16.8315 6.48468 19.0363 8.71938C21.2412 10.9541 23.741 11.102 23.741 11.102M16.684 3.95095L5.87077 14.9106C5.13794 15.6534 4.77153 16.0231 4.45746 16.4331C4.08582 16.9159 3.76723 17.4382 3.50731 17.991C3.28683 18.4588 3.12345 18.9572 2.79511 19.9524L1.40717 24.1742L1.06931 25.2047C0.990109 25.445 0.978534 25.7029 1.03588 25.9495C1.09323 26.196 1.21723 26.4216 1.39397 26.6007C1.57072 26.7798 1.79321 26.9055 2.0365 26.9636C2.27979 27.0218 2.53424 27.01 2.77131 26.9298L3.78807 26.5873L7.95346 25.179C8.93533 24.8478 9.42705 24.6822 9.88864 24.4587C10.4343 24.1951 10.9498 23.8719 11.4257 23.4957C11.8302 23.1758 12.195 22.806 12.9278 22.0633L23.741 11.102" stroke="#6A6A6A" stroke-width="2" />
+                <svg width="28" height="28" viewBox="0 0 28 28" className={`${mode == Mode.changeUserData && 'stroke-yellow'} hover:stroke-white `} fill="#272727" stroke="#6A6A6A" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="" d="M16.684 3.95095L17.8609 2.75804C18.3244 2.28839 18.8746 1.91587 19.4801 1.66174C20.0857 1.4076 20.7346 1.27684 21.39 1.27692C22.0454 1.27699 22.6944 1.4079 23.2998 1.66217C23.9053 1.91644 24.4554 2.28909 24.9188 2.75885C25.3822 3.2286 25.7497 3.78626 26.0004 4.39998C26.2512 5.01371 26.3802 5.67148 26.3801 6.33574C26.38 6.99999 26.2509 7.65773 26 8.2714C25.7491 8.88507 25.3815 9.44264 24.918 9.91229L23.741 11.102M16.684 3.95095C16.684 3.95095 16.8315 6.48468 19.0363 8.71938C21.2412 10.9541 23.741 11.102 23.741 11.102M16.684 3.95095L5.87077 14.9106C5.13794 15.6534 4.77153 16.0231 4.45746 16.4331C4.08582 16.9159 3.76723 17.4382 3.50731 17.991C3.28683 18.4588 3.12345 18.9572 2.79511 19.9524L1.40717 24.1742L1.06931 25.2047C0.990109 25.445 0.978534 25.7029 1.03588 25.9495C1.09323 26.196 1.21723 26.4216 1.39397 26.6007C1.57072 26.7798 1.79321 26.9055 2.0365 26.9636C2.27979 27.0218 2.53424 27.01 2.77131 26.9298L3.78807 26.5873L7.95346 25.179C8.93533 24.8478 9.42705 24.6822 9.88864 24.4587C10.4343 24.1951 10.9498 23.8719 11.4257 23.4957C11.8302 23.1758 12.195 22.806 12.9278 22.0633L23.741 11.102" stroke-width="2" />
 
                 </svg>
               </button>
@@ -254,15 +254,19 @@ const User = () => {
                     Login
                   </label>
                   <div className="invalid-feedback text-red-500 text-sm mb-1 mt-1">{errors.login?.message}</div>
+                  <div className="invalid-feedback text-red-500 text-sm mb-1 mt-1">{changeUserDataIsError && 'Username already exist'}</div>
                   <input
                     type="text"
                     {...register('login')}
-                    className={`form-control focus:outline-0 focus:ring-transparent ${errors.login ? 'is-invalid border border-rose-500' : 'border-0 border-b-2 border-white'} text-lg bg-lightGray p-0 py-1 font-chakra`}
+                    onChange={() => {
+                      reset()
+                    }}
+                    className={`form-control focus:outline-0 focus:ring-transparent ${errors.login || changeUserDataIsError ? 'is-invalid border-0 border-b-2 border-rose-500' : 'border-0 border-b-2 border-white'} text-lg bg-lightGray p-0 py-1 font-chakra`}
                     defaultValue={data?.username}
                   />
                 </div>
                 <div className="flex flex-row justify-between gap-2">
-                  <button type='submit' className="text-white w-1/2 bg-customBlack hover:bg-customBlackHover p-3 rounded-xl text-base">
+                  <button type='submit' className={`text-white ${changeUserDataLoading && 'button_loading'} w-1/2 bg-customBlack hover:bg-customBlackHover p-3 rounded-xl text-base`}>
                     Save
                   </button>
                   <button className="text-base text-black w-1/2 bg-[#898989] hover:bg-lightGrayHover p-3 rounded-xl" onClick={() => setMode(undefined)}>
