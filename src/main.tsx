@@ -126,11 +126,7 @@ const router = createBrowserRouter([
       {
         path: "/user",
         element: <User />,
-      },
-      {
-        path: "*",
-        element: <Page404 />,
-      },
+      }
     ],
   },
   {
@@ -157,24 +153,19 @@ const router = createBrowserRouter([
     path: "/register",
     element: <Register />,
   },
+  {
+    path: "*",
+    element: <Page404 />,
+  },
 ])
 
-if (window.screen.width > 1000) {
-  ReactDOM.createRoot(document.getElementById("root")!).render(
-    <ChakraProvider resetCSS={true} disableGlobalStyle={true}>
-      <Provider store={store}>
-        <WagmiConfig client={client}>
-          <RouterProvider router={router} />
-        </WagmiConfig>
-      </Provider>
-    </ChakraProvider>,
-  )
-} else {
-  ReactDOM.createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <Mobile />
-      </Provider>
-    </React.StrictMode>,
-  )
-}
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <ChakraProvider resetCSS={true} disableGlobalStyle={true}>
+    <Provider store={store}>
+      <WagmiConfig client={client}>
+        <RouterProvider router={router} />
+      </WagmiConfig>
+    </Provider>
+  </ChakraProvider>,
+)

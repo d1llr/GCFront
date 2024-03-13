@@ -7,8 +7,20 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+### Added
 
-## [0.0.3] - 2024-03-12
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+
+## [0.0.3] - 2024-03-11
 
 ### Added
 

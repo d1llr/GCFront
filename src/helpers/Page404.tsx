@@ -25,7 +25,6 @@ const Page404 = ({ navigateTo = '/' }: { navigateTo?: string }) => {
         //         </span>
         //     </div>
         // </div>
-
         <div id="error-page" className="flex justify-center items-center">
             <div className="wrapper w-full">
                 <div className="flex flex-col justify-center items-center gap-16 max-[700px]:gap-10">
@@ -43,7 +42,6 @@ const Page404 = ({ navigateTo = '/' }: { navigateTo?: string }) => {
                 </div>
             </div>
         </div>
-
 
     );
 }

@@ -64,28 +64,11 @@ const ChangePassword = () => {
 
 
 
-    // useEffect(() => {
-    //     if (SendCodeUninitialized) {
-    //         if (tokenService?.getUser()) {
-    //             setUserData({ email: tokenService?.getUser()?.email })
-    //             SendCode({
-    //                 email: tokenService?.getUser()?.email,
-    //             })
-    //                 .unwrap()
-    //                 .then(responce => {
-    //                     console.log(responce);
-    //                     setStage(1)
-    //                 })
-    //                 .catch(err => {
-    //                     console.log(err);
-
-    //                 })
-    //         }
-    //         else {
-    //             navigate("/user")
-    //         }
-    //     }
-    // }, [])
+    useEffect(() => {
+        if (!tokenService?.getUser()) {
+            navigate("/login")
+        }
+    }, [])
 
     const validationSchema = Yup.object().shape({
         oldPassword: Yup.string()
