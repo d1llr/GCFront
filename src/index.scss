@@ -95,6 +95,27 @@ a img {
   background-image: url("./images/yellowbg.png");
   background-repeat: no-repeat;
   background-position: top right;
+  background-size: calc(50% - 1vw) calc(30% - 1vw);
+
+  @media (max-width: 1300px) {
+    background-size: 50% 20%;
+
+  }
+
+  @media (max-width: 1000px) {
+    background-size: 60% 20%;
+
+  }
+
+  @media (max-width: 600px) {
+    background-size: 60% 10%;
+
+  }
+
+  @media (min-width: 1920px) {
+    background-size: 50vw 60vh
+
+  }
 }
 
 .game-name {

@@ -144,6 +144,9 @@ const Header = () => {
           <div className="flex flex-col gap-4">
             <NavLink
               to="/games"
+              onClick={() => {
+                dispatch(setMobBurger())
+              }}
               className={({ isActive }) =>
               `font-orbitron text-[16px] font-extrabold ${isActive ? "text-yellow" : "text-white"}`
               }
@@ -152,6 +155,9 @@ const Header = () => {
             </NavLink>
             <NavLink 
               to='/tournaments' 
+              onClick={() => {
+                dispatch(setMobBurger())
+              }}
               className={({ isActive }) => 
                 `font-orbitron text-[16px] font-extrabold ${isActive ? 'text-yellow' : 'text-white'}`
               }
@@ -160,6 +166,9 @@ const Header = () => {
             </NavLink>
             <NavLink
               to="/user"
+              onClick={() => {
+                dispatch(setMobBurger())
+              }}
               className={({ isActive }) =>
                 `font-orbitron text-[16px] font-extrabold ${isActive ? "text-yellow" : "text-white"}`
               }

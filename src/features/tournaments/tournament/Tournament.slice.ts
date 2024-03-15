@@ -1,12 +1,12 @@
 // Need to use the React-specific entry point to allow generating React hooks
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import ITournaments from "../Tournaments.type";
+import { ITournaments } from "../Tournaments.type";
 import authHeader from '../../../services/accessHeaders';
-import IRating from '../Tournaments.type'
+import { IRating } from '../Tournaments.type'
 // Define a service using a base URL and expected endpoints
 export const GetTournamentById = createApi({
     reducerPath: 'GetTournamentById',
-    baseQuery: fetchBaseQuery({ baseUrl:  import.meta.env.VITE_BACKEND_URL }),
+    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
     endpoints: (builder) => ({
         GetTournamentById: builder.query<ITournaments, string | undefined>({
             query: (id) => ({
@@ -21,6 +21,14 @@ export const GetTournamentById = createApi({
             }),
         }),
         GetRating: builder.query<IRating[], { tournament_id: string | undefined, type: string }>({
+            query: (body) => ({
+                url: `/api/tournaments/getRating`,
+                method: 'POST',
+                body: body,
+                headers: authHeader()
+            }),
+        }),
+        GetRatingMutable: builder.mutation<IRating[], { tournament_id: string | undefined, type: string }>({
             query: (body) => ({
                 url: `/api/tournaments/getRating`,
                 method: 'POST',
@@ -48,4 +56,4 @@ export const GetTournamentById = createApi({
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useGetTournamentByIdQuery, useGetCurrentDayMutation, useGetParticipateMutation, useGetRatingQuery, useGetTournamentByIdFromHistoryQuery } = GetTournamentById
+export const { useGetTournamentByIdQuery, useGetCurrentDayMutation, useGetParticipateMutation, useGetRatingQuery, useGetRatingMutableMutation, useGetTournamentByIdFromHistoryQuery } = GetTournamentById

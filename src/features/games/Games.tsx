@@ -3,7 +3,8 @@ import IGames from "./Games.type"
 import { useGetAllGamesQuery } from "./Games.slice"
 import Loader from "../../helpers/Loader"
 
-var t = true
+
+
 const Games = () => {
 
 
@@ -12,13 +13,13 @@ const Games = () => {
   const navigate = useNavigate()
 
 
-  // if (isLoading) {
-  //   return <Loader />
-  // }
+  if (isLoading) {
+    return <Loader />
+  }
   return (
     <div className="background-image-black">
       <div className="wrapper-content">
-        <h1 className="font-orbitron w-fit text-yellow text-8xl font-extrabold">Games</h1>
+        <h1 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">Games</h1>
 
         <div className="grid grid-cols-3 gap-7 mt-10 max-[1300px]:grid-cols-2 max-[760px]:grid-cols-1">
           {data?.map((item, index: number) => {

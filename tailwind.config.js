@@ -17,14 +17,43 @@ export default {
     //   // => @media (min-width: 1280px) { ... }
     // },
     extend: {
-      keyframes: {
-        loading: {
-          '0%, 100%': { transform: 'rotate(-3deg)' },
-          '50%': { transform: 'rotate(3deg)' },
-        }
+
+      'animation': {
+        'gradient-x': 'gradient-x 1s ease infinite',
+        'gradient-y': 'gradient-y 15s ease-in-out infinite',
+        'gradient-xy': 'gradient-xy 15s ease infinite',
       },
-      animation: {
-        loading: 'loading 4s ease-out infinite',
+      'keyframes': {
+        'gradient-y': {
+          '0%, 100%': {
+            'background-size': '400% 400%',
+            'background-position': 'center top'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'center center'
+          }
+        },
+        'gradient-x': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          }
+        },
+        'gradient-xy': {
+          '0%, 100%': {
+            'background-size': '400% 400%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          }
+        }
       },
       backgroundImage: {
         'gameShards': "url('/src/images/icons/game-item-shards.svg')",
@@ -67,7 +96,7 @@ export default {
         '"Chakra Petch", sans-serif'
       ]
     },
-    
+
   },
   plugins: [
     require('flowbite/plugin')
