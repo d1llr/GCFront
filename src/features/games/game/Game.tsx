@@ -172,7 +172,7 @@ const Game = () => {
             </div>
           </div>
           <div className="lg:md:mt-12">
-            <h2 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl mt-2 font-extrabold">Tournaments</h2>
+            <h2 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl mt-2 font-extrabold mb-8">Tournaments</h2>
             {TournamentsDataSuccess ? (
               <div className="text-xl font-semibold grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 mt-10">
                 {tournaments?.active.map((item, index: number) => {
@@ -281,7 +281,7 @@ const Game = () => {
           </div>
 
           <div className="flex flex-col lg:md:gap-10 gap-2">
-            <h2 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">Game History</h2>
+            <h2 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold mb-2">Game History</h2>
             {gameHistory ? (
               <div>
                 <div>

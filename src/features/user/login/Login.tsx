@@ -81,7 +81,7 @@ const Login = () => {
                         Your browser does not support the video tag.
                     </video>
 
-                    <button className='absolute -top-3 -right-3 flex items-center justify-center bg-yellow hover:bg-hoverYellow p-3 rounded-full' onClick={() => setShowVideo(false)}>
+                    <button className='absolute -top-3 -right-3 flex items-center justify-center bg-yellow hover:bg-hoverYellow p-3 rounded-full max-[1000px]:hidden' onClick={() => setShowVideo(false)}>
                         <img src={close} alt='close' />
 
                     </button>
@@ -126,8 +126,8 @@ const Login = () => {
                             ">
                                 Login or Email
                             </label>
-
-                            <div className="invalid-feedback text-red-500 text-sm mb-2 mt-1.5">{errors.login?.message}</div>
+                            
+                            <div className={`${errors.login?.message ? '' : 'hidden'} invalid-feedback text-red-500 text-sm mb-1`}>{errors.login?.message}</div>
 
                             <input
                                 type="text"
@@ -161,7 +161,7 @@ const Login = () => {
                                 Password
                             </label>
 
-                            <div className="invalid-feedback text-red-500 text-sm mb-2 mt-1.5" >{errors.password?.message}</div>
+                            <div className={`${errors.password?.message ? '' : 'hidden'} invalid-feedback text-red-500 text-sm mb-1`}>{errors.password?.message}</div>
 
                             <div className={`
                             form-control 
