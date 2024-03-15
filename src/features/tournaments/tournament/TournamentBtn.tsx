@@ -10,7 +10,9 @@ import { changeChain } from "../../header/wallet/meta/chainHelper"
 import { FC, useEffect } from "react"
 import { useToast } from "@chakra-ui/react"
 import Loader from "../../../helpers/Loader"
-import { useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
+import { HashLink } from 'react-router-hash-link';
+
 
 interface ButtonProps {
   transferTo: `0x${string}`
@@ -105,7 +107,7 @@ const TournamentBtn: FC<ButtonProps> = ({
   if (tournamentChainId !== chain?.id) {
     return (
       <button
-        className="text-center bg-yellow text-black w-full p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-al  disabled:opacity-30"
+        className="text-center max-w-20 bg-yellow text-black w-1/2 p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-al  disabled:opacity-30"
         onClick={() => changeChain(tournamentChainId)}
         disabled={!isDisconnected}
       >

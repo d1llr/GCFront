@@ -19,7 +19,7 @@ const HistotyTournamentRating = (props: IRat) => {
     })
 
     if (isLoading) {
-        return <span className="text-center text-yellow"><Spinner size="lg" light={false} color="warning" aria-label="Warning spinner example" /></span> 
+        return <Loader />
     }
     if (isError) {
         return <Error />

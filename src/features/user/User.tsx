@@ -41,10 +41,6 @@ const User = () => {
   };
 
 
-  // if (isLoading) {
-  //   return <Loader />
-  // }
-
   enum Mode {
     changeEmail = "changeEmail",
     changePassword = "changePassword",
@@ -174,6 +170,11 @@ const User = () => {
       "base": "flex items-center space-x-2 rounded-b border-gray-200 p-6 dark:border-gray-600",
       "popup": "border-t"
     }
+  }
+
+  
+  if (isLoading) {
+    return <Loader />
   }
 
   return (

@@ -1,5 +1,5 @@
-import { ITournaments, ITournament } from "./Tournaments.type";
-import { useGetActiveTournamentsQuery, useGetHistoryTournamentsQuery } from "./Tournaments.slice";
+import { ITournaments, ITournament, IFilters } from "./Tournaments.type";
+import { useGetActiveTournamentsQuery, useGetFiltersQuery, useGetHistoryTournamentsQuery, useGetTournamentsCountQuery } from "./Tournaments.slice";
 import { Oval } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../helpers/Loader";
@@ -7,44 +7,61 @@ import Error from "../../helpers/Error";
 import HistotyTournamentRating from "../games/game/HistotyTournamentRating";
 import { useEffect, useState } from "react";
 import { symbols } from "./tournament/TournamentBtn";
+import { object } from "yup";
 
 
-interface test {
-    chainID: string[],
-    game_name: string[]
-}
 
 const filteredFields = ['chainID', 'game_name']
 
 const Tournaments = () => {
     const { data, isLoading, isError, isSuccess: ActiveTournamentsSuccess, error } = useGetActiveTournamentsQuery()
     const { data: HistoryData, isSuccess: HistoryTournamentsSuccess } = useGetHistoryTournamentsQuery()
+    const { data: FilterData, isSuccess: FilterDataSuccess, isLoading: FilterDataLoading } = useGetFiltersQuery()
+    const { data: tournamentsCount, isSuccess: tournamentsCountSuccess } = useGetTournamentsCountQuery()
 
-    const [filter, setFilter] = useState<test>()
+    const [pagesCount, setPagesCount] = useState<number>()
+    const [pagination, setPagination] = useState<number>(0)
+    const [filter, setFilter] = useState<string[]>()
     const navigate = useNavigate();
+    const limit = 5
 
-    //     useEffect(() => {
-    //         if (ActiveTournamentsSuccess && HistoryTournamentsSuccess) {
-    //             let array = new Array<ITournament>().concat(data).concat(HistoryData)
-    //             console.log(array);
-    //             array.map((item: ITournament) => {
-    //                 filteredFields.map(field => {
-    //                     console.log(field); 
-    //                     setFilter(prev => ({...prev, [field]: item[field]}))
-    //             })
+    const GetNumberContainer = (props: { fill?: string, value: number }) => {
+        return <div className={`flex items-center justify-center border-2 cursor-pointer rounded-xl hover:border-yellow h-12 w-12  ${pagination == props.value ? ' border-yellow bg-yellow text-black hover:text-black ' : `border-lightGray text-lightGray hover:text-yellow`}`} onClick={() => setPagination(props.value)}>
+            {props.value + 1}
+        </div >
+    }
+
+    useEffect(() => {
+        if (FilterData) {
+            setFilter(() => {
+                let res: string[] = []
+                FilterData.map(item => {
+                    let values = Object.keys(item).filter(key => !Number.isNaN(Number(key)) ?? key).map(key => Object.values(item[key]))
+                    values.map((value, index: number) => {
+                        value.map(v => {
+                            if (!res.includes(v))
+                                res.push(v)
+                        })
+                    })
+
+                })
+                return res
+            })
 
 
-    //         })
+        }
+    }, [FilterDataSuccess])
 
-    //     console.log(filter);
 
+    useEffect(() => {
+        if (tournamentsCount)
+            setPagesCount(tournamentsCount)
 
-    // }
-    //     }, [ActiveTournamentsSuccess, HistoryTournamentsSuccess])
+    }, [tournamentsCountSuccess])
 
-    // if (isLoading) {
-    //     return <Loader />
-    // }
+    if (isLoading) {
+        return <Loader />
+    }
     function convertISO8601ToDDMM(isoDate: string) {
         const date = new Date(isoDate);
         const day = date.getDate().toString().padStart(2, '0');
@@ -55,20 +72,17 @@ const Tournaments = () => {
         <div className="background-image-black">
             <div className="wrapper-content">
                 <div className="flex flex-col gap-5 lg:md:gap-10">
-
-
                     <h1 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">Tournaments</h1>
-                    {/* <div className="flex flex-row mt-12 mb-7 gap-3 flex-wrap max-[920px]:gap-2"> */}
-                    {/* {
-                        filter?.map(item => {
-                            return <button className="filter_btn">{{
-                                symbols.hasOwnProperty(data?.chainID)
-                                    ? symbols[data?.chainID as keyof typeof symbols]
-                                    : symbols.default
-                            }}</button>
-                        })
-                    } */}
-                    {/* <button className="filter_btn active">OCTA</button>
+                    {/* <div className="flex flex-row gap-3 flex-wrap max-[920px]:gap-2"> */}
+                        {/* {
+                            filter?.map(item => {
+                                return <button className="filter_btn">{symbols.hasOwnProperty(item)
+                                    ? symbols[item as keyof typeof symbols]
+                                    : item
+                                }</button>
+                            })
+                        } */}
+                        {/* <button className="filter_btn active">OCTA</button>
                     <button className="filter_btn">REDEV2</button>
                     <button className="filter_btn">PAC Match 3</button>
                     <button className="filter_btn">PAC Shoot</button>
@@ -164,6 +178,11 @@ const Tournaments = () => {
                             )
                         })}
                         {(data?.length == 0 && HistoryData?.length == 0) && <Error />}
+                    </div>
+                    <div className="flex flex-row justify-center items-center gap-2 mt-5">
+                        {pagesCount && ([...new Array(Math.ceil(pagesCount / 5))].map((page, index: number) => {
+                            return <GetNumberContainer value={index} />
+                        }))}
                     </div>
                 </div>
             </div>

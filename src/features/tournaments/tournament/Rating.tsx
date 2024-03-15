@@ -41,7 +41,7 @@ const Rating = (props: IRat) => {
                         isSuccess && data?.map((item: IRating, index: number) => {
                             return tokenService.getUser()?.username == item.username ?
                                 <tr className="text-black bg-yellow w-full flex lg:md:flex-row flex-col p-5 lg:md:text-2xl sm:text-lg text-sm font-medium rounded-2xl" key={index}>
-                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                    <td className="lg:md:w-1/4 flex flex-row justify-between sm:justify-between text-start">
                                         <span className="lg:md:hidden">
                                             Rating
                                         </span>
@@ -49,7 +49,7 @@ const Rating = (props: IRat) => {
                                             #{index + 1}
                                         </span>
                                     </td>
-                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                    <td className="lg:md:w-1/4 flex flex-row justify-between sm:justify-between text-start">
                                         <span className="lg:md:hidden">
                                             Login
                                         </span>
@@ -57,7 +57,7 @@ const Rating = (props: IRat) => {
                                             {item.username}
                                         </span>
                                     </td>
-                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                    <td className="lg:md:w-1/4 flex flex-row justify-between sm:justify-between text-start">
                                         <span className="lg:md:hidden">
                                             Games count
                                         </span>
@@ -65,7 +65,7 @@ const Rating = (props: IRat) => {
                                             {item.games_count}
                                         </span>
                                     </td>
-                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                    <td className="lg:md:w-1/4 flex flex-row justify-between sm:justify-between text-start">
                                         <span className="lg:md:hidden">
                                             Earned
                                         </span>
@@ -74,8 +74,8 @@ const Rating = (props: IRat) => {
                                         </span>
                                     </td>
                                 </tr>
-                                : <tr className="text-white bg-lightGray w-full flex lg:md:flex-row flex-col  p-5 lg:md:text-2xl sm:text-lg text-sm font-medium rounded-2xl" key={index}>
-                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                : <tr id='my-rating' className="text-white bg-lightGray w-full flex lg:md:flex-row flex-col  p-5 lg:md:text-2xl sm:text-lg text-sm font-medium rounded-2xl" key={index}>
+                                    <td className="lg:md:w-1/4 flex flex-row justify-between sm:justify-between text-start">
                                         <span className="lg:md:hidden">
                                             Rating
                                         </span>
@@ -83,7 +83,7 @@ const Rating = (props: IRat) => {
                                             #{index + 1}
                                         </span>
                                     </td>
-                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                    <td className="lg:md:w-1/4 flex flex-row justify-between sm:justify-between text-start">
                                         <span className="lg:md:hidden">
                                             Login
                                         </span>
@@ -91,7 +91,7 @@ const Rating = (props: IRat) => {
                                             {item.username}
                                         </span>
                                     </td>
-                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                    <td className="lg:md:w-1/4 flex flex-row justify-between sm:justify-between text-start">
                                         <span className="lg:md:hidden">
                                             Games count
                                         </span>
@@ -99,7 +99,7 @@ const Rating = (props: IRat) => {
                                             {item.games_count}
                                         </span>
                                     </td>
-                                    <td className="lg:md:w-1/4 max-sm:flex max-sm:flex-row max-sm:justify-between text-start">
+                                    <td className="lg:md:w-1/4 flex flex-row justify-between sm:justify-between text-start">
                                         <span className="lg:md:hidden">
                                             Earned
                                         </span>

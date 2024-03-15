@@ -1,6 +1,6 @@
 "use client"
 import { NavLink, useNavigate, useParams } from "react-router-dom"
-import { useGetGameByIdQuery, useGetTournamentsMutation, useGetUserGameHistoryMutation } from "./Game.slice"
+import { useGetGameByIdQuery, useGetTournamentsMutation, useGetUserGameHistoryMutation, useGetUserGamesCountMutation } from "./Game.slice"
 import web from "../../../images/icons/web_icon.svg"
 import android_icon from "../../../images/icons/android_icon.svg"
 import win from "../../../images/icons/windows_icon.svg"
@@ -17,15 +17,73 @@ import Error from "../../../helpers/Error";
 import HistotyTournamentRating from "./HistotyTournamentRating"
 
 
-const Game = () => {
-  let params = useParams()
 
+
+
+const Game = () => {
+  const [pagination, setPagination] = useState<number>(0)
+  const GetNumberContainer = (props: { fill?: string, value: number }) => {
+    return <div className={`flex items-center justify-center border-2 cursor-pointer rounded-xl hover:border-yellow h-12 w-12  ${pagination == props.value ? ' border-yellow bg-yellow text-black hover:text-black ' : `border-lightGray text-lightGray hover:text-yellow`}`} onClick={() => setPagination(props.value)}>
+      {props.value + 1}
+    </div >
+  }
+  const Left = (props: { fill: string }) => {
+    return <div className="flex items-center justify-center border-2 border-white rounded-xl h-12 w-12" onClick={() => setPagination((prev) => prev--)}>
+      <svg width="11" height="18" viewBox="0 0 11 18" className="-ml-1" fill={props.fill} xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_768_1563)">
+          <path d="M11 2.02616V0.190375C11 0.0312577 10.8221 -0.056613 10.7019 0.0407571L0.284276 8.40272C0.195764 8.47346 0.124143 8.56404 0.0748767 8.66755C0.0256103 8.77106 0 8.88477 0 9C0 9.11523 0.0256103 9.22894 0.0748767 9.33245C0.124143 9.43596 0.195764 9.52654 0.284276 9.59728L10.7019 17.9592C10.8244 18.0566 11 17.9687 11 17.8096V15.9738C11 15.8575 10.9468 15.7459 10.859 15.6746L2.53973 9.00119L10.859 2.32539C10.9468 2.25415 11 2.14253 11 2.02616Z" />
+        </g>
+        <defs>
+          <clipPath id="clip0_768_1563">
+            <rect width="11" height="18" fill="white" />
+          </clipPath>
+        </defs>
+      </svg>
+    </div >
+  }
+
+  const Right = (props: { fill: string }) => {
+    return <div className="flex items-center justify-center border-2 border-white rounded-xl h-12 w-12" onClick={() => setPagination((prev) => prev++)}>
+      <svg width="11" height="18" viewBox="0 0 11 18" className="-mr-1" fill={props.fill} xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_768_1555)">
+          <path d="M10.7157 8.4015L0.298109 0.0405534C0.270888 0.0185318 0.238173 0.00484645 0.203724 0.0010687C0.169274 -0.00270905 0.134486 0.00357408 0.103355 0.0191967C0.0722236 0.0348192 0.0460123 0.0591476 0.0277305 0.0893877C0.00944857 0.119628 -0.000162254 0.154553 2.07249e-06 0.190153V2.02571C2.07249e-06 2.14207 0.0531531 2.25368 0.140968 2.32491L8.46024 8.9999L0.140968 15.6749C0.0508422 15.7461 2.07249e-06 15.8577 2.07249e-06 15.9741V17.8096C2.07249e-06 17.9687 0.177942 18.0566 0.298109 17.9592L10.7157 9.5983C10.8042 9.52733 10.8759 9.43654 10.9251 9.33285C10.9744 9.22916 11 9.11529 11 8.9999C11 8.88451 10.9744 8.77064 10.9251 8.66695C10.8759 8.56326 10.8042 8.47247 10.7157 8.4015Z" />
+        </g>
+        <defs>
+          <clipPath id="clip0_768_1555">
+            <rect width="11" height="18" fill="white" />
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
+  }
+
+  let params = useParams()
   const { data, isLoading: GameDataLoading, isSuccess: GameDataSuccess } = useGetGameByIdQuery(params.gameId)
   const [getTournaments, { isLoading: TournamentsDataLoading, isSuccess: TournamentsDataSuccess }] = useGetTournamentsMutation()
+  const [getUserGamesCount, { isLoading: getUserGameCountLoading, isSuccess: getUserGameCountSuccess }] = useGetUserGamesCountMutation()
+
+  const [getUserHistory, { isLoading: HistoryLoading, reset }] = useGetUserGameHistoryMutation()
+  const navigate = useNavigate()
+
+  const [gameHistory, setGameHistory] = useState<IHistory[]>()
+  const [historyError, setHistoryError] = useState<boolean>(false)
+  const limit = 5
   const [tournaments, setTournaments] = useState<ITournamentsActiveAndHistory>()
+  const [pagesCount, setPagesCount] = useState<number>()
 
   useEffect(() => {
-    console.log(data?.code);
+    if (data)
+      getUserGamesCount({
+        id: tokenService.getUser().id,
+        game: data?.code,
+      }).unwrap()
+        .then((response) => {
+          console.log(response);
+          setPagesCount(response)
+        })
+        .catch(err => {
+          setHistoryError(true)
+        })
 
     if (GameDataSuccess)
       getTournaments(data?.code)
@@ -39,17 +97,42 @@ const Game = () => {
         })
   }, [GameDataSuccess])
 
-  const navigate = useNavigate()
-  const [getUserHistory, { isLoading: HistoryLoading, }] = useGetUserGameHistoryMutation()
 
-  const [gameHistory, setGameHistory] = useState<IHistory[]>()
-  const [historyError, setHistoryError] = useState<boolean>(false)
+  useEffect(() => {
+    reset()
+    console.log(pagination);
+
+    getUserHistory({
+      id: tokenService.getUser().id,
+      game: data?.code,
+      offset: pagination * limit,
+      limit: limit
+    })
+      .unwrap()
+      .then((response) => {
+        console.log(response);
+        if (response.length == 0) {
+          console.log('errr');
+          setHistoryError(true)
+        }
+        else {
+          setGameHistory(response)
+        }
+      })
+      .catch(err => {
+        console.log(err);
+
+        setHistoryError(true)
+      })
+  }, [pagination])
 
   useEffect(() => {
     if (GameDataSuccess)
       getUserHistory({
         id: tokenService.getUser().id,
-        game: data?.code
+        game: data?.code,
+        offset: pagination * limit,
+        limit: limit
       }).unwrap()
         .then((response) => {
           console.log(response);
@@ -67,6 +150,10 @@ const Game = () => {
 
   }, [GameDataSuccess])
 
+
+  if (GameDataLoading) {
+    return <Loader />
+  }
 
 
   return (
@@ -205,45 +292,57 @@ const Game = () => {
                     <li>Balance</li>
                   </ul>
                 </div>
-                <ul className="">
-                  {gameHistory?.map((item, index) => {
-                    return (
-                      <li className={`lg:md:px-10 lg:md:py-5 sm:px-6 sm:py-3 p-4 mt-4 w-full gap-2 rounded-2xl font-bold bg-lightGray lg:md:grid lg:md:grid-cols-4 flex flex-col font-orbitron text-white lg:md:text-2xl sm:text-lg text-sm`}>
-                        <div className="flex flex-row justify-between items-center">
-                          <span className="lg:md:hidden">
-                            Title
-                          </span>
-                          <span>{item.title}</span>
-                        </div>
-                        <div className="flex flex-row justify-between items-center">
-                          <span className="lg:md:hidden">
-                            Data
-                          </span>
-                          <span>{new Date(item?.createdAt).toDateString()}</span>
+                <ul className="lg:h-[450px]">
+                  {
+                    HistoryLoading ? <Loader />
+                      :
+                      gameHistory?.map((item, index) => {
+                        return (
+                          <li className={`lg:md:px-10 lg:md:py-5 sm:px-6 sm:py-3 p-4 mt-4 w-full gap-2 rounded-2xl font-bold bg-lightGray lg:md:grid lg:md:grid-cols-4 flex flex-col font-orbitron text-white lg:md:text-2xl sm:text-lg text-sm`}>
+                            <div className="flex flex-row justify-between items-center">
+                              <span className="lg:md:hidden">
+                                Title
+                              </span>
+                              <span>{item.title}</span>
+                            </div>
+                            <div className="flex flex-row justify-between items-center">
+                              <span className="lg:md:hidden">
+                                Data
+                              </span>
+                              <span>{new Date(item?.createdAt).toDateString()}</span>
 
-                        </div>
-                        <div className="flex flex-row justify-between items-center">
-                          <span className="lg:md:hidden">
-                            Reward
-                          </span>
-                          {item.isWinner ?
-                            <span className="text-green-500">+{item.match_cost} PAC</span>
-                            :
-                            <span className="text-red-500">-{item.match_cost} PAC</span>
-                          }
+                            </div>
+                            <div className="flex flex-row justify-between items-center">
+                              <span className="lg:md:hidden">
+                                Reward
+                              </span>
+                              {item.isWinner ?
+                                <span className="text-green-500">+{item.match_cost} PAC</span>
+                                :
+                                <span className="text-red-500">-{item.match_cost} PAC</span>
+                              }
 
-                        </div>
-                        <div className="flex flex-row justify-between items-center">
-                          <span className="lg:md:hidden">
-                            Balance
-                          </span>
-                          <span>*** PAC</span>
+                            </div>
+                            <div className="flex flex-row justify-between items-center">
+                              <span className="lg:md:hidden">
+                                Balance
+                              </span>
+                              <span>*** PAC</span>
 
-                        </div>
-                      </li>
-                    )
-                  })}
+                            </div>
+                          </li>
+                        )
+                      })}
                 </ul>
+                <div className="flex flex-row justify-center items-center gap-2 mt-5">
+                  {/* <Left fill={'#FFF'} /> */}
+                  {pagesCount && ([...new Array(Math.ceil(pagesCount / 5))].map((page, index: number) => {
+                    return <GetNumberContainer value={index} />
+                  }))
+                  }
+
+                  {/* <Right fill={'#FFF'} /> */}
+                </div>
               </div>
 
             ) : (
@@ -272,6 +371,7 @@ const Game = () => {
     </div>
 
   )
+
 
 }
 

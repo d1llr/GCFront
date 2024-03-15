@@ -16,7 +16,6 @@ import { IRating } from "../Tournaments.type";
 const HistoryTournament = () => {
     let params = useParams();
     const navigate = useNavigate();
-    const [getCurrentDay, { isLoading: dayLoading }] = useGetCurrentDayMutation()
     const [getParticipate, { isLoading: participateLoading }] = useGetParticipateMutation()
     const [rating, setRating] = useState<IRating[]>()
 
@@ -24,6 +23,23 @@ const HistoryTournament = () => {
     // console.log(data?.players?.split(','));
     const [getRating, { isLoading: getRatingLoading, isSuccess: getRatingSuccess, isError: getRatingIsError }] = useGetRatingMutableMutation()
 
+    useEffect(() => {
+        if (isSuccess) {
+            getRating({
+                tournament_id: data.id,
+                type: 'history'
+            })
+                .unwrap()
+                .then(responce => {
+                    console.log(responce);
+                    setRating(responce)
+                })
+                .catch(err => {
+                    console.log(err);
+
+                })
+        }
+    }, [isSuccess])
 
     if (isLoading) {
         return <Loader />
@@ -31,22 +47,6 @@ const HistoryTournament = () => {
 
 
 
-    // useEffect(() => {
-    //     if (data) {
-    //         getRating({
-    //             tournament_id: data.id,
-    //             type: 'history'
-    //         })
-    //             .unwrap()
-    //             .then(responce => {
-    //                 console.log(responce);
-    //             })
-    //             .catch(err => {
-    //                 console.log(err);
-
-    //             })
-    //     }
-    // }, [isSuccess])
 
     const handleParticipate = () => {
         getParticipate({
@@ -135,7 +135,7 @@ const HistoryTournament = () => {
                         <div className="flex lg:md:flex-row flex-col gap-2 w-full justify-between">
                             {data?.awards.split(',').map((el, index) => {
                                 return (
-                                    <div className="flex lg:md:flex-col flex-row justify-between gap-10">
+                                    <div className="flex lg:md:flex-col flex-row justify-between gap-10 text-white">
                                         <span className="lg:text-5xl md:text-4xl sm:text-2xl text-2xl text-white font-bold">
                                             #{index + 1} place
                                         </span>
@@ -145,12 +145,25 @@ const HistoryTournament = () => {
                                                 : symbols.default
                                             }
                                         </span>
+                                        {
+                                            rating ? (
+
+                                                <span className="lg:text-[32px] md:text-[26px] sm:text-[22px] text-[20px]">
+                                                    Winner: <b className="text-yellow">{rating[index]?.username}</b>
+                                                </span>
+
+                                            ) :
+                                                <Loader size="lg" />
+
+                                        }
                                     </div>)
                             })}
                         </div>
 
                     </div>
-                    <div className="flex flex-col gap-10 font-orbitron ">
+
+                    {/* Details */}
+                    {/* <div className="flex flex-col gap-10 font-orbitron ">
                         <h2 className="w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">Details</h2>
                         <div className="grid lg:grid-cols-4 gap-4 md:grid-cols-2 grid-cols-1">
                             <div className="flex flex-col gap-4 bg-lightGray justify-center items-center py-10 rounded-2xl ">
@@ -187,7 +200,7 @@ const HistoryTournament = () => {
                             </div>
                         </div>
 
-                    </div>
+                    </div> */}
                     <Rating tournament_id={data?.id} typeTR={"history"} />
                 </div>
             </div >

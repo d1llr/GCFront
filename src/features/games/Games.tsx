@@ -3,7 +3,8 @@ import IGames from "./Games.type"
 import { useGetAllGamesQuery } from "./Games.slice"
 import Loader from "../../helpers/Loader"
 
-var t = true
+
+
 const Games = () => {
 
 
@@ -12,9 +13,9 @@ const Games = () => {
   const navigate = useNavigate()
 
 
-  // if (isLoading) {
-  //   return <Loader />
-  // }
+  if (isLoading) {
+    return <Loader />
+  }
   return (
     <div className="background-image-black">
       <div className="wrapper-content">

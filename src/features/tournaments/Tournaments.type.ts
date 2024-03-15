@@ -19,7 +19,7 @@ export interface ITournaments {
 }
 
 
-export  interface ITournament {
+export interface ITournament {
     id: string,
     disabled: boolean,
     image: string,
@@ -41,3 +41,13 @@ export  interface ITournament {
 
 
 export interface IRating { username: string, earned: number, games_count: number }
+
+
+export type IFilters = {
+    [index: string]: {
+        chainID: string,
+        game_name: string
+    }
+} & {
+    type: string
+}
