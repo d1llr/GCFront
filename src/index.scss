@@ -186,6 +186,9 @@ a img {
   }
 }
 
+
+
+
 .black_btn {
   width: 100%;
   background: rgb(13, 13, 13);
@@ -216,20 +219,18 @@ a img {
 }
 
 .yellow_btn {
-  color: rgb(13 13 13);
+  color: rgb(13, 13, 13);
   width: 100%;
   height: 100%;
-  padding: 0.5rem 2rem;
-  font-size: 1.25rem;
-  line-height: 1.75rem;
   font-weight: 700;
-  border: none;
-  border-radius: 0.5rem;
   font-family: "Orbitron", sans-serif;
   text-align: center;
   background: #FFF100;
   transition: all 0.3s ease;
-
+  &:hover {
+    background: rgb(210, 199, 6);
+    transition: all 0.3s ease;
+  }
   @media screen and (max-width: 920px) {
     .yellow_btn {
       padding: 0.5rem 1rem;
@@ -266,10 +267,7 @@ a img {
   }
 }
 
-.yellow_btn:hover {
-  background: rgb(210, 199, 6);
-  transition: all 0.3s ease;
-}
+
 
 
 .yellow_icon_btn {
@@ -356,27 +354,33 @@ a img {
 
 
 .button_loading {
-  color: #FFF100 !important;
-  border: 1px solid #fff100;
   position: relative;
-  background-color: #0D0D0D !important;
-
-}
-
-.button_loading:hover {
-  background: #0D0D0D !important;
-}
-
-.button_loading::before {
-  content: "";
-  width: 20px;
-  height: 20px;
-  border-radius: 500px;
   overflow: hidden;
-  position: absolute;
-  background: inherit;
-  animation: loadingAnimation 4s ease-out infinite;
+  box-sizing: border-box;
+  background: #FFF100;
+  // border-radius: 1000px!important;
+  // padding: 3px;
+  &::before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    border-radius: 500px;
+    overflow: hidden;
+    position: absolute;
+    background: #0D0D0D;
+    animation: loadingAnimation 3s ease-out infinite;
+    
+  }
+  button{
+    background: rgb(13, 13, 13);
+    color: #fff100;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    
+  }
 }
+
 
 @keyframes loadingAnimation {
   0% {

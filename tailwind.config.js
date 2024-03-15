@@ -17,6 +17,7 @@ export default {
     //   // => @media (min-width: 1280px) { ... }
     // },
     extend: {
+
       'animation': {
         'gradient-x': 'gradient-x 1s ease infinite',
         'gradient-y': 'gradient-y 15s ease-in-out infinite',
@@ -59,7 +60,11 @@ export default {
         'gameLeftToRightShards': "url('/src/images/icons/from-left-shards.svg')",
       },
       backgroundColor: {
-        'yellow': 'rgb(255, 241, 0)'
+        'yellow': 'rgb(255, 241, 0)',
+        'hoverYellow': 'rgb(210, 199, 6)',
+        'gray': '#898989',
+        'hoverGray': '#626262',
+        'lighterGray': 'rgb(27, 27, 27)',
       },
       colors: {
         'yellow': 'rgb(255, 241, 0)',
