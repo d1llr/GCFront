@@ -118,6 +118,15 @@ export const UsersActions = createApi({
             transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
 
         }),
+        SendCodeWithEmailValidation: builder.mutation<any, { email: string }>({
+            query: (body) => ({
+                url: '/api/auth/SendCodeWithEmailValidation',
+                method: "POST",
+                body: body
+            }),
+            transformErrorResponse: (response: FetchBaseQueryError, error) => response.data,
+
+        }),
         SendCode: builder.mutation<any, { email: string }>({
             query: (body) => ({
                 url: '/api/auth/sendCode',
@@ -165,18 +174,55 @@ export const UsersActions = createApi({
                 headers: authHeader()
             }),
         }),
+        changeEmail: builder.mutation<string, { email: string | undefined, id: string }>({
+            query: (body) => ({
+                url: `/api/user/changeEmail`,
+                method: "POST",
+                body: body,
+                headers: authHeader()
+            }),
+        }),
+        changeUserData: builder.mutation<string, { name: string, username: string, id: string }>({
+            query: (body) => ({
+                url: `/api/user/changeUserData`,
+                method: "POST",
+                body: body,
+                headers: authHeader()
+            }),
+        }),
+        checkOldPassword: builder.mutation<string, { email: string, OldPassword: string }>({
+            query: (body) => ({
+                url: `/api/user/checkOldPassword`,
+                method: "POST",
+                body: body,
+                headers: authHeader()
+            }),
+        }),
+        deleteAccount: builder.mutation<string, { email: string }>({
+            query: (body) => ({
+                url: `/api/user/deleteAccount`,
+                method: "POST",
+                body: body,
+                headers: authHeader()
+            }),
+        }),
     }),
 })
 
-export const { 
-    useRegisterRequestMutation, 
-    useLoginRequestMutation, 
-    useRefreshTokenMutation, 
-    useGetUserInfoQuery, 
-    useGetUserNameMutation, 
-    useGetUserBalanceQuery, 
-    useSendCodeMutation, 
-    useSendCodeUponRegisterMutation, 
+export const {
+    useRegisterRequestMutation,
+    useLoginRequestMutation,
+    useRefreshTokenMutation,
+    useGetUserInfoQuery,
+    useGetUserNameMutation,
+    useGetUserBalanceQuery,
+    useSendCodeMutation,
+    useSendCodeUponRegisterMutation,
+    useSendCodeWithEmailValidationMutation,
     useCheckCodeMutation,
-    useChangePasswordMutation
+    useChangePasswordMutation,
+    useChangeUserDataMutation,
+    useChangeEmailMutation,
+    useCheckOldPasswordMutation,
+    useDeleteAccountMutation
 } = UsersActions

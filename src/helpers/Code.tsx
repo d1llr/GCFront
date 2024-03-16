@@ -17,11 +17,11 @@ export type IUniversalCode = {
     email: string
 }
 
-const Code = (props: { userProps: IUniversalCode, setCheckingResult: Dispatch<SetStateAction<boolean | undefined>> }) => {
+const Code = (props: { userProps: IUniversalCode, setCheckingResult: Dispatch<SetStateAction<boolean | undefined>>, h1?: string }) => {
 
 
     // api requests
-    const [CheckCode, { isLoading, isSuccess: CheckCodeSuccess, isError, isUninitialized, error },] = useCheckCodeMutation()
+    const [CheckCode, { isLoading, isSuccess: CheckCodeSuccess, isError, isUninitialized, error, reset },] = useCheckCodeMutation()
     const [SendCode, { isLoading: SendCodeLoading, isSuccess: SendCodeSuccess, isError: SendCodeIsError, isUninitialized: SendCodeUninitialized, error: SendCodeError }] = useSendCodeMutation()
     const [user] = useState<IUniversalCode>(props.userProps)
 
@@ -50,15 +50,53 @@ const Code = (props: { userProps: IUniversalCode, setCheckingResult: Dispatch<Se
         Array.from({ length: numerOfInputs }, () => "")
     );
 
-    const handleKeyPress = () => {
-        setCurrentIndex((prevIndex) => {
-            // calculate the next input index, next input after the final input will be again the first input. you can change the logic here as per your needs
-            const nextIndex = prevIndex < numerOfInputs - 1 ? prevIndex + 1 : 0;
-            const nextInput: any = inputRefsArray?.[nextIndex]?.current;
-            nextInput.focus();
-            nextInput.select();
-            return nextIndex;
-        });
+    const handleKeyPress = (e: any) => {
+        console.log(e);
+        if (e.key == 'Backspace') {
+            if (e.target.value == '') {
+                setCurrentIndex((prevIndex) => {
+                    // calculate the next input index, next input after the final input will be again the first input. you can change the logic here as per your needs
+                    console.log(prevIndex);
+                    if (prevIndex != 0) {
+                        const nextIndex = prevIndex < numerOfInputs ? prevIndex - 1 : 0;
+                        console.log('nextindex:', nextIndex);
+
+                        const prevInput: any = inputRefsArray?.[nextIndex]?.current;
+                        prevInput.focus();
+                        prevInput.select();
+                        return nextIndex;
+                    }
+                    return 0
+                });
+            }
+            else {
+                setLetters((letters) =>
+                    letters.map((letter, letterIndex) =>
+                        letterIndex == e.target.dataset.id ? '' : letter
+                    )
+                );
+
+            }
+
+        }
+
+        if (/^\d+$/.test(e.key)) {
+            setCurrentIndex((prevIndex) => {
+                // calculate the next input index, next input after the final input will be again the first input. you can change the logic here as per your needs
+                const nextIndex = prevIndex < numerOfInputs - 1 ? prevIndex + 1 : 0;
+                const nextInput: any = inputRefsArray?.[nextIndex]?.current;
+                nextInput.focus();
+                nextInput.select();
+                return nextIndex;
+            });
+            setLetters((letters) =>
+                letters.map((letter, letterIndex) =>
+                    letterIndex == e.target.dataset.id ? e.key : letter
+                )
+            );
+
+        }
+
     };
 
     useEffect(() => {
@@ -133,7 +171,7 @@ const Code = (props: { userProps: IUniversalCode, setCheckingResult: Dispatch<Se
 
                     <div className="form-group flex flex-col">
                         <label className="text-center pb-6">
-                            The code has been sent to you by email. If It’s been mising for a long time, check your spam folder.
+                            {props.h1 ? props.h1 : 'The code has been sent to you by email. If It’s been mising for a long time, check your spam folder.'}
                         </label>
 
                         <div className="flex flex-row justify-center items-center gap-[16px]">
@@ -143,18 +181,30 @@ const Code = (props: { userProps: IUniversalCode, setCheckingResult: Dispatch<Se
                                     <input
                                         ref={ref}
                                         key={index}
-                                        maxLength={1}
-                                        onChange={(e) => {
-                                            const { value } = e.target;
-                                            setLetters((letters) =>
-                                                letters.map((letter, letterIndex) =>
-                                                    letterIndex === index ? value : letter
-                                                )
-                                            );
-                                        }}
+                                        data-id={index}
+
+                                        // onChange={(e) => {
+                                        //     const { value } = e.target;
+                                        //     setLetters((letters) =>
+                                        //         letters.map((letter, letterIndex) =>
+                                        //             letterIndex === index ? value : letter
+                                        //         )
+                                        //     );
+                                        // }}
                                         onClick={(e) => {
                                             setCurrentIndex(index);
+                                            reset()
                                             e.currentTarget.select();
+                                        }}
+                                        onPaste={(e) => {
+                                            let text = e.clipboardData.getData('text/plain');
+                                            console.log(text.length);
+
+                                            setLetters((letters) =>
+                                                letters.map((letter, letterIndex) =>
+                                                    /^\d+$/.test(text[letterIndex]) && text[letterIndex] ? text[letterIndex] : ''
+                                                )
+                                            );
                                         }}
                                         value={letters[index]}
                                         max={"1"}
@@ -173,7 +223,7 @@ const Code = (props: { userProps: IUniversalCode, setCheckingResult: Dispatch<Se
                             </span>
                             :
                             <span onClick={() => handleResendACode()} className='underline text-center cursor-pointer'>
-                                resend a code {SendCodeLoading && <span className='p-2'><Spinner size="sm" /></span>}
+                                Send the code again {SendCodeLoading && <span className='p-2'><Spinner size="sm" /></span>}
                             </span>
                         }
                         {

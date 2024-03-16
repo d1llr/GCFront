@@ -11,13 +11,14 @@ import { isApiResponse } from '../../../helpers/isApiResponse';
 import Loader from '../../../helpers/Loader';
 import { UserSubmitForm } from './Register';
 import SucessRegister from '../../../images/icons/SucessRegister.svg'
+import { Spinner } from 'flowbite-react';
 
 
 
 const Code = (props: { userProps: UserSubmitForm }) => {
 
     const dispatch = useAppDispatch()
-    const [CheckCode, { isLoading, isSuccess: CheckCodeSuccess, isError, isUninitialized, error },] = useCheckCodeMutation()
+    const [CheckCode, { isLoading: CheckCodeLoading, isSuccess: CheckCodeSuccess, isError, isUninitialized, error, reset },] = useCheckCodeMutation()
     const [SendCode, { isLoading: SendCodeLoading, isSuccess: SendCodeSuccess, isError: SendCodeIsError, isUninitialized: SendCodeUninitialized, error: SendCodeError }] = useSendCodeUponRegisterMutation()
     const [registerUser, { isLoading: RegisterLoading, isSuccess: RegisterSuccess, isUninitialized: RegisterUninitialized }] = useRegisterRequestMutation()
     const [loginUser, { isLoading: loginUserLoading, isSuccess: loginUserSuccess, isError: loginUserIsError, isUninitialized: loginUserIsUninitialized, error: loginUserError },] = useLoginRequestMutation()
@@ -47,15 +48,53 @@ const Code = (props: { userProps: UserSubmitForm }) => {
         Array.from({ length: numerOfInputs }, () => "")
     );
 
-    const handleKeyPress = () => {
-        setCurrentIndex((prevIndex) => {
-            // calculate the next input index, next input after the final input will be again the first input. you can change the logic here as per your needs
-            const nextIndex = prevIndex < numerOfInputs - 1 ? prevIndex + 1 : 0;
-            const nextInput: any = inputRefsArray?.[nextIndex]?.current;
-            nextInput.focus();
-            nextInput.select();
-            return nextIndex;
-        });
+    const handleKeyPress = (e: any) => {
+        console.log(e);
+        if (e.key == 'Backspace') {
+            if (e.target.value == '') {
+                setCurrentIndex((prevIndex) => {
+                    // calculate the next input index, next input after the final input will be again the first input. you can change the logic here as per your needs
+                    console.log(prevIndex);
+                    if (prevIndex != 0) {
+                        const nextIndex = prevIndex < numerOfInputs ? prevIndex - 1 : 0;
+                        console.log('nextindex:', nextIndex);
+
+                        const prevInput: any = inputRefsArray?.[nextIndex]?.current;
+                        prevInput.focus();
+                        prevInput.select();
+                        return nextIndex;
+                    }
+                    return 0
+                });
+            }
+            else {
+                setLetters((letters) =>
+                    letters.map((letter, letterIndex) =>
+                        letterIndex == e.target.dataset.id ? '' : letter
+                    )
+                );
+
+            }
+
+        }
+
+        if (/^\d+$/.test(e.key)) {
+            setCurrentIndex((prevIndex) => {
+                // calculate the next input index, next input after the final input will be again the first input. you can change the logic here as per your needs
+                const nextIndex = prevIndex < numerOfInputs - 1 ? prevIndex + 1 : 0;
+                const nextInput: any = inputRefsArray?.[nextIndex]?.current;
+                nextInput.focus();
+                nextInput.select();
+                return nextIndex;
+            });
+            setLetters((letters) =>
+                letters.map((letter, letterIndex) =>
+                    letterIndex == e.target.dataset.id ? e.key : letter
+                )
+            );
+
+        }
+
     };
 
     useEffect(() => {
@@ -171,22 +210,35 @@ const Code = (props: { userProps: UserSubmitForm }) => {
                                         <input
                                             ref={ref}
                                             key={index}
+                                            data-id={index}
+                                            // onChange={(e) => {
+                                            //     const { value } = e.target;
+                                            //     console.log(e.target);
 
-                                            maxLength={1}
-                                            onChange={(e) => {
-                                                const { value } = e.target;
+                                            //     if (/^\d+$/.test(value))
+                                            //         setLetters((letters) =>
+                                            //             letters.map((letter, letterIndex) =>
+                                            //                 letterIndex === index ? value : letter
+                                            //             )
+                                            //         );
+                                            // }}
+                                            onClick={(e) => {
+                                                setCurrentIndex(index);
+                                                reset()
+                                                e.currentTarget.select();
+                                            }}
+                                            onPaste={(e) => {
+                                                let text = e.clipboardData.getData('text/plain');
+                                                console.log(text.length);
+
                                                 setLetters((letters) =>
                                                     letters.map((letter, letterIndex) =>
-                                                        letterIndex === index ? value : letter
+                                                        /^\d+$/.test(text[letterIndex]) && text[letterIndex] ? text[letterIndex] : ''
                                                     )
                                                 );
                                             }}
-                                            onClick={(e) => {
-                                                setCurrentIndex(index);
-                                                e.currentTarget.select();
-                                            }}
                                             value={letters[index]}
-                                            max={"1"}
+                                            max='1'
 
                                             type="text"
                                             // {...registerCode(CodesEnum.code1)}
@@ -203,8 +255,8 @@ const Code = (props: { userProps: UserSubmitForm }) => {
                                     {timer} seconds left to get new code
                                 </span>
                                 :
-                                <span onClick={() => handleResendACode()} className='underline text-center cursor-pointer'>
-                                    resend a code
+                                <span onClick={() => handleResendACode()} className=' text-center cursor-pointer hover:text-yellow'>
+                                    Send the code again {SendCodeLoading && <span className='p-2'><Spinner size="sm" /></span>}
                                 </span>
                             }
                             {
@@ -214,26 +266,9 @@ const Code = (props: { userProps: UserSubmitForm }) => {
 
 
                         <div className="form-group mt-2">
-                            <button type="button" className="
-                            text-center 
-                            bg-yellow 
-                            text-black 
-                            w-full 
-                            p-1 text-xl 
-                            font-bold 
-                            h-11 
-                            border-none 
-                            rounded-lg
-                            lowercase
-                            font-orbiton
-
-                            hover:bg-hoverYellow
-                            transition-all
-                        "
+                            <button type="button" className={`${CheckCodeLoading && 'button_loading'} yellow_btn`}
                                 onClick={() => onSubmit()}>
-                                {isUninitialized && "Log in"}
-                                {isLoading && <Loader />}
-                                {isError && (isApiResponse(error) && [401, 402].includes(error.status) ? "Invalid login or password" : 'Server error, retry later')}
+                                Continue
                             </button>
                         </div>
                     </form>
@@ -254,7 +289,7 @@ const Code = (props: { userProps: UserSubmitForm }) => {
 
                         <img src={SucessRegister} alt="Sucess register" />
 
-                        <button onClick={() => handleLogin()} className='p-2 font-orbitron text-xl font-bold text-black rounded-xl bg-yellow w-full'>log in</button>
+                        <button onClick={() => handleLogin()} className='p-2 font-orbitron text-xl font-bold text-black rounded-xl bg-yellow w-full hover:bg-hoverYellow'>log in</button>
 
                     </div>
 

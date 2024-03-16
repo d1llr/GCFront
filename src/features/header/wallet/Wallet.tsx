@@ -30,6 +30,7 @@ import { useToast } from "@chakra-ui/react"
 import { connect } from "../../../app/websocket/websocketSlice"
 import { AppThunk } from "../../../app/store"
 import { MessageType, Socket } from "../../../app/websocket/Socket"
+import Button from "../../../helpers/Button"
 
 enum Mode {
   recharge = "Recharge",
@@ -37,7 +38,11 @@ enum Mode {
   switch = "Switch",
 }
 
-const Wallet = memo(() => {
+interface IWalletProps {
+  padding: string
+}
+
+const Wallet = memo((props: IWalletProps) => {
   const toast = useToast()
   const { connectAsync } = useConnect()
   const { disconnectAsync } = useDisconnect()
@@ -290,7 +295,7 @@ const Wallet = memo(() => {
       })
       .catch((err) => {
         console.log(err);
-        // navigate("/login")
+        navigate("/login")
       })
   }, [])
 
@@ -443,7 +448,7 @@ const Wallet = memo(() => {
       }
     </div>
   ) : (
-    <div>
+    <div className="max-[920px]:w-full">
       {account.isConnected ? (
         <button
           className="text-xl text-black font-bold bg-yellow p-3 flex-col flex gap-5 w-full items-center text-center"
@@ -453,18 +458,26 @@ const Wallet = memo(() => {
           Disconnect wallet
         </button>
       ) : (
+        // <Button 
+        //     content="Connect wallet" 
+        //     buttonStyle="yellow"
+        //     type="submit"
+
+        //     fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
+        //     padding="py-2 px-3"
+        //     textColor="text-customBlack" 
+        //     rounded="rounded-[8px]" 
+        //     maxSizes="min-h-[48px] max-[600px]:min-h-[44px]"
+            
+        //     loading={`${isLoading && 'true'}`}//true 
+        //     // loading=""//true 
+        //     disabled="" //disabled
+
+        //     onClick={() => handleConnectWallet()}
+        //     >
+        // </Button>
         <button
-          className="
-          px-8
-          font-orbitron
-          font-extrabold
-          w-full
-          h-full
-          text-customBlack
-          bg-yellow 
-          text-base
-          cursor-pointer
-          rounded-[10px]"
+          className={`yellow_btn px-4 ${props.padding} text-base rounded-[10px] max-[920px]:text-[16px]`}
           onClick={() => handleConnectWallet()}
         >
           {isLoading && <Loader />}

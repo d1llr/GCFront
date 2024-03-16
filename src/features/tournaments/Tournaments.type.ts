@@ -1,4 +1,4 @@
-export default interface ITournaments {
+export interface ITournaments {
     id: string,
     disabled: boolean,
     image: string,
@@ -6,8 +6,10 @@ export default interface ITournaments {
     description: string,
     daysLeft: string,
     cost: number,
+    awards: string,
     goal: string,
     game: string,
+    game_name: string,
     participants: string,
     bank: string,
     address: `0x${string}`,
@@ -17,7 +19,7 @@ export default interface ITournaments {
 }
 
 
-export default interface ITournament {
+export interface ITournament {
     id: string,
     disabled: boolean,
     image: string,
@@ -25,7 +27,9 @@ export default interface ITournament {
     description: string,
     daysLeft: string,
     cost: number,
+    awards: string,
     game: string,
+    game_name: string,
     goal: string,
     participants: string,
     bank: string,
@@ -36,4 +40,14 @@ export default interface ITournament {
 
 
 
-export default interface IRating { username: string, earned: number, games_count: number }
+export interface IRating { username: string, earned: number, games_count: number }
+
+
+export type IFilters = {
+    [index: string]: {
+        chainID: string,
+        game_name: string
+    }
+} & {
+    type: string
+}

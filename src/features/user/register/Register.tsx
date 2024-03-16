@@ -319,24 +319,15 @@ const Register = () => {
               <div className="form-group">
                 <button
                   type="submit"
-                  className="text-center bg-yellow text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg font-orbitron mt-2 hover:bg-hoverYellow transition-all"
+                  className={`${SendCodeLoading && 'button_loading'} yellow_btn`}
                 >
-                  {SendCodeUninitialized && "Sign up"}
-                  {SendCodeLoading && <Loader />}
-                  {SendCodeIsError && (isApiResponse(SendCodeIsError) && [405].includes(SendCodeIsError.status) && "Server error, retry later")}
+                  Sign up
                 </button>
               </div>
               <span className='text-red-500 text-center'>
                 {isApiError(SendCodeError) ? SendCodeError?.message : ''}
               </span>
-              <div className='text-center'>
-                <h2 className='text-white text-xl hover:opacity-70 transition-all'>
-                  <NavLink to='/login'>Log in</NavLink>
-                </h2>
-                <h3 className='text-base text-center text-urlGray  hover:text-yellow transition-all'>
-                  <NavLink to='/recover'>Recover password</NavLink>
-                </h3>
-              </div>
+
             </form>
             {/* <div>
           <h1 className='text-white text-xl'>
