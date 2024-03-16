@@ -25,7 +25,7 @@ const Tournaments = () => {
     const navigate = useNavigate();
     const limit = 5
 
-    const [activeFilters, setActiveFilters] = useState<string[]>()
+    const [activeFilters, setActiveFilters] = useState<string>()
 
 
     const [activeRefsArray] = useState(() =>
@@ -64,6 +64,23 @@ const Tournaments = () => {
         }
     }, [FilterDataSuccess])
 
+    useEffect(() => {
+        var DataArr = activeRefsArray.concat(endedRefsArray)
+        DataArr.map(item => {
+            if (activeFilters) {
+
+                if (item.current?.dataset)
+                    if (Object.values(item.current?.dataset).includes(activeFilters))
+                        item.current.classList.remove('hidden')
+                    else
+                        item.current.classList.add('hidden')
+            }
+            else {
+                item.current?.classList.remove('hidden')
+            }
+        })
+    }, [activeFilters])
+
 
     useEffect(() => {
         if (tournamentsCount)
@@ -83,19 +100,6 @@ const Tournaments = () => {
     }
 
 
-    const handleFilter = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        console.log(e.currentTarget.dataset.id);
-        console.log(activeRefsArray);
-
-        activeRefsArray.map(activeBlock => {
-            console.log(activeBlock.current);
-        })
-
-        // endedRefsArray.map(endedBlock => {
-        //     if(e.currentTarget.dataset.id )
-        // })
-
-    }
 
 
     return (
@@ -106,7 +110,8 @@ const Tournaments = () => {
                     <div className="flex flex-row gap-3 flex-wrap max-[920px]:gap-2">
                         {
                             filter?.map(item => {
-                                return <button className="filter_btn" onClick={(e) => handleFilter(e)} data-field={item}>
+                                return <button className={`filter_btn ${activeFilters == item ? 'active' : ""}`} onClick={(e) => activeFilters == item ? setActiveFilters(undefined) : setActiveFilters(item)}
+                                    data-field={item}>
                                     {symbols.hasOwnProperty(item)
                                         ? symbols[item as keyof typeof symbols]
                                         : item
@@ -123,7 +128,7 @@ const Tournaments = () => {
                     <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1">
                         {data?.map((item: ITournaments, index: number) => {
                             return (
-                                <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full" data-chainID={item.chainID} data-game_name={item.game_name} data-type="active" ref={activeRefsArray[index]}>
+                                <div key={index} className={`bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full `} data-chainID={item.chainID} data-game_name={item.game_name} data-type="active" ref={activeRefsArray[index]}>
                                     <div className="flex flex-col w-full gap-6 justify-between">
                                         <div className="flex flex-col gap-1">
                                             <div className="flex flex-row justify-between items-base  gap-2" >

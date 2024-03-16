@@ -30,6 +30,7 @@ import { useToast } from "@chakra-ui/react"
 import { connect } from "../../../app/websocket/websocketSlice"
 import { AppThunk } from "../../../app/store"
 import { MessageType, Socket } from "../../../app/websocket/Socket"
+import Button from "../../../helpers/Button"
 
 enum Mode {
   recharge = "Recharge",
@@ -457,8 +458,26 @@ const Wallet = memo((props: IWalletProps) => {
           Disconnect wallet
         </button>
       ) : (
+        // <Button 
+        //     content="Connect wallet" 
+        //     buttonStyle="yellow"
+        //     type="submit"
+
+        //     fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
+        //     padding="py-2 px-3"
+        //     textColor="text-customBlack" 
+        //     rounded="rounded-[8px]" 
+        //     maxSizes="min-h-[48px] max-[600px]:min-h-[44px]"
+            
+        //     loading={`${isLoading && 'true'}`}//true 
+        //     // loading=""//true 
+        //     disabled="" //disabled
+
+        //     onClick={() => handleConnectWallet()}
+        //     >
+        // </Button>
         <button
-          className={`yellow_btn px-8 ${props.padding} text-base rounded-[10px] max-[920px]:text-[16px]`}
+          className={`yellow_btn px-4 ${props.padding} text-base rounded-[10px] max-[920px]:text-[16px]`}
           onClick={() => handleConnectWallet()}
         >
           {isLoading && <Loader />}

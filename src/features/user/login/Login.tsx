@@ -229,44 +229,15 @@ const Login = () => {
                                 textColor="text-customBlack" 
                                 rounded="rounded-[8px]" 
                                 
-                                loading="true" //true 
+                                loading={`${isLoading && 'true'}`}//true 
+                                // loading="true"//true 
                                 disabled="" //disabled
                                 >
                             </Button>
-                            <Button 
-                                content="Log in" 
-                                buttonStyle="gray"
-                                type="submit"
-                                
-                                fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
-                                padding="py-2"  
-                                textColor="text-customBlack" 
-                                rounded="rounded-lg" 
-
-                                loading="" 
-                                disabled=""
-
-                            >
-                            </Button>
-                            <Button 
-
-                                content="Log in" 
-                                buttonStyle="black"
-                                type="submit"
-                                
-                                fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
-                                padding="py-2"  
-                                textColor="text-yellow" 
-                                rounded="rounded-lg" 
-
-                                loading="" 
-                                disabled=""
-                            >
-
-                            </Button>
-                            <button type="submit" className={`text-center bg-yellow ${isLoading && 'button_loading'}  text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg lowercase font-orbiton hover:bg-hoverYellow transition-al`}>
+                           
+                            {/* <button type="submit" className={`text-center bg-yellow ${isLoading && 'button_loading'}  text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg lowercase font-orbiton hover:bg-hoverYellow transition-al`}>
                                 Log in
-                            </button>
+                            </button> */}
                         </div>
 
                     </form>

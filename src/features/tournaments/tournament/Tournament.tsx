@@ -48,7 +48,7 @@ const Tournament = () => {
       <div className="wrapper-content">
         <div className="flex flex-col lg:md:gap-[150px] sm:gap-[80px] gap-10 justify-between h-full">
           <div className="flex flex-col gap-8 font-orbitron">
-            <h1 className="font-orbitron w-2/3 text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">{data?.name}</h1>
+            <h1 className="font-orbitron w-2/3 text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold max-[600px]:w-full">{data?.name}</h1>
             <div className="w-2/5 font-medium text-[32px] text-white lg:md:leading-10 leading-5 lg:md:w-2/5 w-full sm:w-4/5 font-semibold lg:md:text-2xl text-base text-white">{data?.goal}</div>
             <div className={`flex ${data?.players?.split(',').includes(tokenService.getUser()?.id.toString()) && 'hidden'} flex-row items-center gap-2`}>
               <span className="text-yellow text-2xl font-bold">
