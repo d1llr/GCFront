@@ -58,12 +58,12 @@ const Subscriptions = () => {
                     {SubscriptionArray?.map((item: ISubs, index: number) => {
                         return (
                             <div className=''>
-                                <div className='bg-[#272727] rounded-3xl p-8 '>
+                                <div className='bg-[#272727] rounded-3xl  min-[320px]:p-4 max-[1024px] lg:p-8'>
                                     <div className='flex flex-col min-[320px]:gap-4 max-[620px] md:gap-8' key={index}>
                                         <div className='text-yellow min-[320px]:text-2xl max-[620px] md:text-4xl font-bold font-orbitron flex flex-row justify-between items-center gap-4'>
                                         {item.name}
                                         {typeof item.price == 'string' &&
-                                         <div className='px-4 py-3 flex flex-col text-white min-[320px]:text-xs max-[620px] md:text-base bg-[#007E3D] justify-center rounded-3xl'>Your current plan</div>
+                                         <div className='px-4 py-3 flex flex-col text-white min-[320px]:py-1 px-2 text-xs max-[620px] md:text-base bg-[#007E3D] justify-center rounded-3xl'>Your current plan</div>
                                         }   
                                        
                                         </div>
@@ -91,7 +91,7 @@ const Subscriptions = () => {
                                             })}
                                         </ul>
                                         {typeof item.price == 'number' &&
-                                            <Button buttonStyle='black' type='button' textColor='text-yellow' padding='p-3' rounded='rounded-xl'>
+                                            <Button buttonStyle='black' type='button' textColor='text-yellow' padding='p-3' rounded='rounded-xl' fontSize='lg:md:text-2xl sm:text-base'>
                                                 Select
                                             </Button>
                                         }
