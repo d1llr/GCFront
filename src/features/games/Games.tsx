@@ -24,7 +24,7 @@ const Games = () => {
         <div className="grid grid-cols-3 gap-7 mt-10 max-[1300px]:grid-cols-2 max-[760px]:grid-cols-1">
           {data?.map((item, index: number) => {
             return (
-              <div key={index} className="bg-yellow bg-gameShards bg-no-repeat bg-right-top rounded-[20px] h-full">
+              <div key={index} className="bg-yellow bg-gameShards bg-contain bg-no-repeat bg-right-top rounded-[20px] h-full">
 
                 <div className="h-full overflow-hidden flex flex-col gap-4">
                   <div className="game-name text-white font-orbitron py-3 px-6 text-3xl max-w-fit bg-customBlack rounded-br-3xl max-[920px]:text-[18px]">

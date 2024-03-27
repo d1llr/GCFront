@@ -48,3 +48,50 @@ const Button = (props: IButtonProps) => {
 }
 
 export default Button;
+
+
+// <Button 
+//     content="Log in" 
+//     buttonStyle="yellow"
+//     type="submit"
+
+//     fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
+//     padding="py-2"
+//     textColor="text-customBlack" 
+//     rounded="rounded-[8px]" 
+    
+//     loading="true" //true 
+//     disabled="" //disabled
+//     >
+// </Button>
+// <Button 
+//     content="Log in" 
+//     buttonStyle="gray"
+//     type="submit"
+    
+//     fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
+//     padding="py-2"  
+//     textColor="text-customBlack" 
+//     rounded="rounded-lg" 
+
+//     loading="" 
+//     disabled=""
+
+// >
+// </Button>
+// <Button 
+
+//     content="Log in" 
+//     buttonStyle="black"
+//     type="submit"
+    
+//     fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
+//     padding="py-2"  
+//     textColor="text-yellow" 
+//     rounded="rounded-lg" 
+
+//     loading="" 
+//     disabled=""
+// >
+
+// </Button>

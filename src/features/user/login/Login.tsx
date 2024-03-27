@@ -81,7 +81,7 @@ const Login = () => {
                         Your browser does not support the video tag.
                     </video>
 
-                    <button className='absolute -top-3 -right-3 flex items-center justify-center bg-yellow hover:bg-hoverYellow p-3 rounded-full' onClick={() => setShowVideo(false)}>
+                    <button className='absolute -top-3 -right-3 flex items-center justify-center bg-yellow hover:bg-hoverYellow p-3 rounded-full max-[1000px]:hidden' onClick={() => setShowVideo(false)}>
                         <img src={close} alt='close' />
 
                     </button>
@@ -126,8 +126,8 @@ const Login = () => {
                             ">
                                 Login or Email
                             </label>
-
-                            <div className="invalid-feedback text-red-500 text-sm mb-2 mt-1.5">{errors.login?.message}</div>
+                            
+                            <div className={`${errors.login?.message ? '' : 'hidden'} invalid-feedback text-red-500 text-sm mb-1`}>{errors.login?.message}</div>
 
                             <input
                                 type="text"
@@ -161,7 +161,7 @@ const Login = () => {
                                 Password
                             </label>
 
-                            <div className="invalid-feedback text-red-500 text-sm mb-2 mt-1.5" >{errors.password?.message}</div>
+                            <div className={`${errors.password?.message ? '' : 'hidden'} invalid-feedback text-red-500 text-sm mb-1`}>{errors.password?.message}</div>
 
                             <div className={`
                             form-control 
@@ -229,44 +229,15 @@ const Login = () => {
                                 textColor="text-customBlack" 
                                 rounded="rounded-[8px]" 
                                 
-                                loading="true" //true 
+                                loading={`${isLoading && 'true'}`}//true 
+                                // loading="true"//true 
                                 disabled="" //disabled
                                 >
                             </Button>
-                            <Button 
-                                content="Log in" 
-                                buttonStyle="gray"
-                                type="submit"
-                                
-                                fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
-                                padding="py-2"  
-                                textColor="text-customBlack" 
-                                rounded="rounded-lg" 
-
-                                loading="" 
-                                disabled=""
-
-                            >
-                            </Button>
-                            <Button 
-
-                                content="Log in" 
-                                buttonStyle="black"
-                                type="submit"
-                                
-                                fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
-                                padding="py-2"  
-                                textColor="text-yellow" 
-                                rounded="rounded-lg" 
-
-                                loading="" 
-                                disabled=""
-                            >
-
-                            </Button>
-                            <button type="submit" className={`text-center bg-yellow ${isLoading && 'button_loading'}  text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg lowercase font-orbiton hover:bg-hoverYellow transition-al`}>
+                           
+                            {/* <button type="submit" className={`text-center bg-yellow ${isLoading && 'button_loading'}  text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg lowercase font-orbiton hover:bg-hoverYellow transition-al`}>
                                 Log in
-                            </button>
+                            </button> */}
                         </div>
 
                     </form>

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../../helpers/Loader";
 import Error from "../../helpers/Error";
 import HistotyTournamentRating from "../games/game/HistotyTournamentRating";
-import { useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import { symbols } from "./tournament/TournamentBtn";
 import { object } from "yup";
 
@@ -25,6 +25,16 @@ const Tournaments = () => {
     const navigate = useNavigate();
     const limit = 5
 
+    const [activeFilters, setActiveFilters] = useState<string>()
+
+
+    const [activeRefsArray] = useState(() =>
+        Array.from({ length: data?.length ?? 2 }, () => createRef<HTMLDivElement>())
+    );
+    const [endedRefsArray] = useState(() =>
+        Array.from({ length: HistoryData?.length ?? 1 }, () => createRef<HTMLDivElement>())
+    );
+
     const GetNumberContainer = (props: { fill?: string, value: number }) => {
         return <div className={`flex items-center justify-center border-2 cursor-pointer rounded-xl hover:border-yellow h-12 w-12  ${pagination == props.value ? ' border-yellow bg-yellow text-black hover:text-black ' : `border-lightGray text-lightGray hover:text-yellow`}`} onClick={() => setPagination(props.value)}>
             {props.value + 1}
@@ -43,6 +53,8 @@ const Tournaments = () => {
                                 res.push(v)
                         })
                     })
+                    if (!res.includes(item.type))
+                        res.push(item.type)
 
                 })
                 return res
@@ -51,6 +63,23 @@ const Tournaments = () => {
 
         }
     }, [FilterDataSuccess])
+
+    useEffect(() => {
+        var DataArr = activeRefsArray.concat(endedRefsArray)
+        DataArr.map(item => {
+            if (activeFilters) {
+
+                if (item.current?.dataset)
+                    if (Object.values(item.current?.dataset).includes(activeFilters))
+                        item.current.classList.remove('hidden')
+                    else
+                        item.current.classList.add('hidden')
+            }
+            else {
+                item.current?.classList.remove('hidden')
+            }
+        })
+    }, [activeFilters])
 
 
     useEffect(() => {
@@ -62,37 +91,44 @@ const Tournaments = () => {
     if (isLoading) {
         return <Loader />
     }
+
     function convertISO8601ToDDMM(isoDate: string) {
         const date = new Date(isoDate);
         const day = date.getDate().toString().padStart(2, '0');
         const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed, so we add 1
         return `${day}.${month}`;
     }
+
+
+
+
     return (
         <div className="background-image-black">
             <div className="wrapper-content">
                 <div className="flex flex-col gap-5 lg:md:gap-10">
                     <h1 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">Tournaments</h1>
-                    {/* <div className="flex flex-row gap-3 flex-wrap max-[920px]:gap-2"> */}
-                        {/* {
+                    <div className="flex flex-row gap-3 flex-wrap max-[920px]:gap-2">
+                        {
                             filter?.map(item => {
-                                return <button className="filter_btn">{symbols.hasOwnProperty(item)
-                                    ? symbols[item as keyof typeof symbols]
-                                    : item
-                                }</button>
+                                return <button className={`filter_btn ${activeFilters == item ? 'active' : ""}`} onClick={(e) => activeFilters == item ? setActiveFilters(undefined) : setActiveFilters(item)}
+                                    data-field={item}>
+                                    {symbols.hasOwnProperty(item)
+                                        ? symbols[item as keyof typeof symbols]
+                                        : item
+                                    }</button>
                             })
-                        } */}
+                        }
                         {/* <button className="filter_btn active">OCTA</button>
                     <button className="filter_btn">REDEV2</button>
                     <button className="filter_btn">PAC Match 3</button>
                     <button className="filter_btn">PAC Shoot</button>
                     <button className="filter_btn">Active</button>
                     <button className="filter_btn">Completed</button> */}
-                    {/* </div> */}
+                    </div>
                     <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1">
                         {data?.map((item: ITournaments, index: number) => {
                             return (
-                                <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full">
+                                <div key={index} className={`bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full `} data-chainID={item.chainID} data-game_name={item.game_name} data-type="active" ref={activeRefsArray[index]}>
                                     <div className="flex flex-col w-full gap-6 justify-between">
                                         <div className="flex flex-col gap-1">
                                             <div className="flex flex-row justify-between items-base  gap-2" >
@@ -147,7 +183,7 @@ const Tournaments = () => {
                         })}
                         {HistoryData?.map((item: ITournaments, index: number) => {
                             return (
-                                <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white">
+                                <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white" data-chainID={item.chainID} data-game_name={item.game_name} data-type="ended" ref={endedRefsArray[index]}>
                                     <div className="flex flex-col w-full gap-8 justify-between">
                                         <div className="flex flex-col gap-2">
                                             <div className="flex flex-row justify-between items-base gap-2 " >

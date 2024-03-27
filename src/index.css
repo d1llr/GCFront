@@ -26,8 +26,8 @@ code {
 html,
 body,
 #root {
-  height: 100%;
   /* overflow: hidden; */
+  overflow-x: hidden;
 }
 
 #root {
@@ -79,26 +79,16 @@ a img {
   background-image: url("./images/yellowbg.png");
   background-repeat: no-repeat;
   background-position: top right;
-  background-size: calc(50% - 1vw) calc(30% - 1vw);
+  background-size: 50%;
 }
-@media (max-width: 1300px) {
+@media (max-width: 620px) {
   .background-image-yellow {
-    background-size: 50% 20%;
+    background-size: 70%;
   }
 }
-@media (max-width: 1000px) {
+@media (max-width: 450px) {
   .background-image-yellow {
-    background-size: 60% 20%;
-  }
-}
-@media (max-width: 600px) {
-  .background-image-yellow {
-    background-size: 60% 10%;
-  }
-}
-@media (min-width: 1920px) {
-  .background-image-yellow {
-    background-size: 50vw 60vh;
+    background-size: 90%;
   }
 }
 
@@ -113,7 +103,7 @@ a img {
   left: 0;
   bottom: -20px;
   height: 20px;
-  width: 20px;
+  width: 21px;
   background: radial-gradient(farthest-side at bottom right, transparent 97%, rgb(13, 13, 13)) bottom left;
 }
 
@@ -123,7 +113,7 @@ a img {
   right: -20px;
   top: 0;
   height: 20px;
-  width: 20px;
+  width: 21px;
   background: radial-gradient(farthest-side at bottom right, transparent 97%, rgb(13, 13, 13)) bottom left;
 }
 
@@ -213,7 +203,6 @@ a img {
 }
 @media screen and (max-width: 920px) {
   .yellow_btn .yellow_btn {
-    padding: 0.5rem 1rem;
     width: 100%;
   }
 }
@@ -284,10 +273,10 @@ a img {
 @media screen and (max-width: 600px) {
   .mobile_icon_button {
     border-radius: 7px;
-    min-width: 38px;
-    max-width: 38px;
-    min-height: 38px;
-    max-height: 38px;
+    min-width: 44px;
+    max-width: 44px;
+    min-height: 44px;
+    max-height: 44px;
     transition: all 0.3s ease;
   }
   .mobile_icon_button img {
@@ -315,12 +304,13 @@ a img {
   border-radius: 500px;
   overflow: hidden;
   position: absolute;
-  background: #0D0D0D;
+  background: #0D0D0D !important;
   animation: loadingAnimation 3s ease-out infinite;
 }
 .button_loading button {
   background: rgb(13, 13, 13);
   color: #fff100;
+  background: #0D0D0D !important;
   height: 100%;
   position: relative;
   z-index: 1;
@@ -379,7 +369,7 @@ a img {
 }
 @media screen and (max-width: 920px) {
   .mob_element_open {
-    transform: translateX(0vw);
+    transform: translateX(0px);
     animation: openMobElement 0.5s ease 1;
   }
   @keyframes openMobElement {
@@ -387,7 +377,7 @@ a img {
       transform: translateX(100vw);
     }
     to {
-      transform: translateX(0vw);
+      transform: translateX(0px);
     }
   }
   .mob_element_close {
@@ -396,7 +386,7 @@ a img {
   }
   @keyframes closeMobElement {
     from {
-      transform: translateX(0vw);
+      transform: translateX(0px);
     }
     to {
       transform: translateX(100vw);

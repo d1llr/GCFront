@@ -56,7 +56,7 @@ export default {
         }
       },
       backgroundImage: {
-        'gameShards': "url('/src/images/icons/game-item-shards.svg')",
+        'gameShards': "url('/src/images/icons/game-item-shards.png')",
         'gameLeftToRightShards': "url('/src/images/icons/from-left-shards.svg')",
       },
       backgroundColor: {

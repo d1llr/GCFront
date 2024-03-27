@@ -172,7 +172,7 @@ const Game = () => {
             </div>
           </div>
           <div className="lg:md:mt-12">
-            <h2 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl mt-2 font-extrabold">Tournaments</h2>
+            <h2 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl mt-2 font-extrabold mb-8">Tournaments</h2>
             {TournamentsDataSuccess ? (
               <div className="text-xl font-semibold grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 mt-10">
                 {tournaments?.active.map((item, index: number) => {
@@ -181,14 +181,14 @@ const Game = () => {
                       <div className="flex flex-col w-full gap-6 justify-between">
                         <div className="flex flex-col gap-1">
                           <div className="flex flex-row justify-between items-base  gap-2" >
-                            <div className="text-white font-orbitron text-3xl flex flex-col items-start w-2/3">
-                              <div className="text-2xl font-bold">{item.name}</div>
+                            <div className="text-white font-orbitron text-3xl flex flex-col items-start w-2/3 ">
+                              <div className="text-2xl font-bold max-[530px]:text-lg">{item.name}</div>
                             </div>
-                            <span className="p-2 text-base font-bold flex flex-col juistify-center text-center items-center rounded-3xl text-white w-36 h-10 bg-[#007E3D]">
+                            <span className="p-2 text-base font-bold flex flex-col juistify-center text-center items-center rounded-3xl text-white w-36 h-10 bg-[#007E3D] max-[530px]:text-[12px]">
                               active
                             </span>
                           </div>
-                          <span className="pt-4 font-medium text-white text-2xl break-normal ">
+                          <span className="pt-4 font-medium text-white text-2xl break-normal max-[530px]:text-sm">
                             {item.goal}
                           </span>
 
@@ -196,26 +196,26 @@ const Game = () => {
                         <div>
                           <ul>
                             <li className="flex flex-row justify-between">
-                              <span className=" font-bold font-orbitron text-2xl">
+                              <span className=" font-bold font-orbitron text-2xl max-[530px]:text-base">
                                 Game
                               </span>
-                              <span className="font-orbitron font-bold ">
+                              <span className="font-orbitron font-bold max-[530px]:text-base">
                                 {data?.name}
                               </span>
                             </li>
                             <li className="flex flex-row justify-between">
-                              <span className=" font-bold font-orbitron text-2xl">
+                              <span className=" font-bold font-orbitron text-2xl max-[530px]:text-base">
                                 Duration
                               </span>
-                              <span className="font-orbitron font-bold ">
+                              <span className="font-orbitron font-bold max-[530px]:text-base">
                                 7 days
                               </span>
                             </li>
                             <li className="flex flex-row justify-between">
-                              <span className=" font-bold font-orbitron text-2xl">
+                              <span className=" font-bold font-orbitron text-2xl max-[530px]:text-base">
                                 Cost
                               </span>
-                              <span className="font-orbitron font-bold ">
+                              <span className="font-orbitron font-bold max-[530px]:text-base">
                                 {item.cost}
                               </span>
                             </li>
@@ -223,8 +223,8 @@ const Game = () => {
                         </div>
                         <button onClick={() => {
                           navigate(`/tournaments/${item.id}`);
-                        }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30`}>
-                          More datailed
+                        }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 max-[530px]:text-sm`}>
+                          More detailed
                         </button>
                       </div>
                     </div>
@@ -236,27 +236,27 @@ const Game = () => {
                       <div className="flex flex-col w-full gap-8 justify-between">
                         <div className="flex flex-col gap-2">
                           <div className="flex flex-row justify-between items-base gap-2 " >
-                            <span className="font-orbitron text-2xl font-bold w-2/3">
+                            <span className="font-orbitron text-2xl font-bold w-2/3 max-[530px]:text-lg">
                               {item.name} | {item.id}
                             </span>
-                            <span className="p-2 text-base font-bold flex flex-col juistify-center text-center items-center rounded-3xl text-white w-1/3 h-10 bg-[#898989]">
+                            <span className="p-2 text-base font-bold flex flex-col justify-center text-center items-center rounded-3xl text-white w-1/3 h-10 bg-[#898989] max-[530px]:text-[12px]">
                               Ended {item.createdAt.substring(5, 10).replace('-', '.')}
                             </span>
                           </div>
                         </div>
                         <div className="flex flex-row justify-between items-center text-2xl font-orbitron">
-                          <span>
+                          <span className="max-[530px]:text-base">
                             Game
                           </span>
-                          <span>
+                          <span className="max-[530px]:text-base">
                             {data?.name}
                           </span>
                         </div>
                         <HistotyTournamentRating tournament_id={item.id} typeTR="history" />
                         <button onClick={() => {
                           navigate(`/tournaments/history/${item.id}`);
-                        }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30`}>
-                          More datailed
+                        }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 max-[530px]:text-sm`}>
+                          More detailed
                         </button>
                       </div>
                     </div>
@@ -281,7 +281,7 @@ const Game = () => {
           </div>
 
           <div className="flex flex-col lg:md:gap-10 gap-2">
-            <h2 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">Game History</h2>
+            <h2 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold mb-2">Game History</h2>
             {gameHistory ? (
               <div>
                 <div>
