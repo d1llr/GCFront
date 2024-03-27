@@ -295,7 +295,7 @@ const Wallet = memo((props: IWalletProps) => {
       })
       .catch((err) => {
         console.log(err);
-        navigate("/login")
+        // navigate("/login")
       })
   }, [])
 
