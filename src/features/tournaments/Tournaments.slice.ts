@@ -8,22 +8,26 @@ export const GetTournaments = createApi({
     reducerPath: 'GetTournaments',
     baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
     endpoints: (builder) => ({
-        GetActiveTournaments: builder.query<ITournaments[], void>({
-            query: () => ({
+        GetTournaments: builder.query<any, { offset: number, limit: number }>({
+            query: (body) => ({
                 url: `/api/tournaments/all`,
-                headers: authHeader()
-            }),
-        }),
-        GetHistoryTournaments: builder.query<ITournaments[], void>({
-            query: () => ({
-                url: `/api/tournaments/history`,
-                headers: authHeader()
+                headers: authHeader(),
+                method: "POST",
+                body: body
             }),
         }),
         GetFilters: builder.query<IFilters[], void>({
             query: () => ({
                 url: `/api/tournaments/getFilters`,
                 headers: authHeader()
+            }),
+        }),
+        GetTournamentsByFilters: builder.mutation<any, string[]>({
+            query: (body) => ({
+                url: `/api/tournaments/getTournamentsByFilters`,
+                headers: authHeader(),
+                method: "POST",
+                body: body
             }),
         }),
         GetTournamentsCount: builder.query<number, void>({
@@ -37,4 +41,4 @@ export const GetTournaments = createApi({
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useGetActiveTournamentsQuery, useGetHistoryTournamentsQuery, useGetFiltersQuery, useGetTournamentsCountQuery } = GetTournaments
+export const { useGetTournamentsQuery, useGetFiltersQuery, useGetTournamentsByFiltersMutation, useGetTournamentsCountQuery } = GetTournaments

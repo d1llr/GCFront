@@ -1,7 +1,7 @@
 import { ITournaments, ITournament, IFilters } from "./Tournaments.type";
-import { useGetActiveTournamentsQuery, useGetFiltersQuery, useGetHistoryTournamentsQuery, useGetTournamentsCountQuery } from "./Tournaments.slice";
+import { useGetTournamentsQuery, useGetFiltersQuery, useGetTournamentsCountQuery, useGetTournamentsByFiltersMutation } from "./Tournaments.slice";
 import { Oval } from "react-loader-spinner";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Loader from "../../helpers/Loader";
 import Error from "../../helpers/Error";
 import HistotyTournamentRating from "../games/game/HistotyTournamentRating";
@@ -14,25 +14,34 @@ import { object } from "yup";
 const filteredFields = ['chainID', 'game_name']
 
 const Tournaments = () => {
-    const { data, isLoading, isError, isSuccess: ActiveTournamentsSuccess, error } = useGetActiveTournamentsQuery()
-    const { data: HistoryData, isSuccess: HistoryTournamentsSuccess } = useGetHistoryTournamentsQuery()
+
+    const [getTournamentsByFilter, { isLoading: getUserNameLoading }] = useGetTournamentsByFiltersMutation()
+
+    const limit = 5
+    const [pagination, setPagination] = useState<number>(0)
+
+    const { data, isLoading, isError, isSuccess: ActiveTournamentsSuccess, error, refetch } = useGetTournamentsQuery({
+        offset: pagination * limit,
+        limit: limit
+    })
+
+    useEffect(() => {
+        refetch()
+    }, [pagination])
+
+
     const { data: FilterData, isSuccess: FilterDataSuccess, isLoading: FilterDataLoading } = useGetFiltersQuery()
     const { data: tournamentsCount, isSuccess: tournamentsCountSuccess } = useGetTournamentsCountQuery()
 
     const [pagesCount, setPagesCount] = useState<number>()
-    const [pagination, setPagination] = useState<number>(0)
     const [filter, setFilter] = useState<string[]>()
     const navigate = useNavigate();
-    const limit = 5
 
-    const [activeFilters, setActiveFilters] = useState<string>()
+    const [activeFilters, setActiveFilters] = useState<string[]>([])
 
 
-    const [activeRefsArray] = useState(() =>
+    const [tournamentsRefsArray] = useState(() =>
         Array.from({ length: data?.length ?? 2 }, () => createRef<HTMLDivElement>())
-    );
-    const [endedRefsArray] = useState(() =>
-        Array.from({ length: HistoryData?.length ?? 1 }, () => createRef<HTMLDivElement>())
     );
 
     const GetNumberContainer = (props: { fill?: string, value: number }) => {
@@ -65,20 +74,17 @@ const Tournaments = () => {
     }, [FilterDataSuccess])
 
     useEffect(() => {
-        var DataArr = activeRefsArray.concat(endedRefsArray)
-        DataArr.map(item => {
-            if (activeFilters) {
+        if (activeFilters) {
+            getTournamentsByFilter(activeFilters)
+                .unwrap()
+                .then(responce => {
+                    console.log(responce);
 
-                if (item.current?.dataset)
-                    if (Object.values(item.current?.dataset).includes(activeFilters))
-                        item.current.classList.remove('hidden')
-                    else
-                        item.current.classList.add('hidden')
-            }
-            else {
-                item.current?.classList.remove('hidden')
-            }
-        })
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
     }, [activeFilters])
 
 
@@ -110,7 +116,7 @@ const Tournaments = () => {
                     <div className="flex flex-row gap-3 flex-wrap max-[920px]:gap-2">
                         {
                             filter?.map(item => {
-                                return <button className={`filter_btn ${activeFilters == item ? 'active' : ""}`} onClick={(e) => activeFilters == item ? setActiveFilters(undefined) : setActiveFilters(item)}
+                                return <button className={`filter_btn ${activeFilters.includes(item) ? 'active' : ""}`} onClick={(e) => activeFilters.includes(item) ? setActiveFilters(prev => prev.filter(i => i !== item)) : setActiveFilters(prev => [...prev, item])}
                                     data-field={item}>
                                     {symbols.hasOwnProperty(item)
                                         ? symbols[item as keyof typeof symbols]
@@ -125,10 +131,11 @@ const Tournaments = () => {
                     <button className="filter_btn">Active</button>
                     <button className="filter_btn">Completed</button> */}
                     </div>
-                    <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1">
-                        {data?.map((item: ITournaments, index: number) => {
+                    <div className={`grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 ${data?.length == 0 && 'hidden'}`}>
+                        {data[0]['active']?.map((item: any, index: number) => {
+
                             return (
-                                <div key={index} className={`bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full `} data-chainID={item.chainID} data-game_name={item.game_name} data-type="active" ref={activeRefsArray[index]}>
+                                <div key={index} className={`bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full `} data-chainID={item.chainID} data-game_name={item.game_name} data-type="active" ref={tournamentsRefsArray[index]}>
                                     <div className="flex flex-col w-full gap-6 justify-between">
                                         <div className="flex flex-col gap-1">
                                             <div className="flex flex-row justify-between items-base  gap-2" >
@@ -181,7 +188,41 @@ const Tournaments = () => {
                                 </div>
                             )
                         })}
-                        {HistoryData?.map((item: ITournaments, index: number) => {
+                        {data[1]['history']?.map((item: any, index: number) => {
+
+                            return (
+                                <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white" data-chainID={item.chainID} data-game_name={item.game_name} data-type="ended" >
+                                    <div className="flex flex-col w-full gap-8 justify-between">
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex flex-row justify-between items-base gap-2 " >
+                                                <span className="font-orbitron lg:md:text-2xl sm:text-lg text-lg font-bold w-2/3">
+                                                    {item.name} | {item.id}
+                                                </span>
+                                                <span className="lg:md:p-2 p-1 lg:md:text-base text-sm font-bold flex flex-col juistify-center text-center items-center rounded-3xl text-white w-1/3 h-fit bg-[#898989]">
+                                                    Ended {convertISO8601ToDDMM(item.createdAt)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-row justify-between items-center lg:md:text-2xl sm:text-lg text-base font-orbitron">
+                                            <span>
+                                                Game
+                                            </span>
+                                            <span>
+                                                {item.game_name}
+                                            </span>
+                                        </div>
+                                        <HistotyTournamentRating tournament_id={item.id} typeTR="history" />
+                                        <button onClick={() => {
+                                            navigate(`/tournaments/history/${item.id}`);
+                                        }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] lg:md:text-xl text-base font-bold p-3 text-center cursor-pointer disabled:opacity-30 hover:bg-[#1B1B1B]`}>
+                                            More detailed
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        })
+                        }
+                        {/* {HistoryData?.map((item: ITournaments, index: number) => {
                             return (
                                 <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white" data-chainID={item.chainID} data-game_name={item.game_name} data-type="ended" ref={endedRefsArray[index]}>
                                     <div className="flex flex-col w-full gap-8 justify-between">
@@ -212,18 +253,31 @@ const Tournaments = () => {
                                     </div>
                                 </div>
                             )
-                        })}
-                        {(data?.length == 0 && HistoryData?.length == 0) && <Error />}
+                        })} */}
                     </div>
+                    {data?.length == 0 && (
+                        <div className="bg-lightGray rounded-[30px] flex flex-col items-center lg:md:mt-10 mt-3 gap-10 px-6 pt-16 pb-12 max-[920px]:pt-8 max-[920px]:pb-6">
+                            <div className="flex flex-col items-center gap-5">
+                                <div className="font-orbitron text-white text-center text-[28px] leading-[35px] max-[920px]:text-[18px] max-[920px]:leading-[23px]">
+                                    We are not holding tournaments now, but they will appear soon
+                                </div>
+                                <div className="font-chakra text-textGray text-[26px] leading-[34px] text-center max-[920px]:text-[16px] max-[920px]:leading-[21px]">
+                                    In the meantime, you can play our games
+                                </div>
+                            </div>
+                            <NavLink className="black_btn max-w-[475px]" to="/games">
+                                Games
+                            </NavLink>
+                        </div>)}
                     <div className="flex flex-row justify-center items-center gap-2 mt-5">
-                        {pagesCount && ([...new Array(Math.ceil(pagesCount / 5))].map((page, index: number) => {
+                        {(pagesCount && pagesCount > 5) && ([...new Array(Math.ceil(pagesCount / 5))].map((page, index: number) => {
                             return <GetNumberContainer value={index} />
                         }))}
                     </div>
                 </div>
             </div>
 
-        </div>
+        </div >
     );
 }
 

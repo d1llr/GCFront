@@ -1,4 +1,7 @@
+
+
 export interface ITournaments {
+
     id: string,
     disabled: boolean,
     image: string,
