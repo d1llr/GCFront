@@ -1,4 +1,6 @@
+
 import SucessRegister from '../images/icons/SucessRegister.svg'
+import Button from './Button'
 const SuccessAction = (props: { h1: string, button: string, buttonAction: () => Promise<void> }) => {
 
     const { h1, button, buttonAction } = props
@@ -13,7 +15,26 @@ const SuccessAction = (props: { h1: string, button: string, buttonAction: () => 
 
                 <img src={SucessRegister} alt="Sucess register" />
 
-                <button className='yellow_btn' onClick={buttonAction}>{button}</button>
+                {/* <button className='yellow_btn' onClick={buttonAction}>{button}
+                </button>
+                 */}
+                <div className='w-full'> 
+                    <Button
+                    content="Accept"
+                    buttonStyle="yellow"
+                    type="button"
+                    onClick={() => buttonAction()}
+                    fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]"
+                    padding="py-2"
+                    textColor="text-customBlack"
+                    rounded="rounded-[8px]"
+
+                    // loading={`${CheckCodeLoading && 'true'}`}//true 
+                    // // loading="true"//true 
+                    disabled="" //disabled
+                >
+                </Button>
+                </div>
 
             </div>
 

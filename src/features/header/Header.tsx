@@ -44,7 +44,7 @@ const Header = () => {
 
         <div id="header" className="p-4 gap-5 flex justify-between items-center bg-lightGray rounded-[20px] text-white">
 
-          <div className="gap-5 flex flex-col w-full max-w-[25%] max-[1050px]:max-w-[fit-content] max-w-[920px]:hidden">
+          <div className="gap-5 flex flex-col w-full max-w-[15%] max-[1050px]:max-w-[fit-content] max-w-[920px]:hidden">
             <NavLink to="/games" className="w-fit hover:text-textGray">
               <img src={Logo} alt="logotype" className="max-w-[120px] max-[600px]:max-w-[95px]" />
               {/* {import.meta.env.VITE_APP_DEVELOPMENT ?? ''} */}

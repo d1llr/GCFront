@@ -12,6 +12,7 @@ import Loader from '../../../helpers/Loader';
 import { UserSubmitForm } from './Register';
 import SucessRegister from '../../../images/icons/SucessRegister.svg'
 import { Spinner } from 'flowbite-react';
+import Button from '../../../helpers/Button';
 
 
 
@@ -266,10 +267,21 @@ const Code = (props: { userProps: UserSubmitForm }) => {
 
 
                         <div className="form-group mt-2">
-                            <button type="button" className={`${CheckCodeLoading && 'button_loading'} yellow_btn`}
-                                onClick={() => onSubmit()}>
-                                Continue
-                            </button>
+                        <Button 
+                                content="Check code" 
+                                buttonStyle="yellow"
+                                type="button"
+                                onClick={() => onSubmit()}
+                                fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
+                                padding="py-2"
+                                textColor="text-customBlack" 
+                                rounded="rounded-[8px]" 
+                                
+                                loading={`${CheckCodeLoading && 'true'}`}//true 
+                                // loading="true"//true 
+                                disabled="" //disabled
+                                >
+                            </Button>
                         </div>
                     </form>
                     <div>

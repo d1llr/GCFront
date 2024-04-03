@@ -1,7 +1,7 @@
 import { ITournaments, ITournament, IFilters } from "./Tournaments.type";
 import { useGetActiveTournamentsQuery, useGetFiltersQuery, useGetHistoryTournamentsQuery, useGetTournamentsCountQuery } from "./Tournaments.slice";
 import { Oval } from "react-loader-spinner";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Loader from "../../helpers/Loader";
 import Error from "../../helpers/Error";
 import HistotyTournamentRating from "../games/game/HistotyTournamentRating";
@@ -107,25 +107,27 @@ const Tournaments = () => {
             <div className="wrapper-content">
                 <div className="flex flex-col gap-5 lg:md:gap-10">
                     <h1 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">Tournaments</h1>
-                    <div className="flex flex-row gap-3 flex-wrap max-[920px]:gap-2">
-                        {
-                            filter?.map(item => {
-                                return <button className={`filter_btn ${activeFilters == item ? 'active' : ""}`} onClick={(e) => activeFilters == item ? setActiveFilters(undefined) : setActiveFilters(item)}
-                                    data-field={item}>
-                                    {symbols.hasOwnProperty(item)
-                                        ? symbols[item as keyof typeof symbols]
-                                        : item
-                                    }</button>
-                            })
-                        }
-                        {/* <button className="filter_btn active">OCTA</button>
+                    {
+                        filter &&
+                        <div className="flex flex-row gap-3 flex-wrap max-[920px]:gap-2">
+                            {
+                                filter?.length > 2 && filter?.map(item => {
+                                    return <button className={`filter_btn ${activeFilters == item ? 'active' : ""}`} onClick={(e) => activeFilters == item ? setActiveFilters(undefined) : setActiveFilters(item)}
+                                        data-field={item}>
+                                        {symbols.hasOwnProperty(item)
+                                            ? symbols[item as keyof typeof symbols]
+                                            : item
+                                        }</button>
+                                })
+                            }
+                            {/* <button className="filter_btn active">OCTA</button>
                     <button className="filter_btn">REDEV2</button>
                     <button className="filter_btn">PAC Match 3</button>
                     <button className="filter_btn">PAC Shoot</button>
                     <button className="filter_btn">Active</button>
                     <button className="filter_btn">Completed</button> */}
-                    </div>
-                    <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1">
+                        </div>}
+                    <div className={`grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 ${(data?.length == 0 && HistoryData?.length == 0) && 'hidden'}`}>
                         {data?.map((item: ITournaments, index: number) => {
                             return (
                                 <div key={index} className={`bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full `} data-chainID={item.chainID} data-game_name={item.game_name} data-type="active" ref={activeRefsArray[index]}>
@@ -213,8 +215,21 @@ const Tournaments = () => {
                                 </div>
                             )
                         })}
-                        {(data?.length == 0 && HistoryData?.length == 0) && <Error />}
                     </div>
+                    {(data?.length == 0 && HistoryData?.length == 0) && (
+                        <div className="bg-lightGray rounded-[30px] flex flex-col items-center lg:md:mt-10 mt-3 gap-10 px-6 pt-16 pb-12 max-[920px]:pt-8 max-[920px]:pb-6">
+                            <div className="flex flex-col items-center gap-5">
+                                <div className="font-orbitron text-white text-center text-[28px] leading-[35px] max-[920px]:text-[18px] max-[920px]:leading-[23px]">
+                                    We are not holding tournaments now, but they will appear soon
+                                </div>
+                                <div className="font-chakra text-textGray text-[26px] leading-[34px] text-center max-[920px]:text-[16px] max-[920px]:leading-[21px]">
+                                    In the meantime, you can play our games
+                                </div>
+                            </div>
+                            <NavLink className="black_btn max-w-[475px]" to="/games">
+                                Games
+                            </NavLink>
+                        </div>)}
                     <div className="flex flex-row justify-center items-center gap-2 mt-5">
                         {pagesCount && ([...new Array(Math.ceil(pagesCount / 5))].map((page, index: number) => {
                             return <GetNumberContainer value={index} />

@@ -10,6 +10,7 @@ import { preview } from 'vite';
 import tokenService from '../../../services/token.service';
 import { useAppDispatch } from '../../../app/hooks';
 import { useNavigate } from 'react-router-dom';
+import Button from '../../../helpers/Button';
 
 
 export type email = {
@@ -185,9 +186,24 @@ const ChangeEmail = () => {
                                     placeholder='Email'
                                 />
                             </div>
-                            <button type="submit" className={`text-center bg-yellow ${SendCodeWithEmailValidationLoading && 'button_loading'} text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg font-orbiton hover:bg-hoverYellow transition-al`}>
+                            {/* <button type="submit" className={`text-center bg-yellow ${SendCodeWithEmailValidationLoading && 'button_loading'} text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg font-orbiton hover:bg-hoverYellow transition-al`}>
                                 Continue
-                            </button>
+                            </button> */}
+                            <Button 
+                                content="Check code" 
+                                buttonStyle="yellow"
+                                type="submit"
+                                // onClick={() => onSubmit()}
+                                fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
+                                padding="py-2"
+                                textColor="text-customBlack" 
+                                rounded="rounded-[8px]" 
+                                
+                                loading={`${SendCodeWithEmailValidationLoading && 'true'}`}//true 
+                                // loading="true"//true 
+                                disabled="" //disabled
+                                >
+                            </Button>
                         </form>
                     </>
                 )
