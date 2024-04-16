@@ -5,7 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @mixin keyframes($name) {
   @keyframes #{$name} {
     @content;
@@ -46,6 +45,10 @@ body,
 
 #root {
   display: flex;
+}
+
+main{
+  min-height: 100vh;
 }
 
 header {
@@ -90,6 +93,17 @@ a img {
   background-image: url("./images/darkbg.png");
   background-repeat: no-repeat;
   background-position: top right;
+
+  @media (max-width: 620px) {
+    background-size: 70%;
+
+  }
+  @media (max-width: 450px) {
+    background-size: 90%;
+  }
+  @media (max-width: 450px) {
+    background-size: 90%;
+  }
 }
 
 .background-image-yellow {
@@ -104,24 +118,126 @@ a img {
   }
   @media (max-width: 450px) {
     background-size: 90%;
-
   }
-
-  // @media (max-width: 1000px) {
-  //   background-size: 60% 20%;
-
-  // }
-
-  // @media (max-width: 600px) {
-  //   background-size: 60% 10%;
-
-  // }
-
-  // @media (min-width: 1920px) {
-  //   background-size: 50vw 60vh
-
-  // }
+  @media (max-width: 450px) {
+    background-size: 90%;
+  }
 }
+
+.swiper_container{
+  position: relative;
+  width: fit-content;
+  max-width: 80%;
+  margin: 0 auto;
+  @media screen and (max-width: 1025px) {
+    margin: 25px auto;
+  }
+  @media screen and (max-width: 800px) {
+    max-width: 60%;
+  }
+  .swiper_pagination{
+    width: 100%;
+    position: unset;
+
+    .swiper-button-prev,.swiper-button-next{
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgb(255, 241, 0);
+      min-height: 100%;
+      max-height: 100%;
+    
+      min-width: 3rem;
+      max-width: 3rem;
+      height: 100%;
+      width: 100%;
+      border-radius: 0.75rem;
+
+      top: 50%;
+      width: 45px;
+      height: 45px;
+      transform: translateY(-50%);
+      margin: 0!important;
+
+      &::after{
+        color: rgb(255, 241, 0);
+      }      
+    }
+    .swiper-button-next.swiper-button-disabled{
+      border: 2px solid rgb(137, 137, 137)!important;
+      background-image: url('/src/images/icons/arrows/arrow-right-disabled.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 20%;
+      margin: 4px;
+      &::after{
+        
+        content: ''!important;
+      }
+    }
+    .swiper-button-prev.swiper-button-disabled{
+      border: 2px solid rgb(137, 137, 137)!important;
+      background-image: url('/src/images/icons/arrows/arrow-left-disabled.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 20%;
+      margin: 4px;
+      &::after{
+        
+        content: ''!important;
+      }
+    }
+    .swiper-button-next{
+      background-image: url('/src/images/icons/arrows/arrow-right-yellow.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 20%;
+      margin: 4px;
+      transform: translate(60px, -50%);
+      &::after{
+        content: ''!important;
+      }
+      &:hover{
+        border: 2px solid #fff!important;
+        background-image: url('/src/images/icons/arrows/arrow-right-hover.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 20%;
+        margin: 4px;
+        &::after{
+          content: ''!important;
+        }
+      }
+    }
+    .swiper-button-prev{
+      background-image: url('/src/images/icons/arrows/arrow-left-yellow.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 20%;
+      margin: 4px;
+      transform: translate(-70px, -50%);
+      &::after{
+        content: ''!important;
+      }
+      &:hover{
+        border: 2px solid #fff!important;
+        background-image: url('/src/images/icons/arrows/arrow-left-hover.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 20%;
+        margin: 4px;
+        &::after{
+          content: ''!important;
+        }
+      }
+    }
+  }
+}
+
+
+
+
 
 .game-name {
   display: block;
@@ -244,6 +360,32 @@ a img {
   }
 }
 
+
+.delete_yellow_btn {
+  color: rgb(13 13 13);
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem 2rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 0.5rem;
+  font-family: "Orbitron", sans-serif;
+  text-align: center;
+  background: #FFF100;
+  transition: all 0.3s ease;
+
+  @media screen and (max-width: 920px) {
+    padding: 0.5rem 1rem;
+    width: 100%;
+  }
+
+  &:hover {
+    background: rgb(210, 199, 6);
+    transition: all 0.3s ease;
+  }
+}
 .gray_btn {
   color: rgb(13 13 13);
   width: 100%;
@@ -260,10 +402,8 @@ a img {
   transition: all 0.3s ease;
 
   @media screen and (max-width: 920px) {
-    .gray_btn {
-      padding: 0.5rem 1rem;
-      width: 100%;
-    }
+    padding: 0.5rem 1rem;
+    width: 100%;
   }
 
   &:hover {

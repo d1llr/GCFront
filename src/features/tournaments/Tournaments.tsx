@@ -113,27 +113,30 @@ const Tournaments = () => {
             <div className="wrapper-content">
                 <div className="flex flex-col gap-5 lg:md:gap-10">
                     <h1 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">Tournaments</h1>
-                    <div className="flex flex-row gap-3 flex-wrap max-[920px]:gap-2">
-                        {
-                            filter?.map(item => {
-                                return <button className={`filter_btn ${activeFilters.includes(item) ? 'active' : ""}`} onClick={(e) => activeFilters.includes(item) ? setActiveFilters(prev => prev.filter(i => i !== item)) : setActiveFilters(prev => [...prev, item])}
-                                    data-field={item}>
-                                    {symbols.hasOwnProperty(item)
-                                        ? symbols[item as keyof typeof symbols]
-                                        : item
-                                    }</button>
-                            })
-                        }
-                        {/* <button className="filter_btn active">OCTA</button>
+                    {
+                        filter &&
+                        <div className="flex flex-row gap-3 flex-wrap max-[920px]:gap-2">
+                            {
+                                filter?.length > 2 && filter?.map(item => {
+                                    return <button className={`filter_btn ${activeFilters == item ? 'active' : ""}`} onClick={(e) => activeFilters == item ? setActiveFilters(undefined) : setActiveFilters(item)}
+                                        data-field={item}>
+                                        {symbols.hasOwnProperty(item)
+                                            ? symbols[item as keyof typeof symbols]
+                                            : item
+                                        }</button>
+                                })
+                            }
+                            {/* <button className="filter_btn active">OCTA</button>
+
                     <button className="filter_btn">REDEV2</button>
                     <button className="filter_btn">PAC Match 3</button>
                     <button className="filter_btn">PAC Shoot</button>
                     <button className="filter_btn">Active</button>
                     <button className="filter_btn">Completed</button> */}
+
                     </div>
                     <div className={`grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 ${data?.length == 0 && 'hidden'}`}>
                         {data[0]['active']?.map((item: any, index: number) => {
-
                             return (
                                 <div key={index} className={`bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full `} data-chainID={item.chainID} data-game_name={item.game_name} data-type="active" ref={tournamentsRefsArray[index]}>
                                     <div className="flex flex-col w-full gap-6 justify-between">

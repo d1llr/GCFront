@@ -96,9 +96,9 @@ const Tournament = () => {
                   />
               }
 
-              <button disabled className={`${data?.players?.split(',').includes(tokenService.getUser()?.id.toString()) && 'hidden'} disabled:opacity-30 text-center bg-lightGray text-yellow w-full p-4 text-xl font-bold border-none rounded-xl font-orbiton hover:bg-hoverYellow transition-al`}>
+              {/* <button disabled className={`${data?.players?.split(',').includes(tokenService.getUser()?.id.toString()) && 'hidden'} disabled:opacity-30 text-center bg-lightGray text-yellow w-full p-4 text-xl font-bold border-none rounded-xl font-orbiton hover:bg-hoverYellow transition-al`}>
                 Details about the game
-              </button>
+              </button> */}
             </div>
           </div>
           <div className="flex flex-col gap-10 font-orbitron ">

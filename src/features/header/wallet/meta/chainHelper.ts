@@ -3,6 +3,7 @@ import { ChainId, NETWORKS, hexId } from "./chains"
 export async function changeChain(to: ChainId): Promise<boolean> {
   try {
     if (!window.ethereum) {
+      alert("No crypto wallet found")
       throw new Error("No crypto wallet found")
     }
 
@@ -32,6 +33,7 @@ export async function changeChain(to: ChainId): Promise<boolean> {
             ],
           })
         } catch (e) {
+          alert("Error while 'add chain': ")
           console.error("Error while 'add chain': ", e)
           return false
         }

@@ -12,6 +12,7 @@ import Loader from './Loader';
 import { UserSubmitForm } from '../features/user/register/Register';
 import SucessRegister from '../../../images/icons/SucessRegister.svg'
 import { Spinner } from 'flowbite-react';
+import Button from './Button';
 
 export type IUniversalCode = {
     email: string
@@ -233,10 +234,24 @@ const Code = (props: { userProps: IUniversalCode, setCheckingResult: Dispatch<Se
 
 
                     <div className="form-group mt-2">
-                        <button type="button" className={`text-center bg-yellow ${isLoading && 'button_loading'}  text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg font-orbiton hover:bg-hoverYellow transition-al`}
+                        {/* <button type="button" className={`text-center bg-yellow ${isLoading && 'button_loading'}  text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg font-orbiton hover:bg-hoverYellow transition-al`}
                             onClick={() => onSubmit()}>
                             Continue
-                        </button>
+                        </button> */}
+                        <Button
+                            content="Continue"
+                            buttonStyle="yellow"
+                            type="button"
+                            onClick={() => onSubmit()}
+                            fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]"
+                            padding="py-2"
+                            textColor="text-customBlack"
+                            rounded="rounded-[8px]"
+                            loading={`${isLoading && 'true'}`}//true 
+                            // loading="true"//true 
+                            disabled="" //disabled
+                        >
+                        </Button>
                     </div>
                 </form>
                 <div>

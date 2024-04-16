@@ -19,6 +19,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { Modal, ModalFooter } from 'flowbite-react';
+import Button from "../../helpers/Button"
 import Subscriptions from "./subscriptions/Subscriptions"
 
 
@@ -183,7 +184,6 @@ const User = () => {
   return (
     <div className="background-image-black">
       <div className="wrapper-content">
-
         <div className="mt-6 flex flex-row gap-4">
           <button className={`filter_btn ${switchData == switchMode.profile ? 'active' : ""}`}
             onClick={() => setSwitchData(switchMode.profile)} >

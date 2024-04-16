@@ -6,9 +6,10 @@ import { useRegisterRequestMutation, useSendCodeUponRegisterMutation } from '../
 import { NavLink, useNavigate } from 'react-router-dom';
 import Loader from '../../../helpers/Loader';
 import { isApiError, isApiResponse } from '../../../helpers/isApiResponse';
-import { Modal, Button, CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
+import { Modal, CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
 import { useState } from 'react';
 import Code from './Code';
+import Button from '../../../helpers/Button';
 
 
 export type UserSubmitForm = {
@@ -317,12 +318,20 @@ const Register = () => {
 
 
               <div className="form-group">
-                <button
+                <Button
+                  content="Sign up"
+                  buttonStyle="yellow"
                   type="submit"
-                  className={`${SendCodeLoading && 'button_loading'} yellow_btn`}
+
+                  fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]"
+                  padding="py-2"
+                  textColor="text-customBlack"
+                  rounded="rounded-[8px]"
+
+                  loading={`${SendCodeLoading && 'true'}`}//true 
+                // loading="true"//true 
                 >
-                  Sign up
-                </button>
+                </Button>
               </div>
               <span className='text-red-500 text-center'>
                 {isApiError(SendCodeError) ? SendCodeError?.message : ''}
