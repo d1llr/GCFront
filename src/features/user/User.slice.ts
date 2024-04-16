@@ -51,6 +51,16 @@ const initialState: IUserState = {
     balance: tokenService.getBalance() ?? 0
 }
 
+
+export interface ISubs {
+    description: string,
+    id:number,
+    name: string,
+    price:number,
+    textinfo: string[],
+    badge?:string
+}
+
 export const UserSlice = createSlice({
     name: 'UserSlice',
     initialState,
@@ -151,6 +161,21 @@ export const UsersActions = createApi({
                 headers: authHeader()
             }),
         }),
+        getSubscription: builder.query<ISubs[], void>({
+            query: () => ({
+                url: `api/user/getSubs`,
+                method: "GET",
+                headers: authHeader()
+            }),
+        }),
+        changeSubscription: builder.mutation<any, {userId:number, newsubscribe:number}>({
+            query: (body) => ({
+                url: `api/user/changeSubscription`,
+                method: "POST",
+                headers: authHeader(),
+                body:body
+            }),
+        }),
         getUserName: builder.mutation<string, string | undefined>({
             query: (id) => ({
                 url: `api/user/getUserName/${id}`,
@@ -224,5 +249,7 @@ export const {
     useChangeUserDataMutation,
     useChangeEmailMutation,
     useCheckOldPasswordMutation,
-    useDeleteAccountMutation
+    useDeleteAccountMutation,
+    useGetSubscriptionQuery,
+    useChangeSubscriptionMutation
 } = UsersActions
