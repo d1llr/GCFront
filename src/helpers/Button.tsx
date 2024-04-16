@@ -11,6 +11,7 @@ interface IButtonProps {
     children: string;
     loading?: string
     disabled?: string
+    onClick?: () => void
 }
 
 
@@ -39,7 +40,7 @@ const Button = (props: IButtonProps) => {
 
     return (
         <div className={`${props.loading == "true" && `${props.rounded} p-[1px] button_loading`}`}>
-            <button disabled={props.disabled} className={`${styles}`} type={props.type}>
+            <button disabled={Boolean(props.disabled)} onClick={props.onClick}  className={`${styles}`} type={props.type}>
                 {props.children}
             </button>
         </div>
