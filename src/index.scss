@@ -5,7 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @mixin keyframes($name) {
   @keyframes #{$name} {
     @content;
@@ -127,17 +126,19 @@ a img {
 
 .swiper_container{
   position: relative;
-  width: calc(50% + 8rem);
+  width: fit-content;
+  max-width: 80%;
   margin: 0 auto;
   @media screen and (max-width: 1025px) {
     margin: 25px auto;
   }
+  @media screen and (max-width: 800px) {
+    max-width: 60%;
+  }
   .swiper_pagination{
-    width: calc(100% - 8rem);
+    width: 100%;
     position: unset;
-    .swiper-wrapper{
-      
-    }
+
     .swiper-button-prev,.swiper-button-next{
       position: absolute;
       display: flex;
@@ -193,6 +194,7 @@ a img {
       background-position: center;
       background-size: 20%;
       margin: 4px;
+      transform: translate(60px, -50%);
       &::after{
         content: ''!important;
       }
@@ -214,6 +216,7 @@ a img {
       background-position: center;
       background-size: 20%;
       margin: 4px;
+      transform: translate(-70px, -50%);
       &::after{
         content: ''!important;
       }
@@ -233,19 +236,7 @@ a img {
 }
 
 
-// .swiper-button-prev {
-//   position: absolute;
-//   top: 50%;
-//   left: -40px;
-//   width: 45px;
-//   height: 45px;
-//   transform: translateY(-50%);
-//   margin-top: 0px;
-// }
 
-// .swiper-button-next{
-
-// }
 
 
 .game-name {

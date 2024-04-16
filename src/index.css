@@ -118,7 +118,9 @@ a img {
 
 .swiper_container {
   position: relative;
-  width: calc(50% + 8rem);
+  width: -moz-fit-content;
+  width: fit-content;
+  max-width: 80%;
   margin: 0 auto;
 }
 @media screen and (max-width: 1025px) {
@@ -126,8 +128,13 @@ a img {
     margin: 25px auto;
   }
 }
+@media screen and (max-width: 800px) {
+  .swiper_container {
+    max-width: 60%;
+  }
+}
 .swiper_container .swiper_pagination {
-  width: calc(100% - 8rem);
+  width: 100%;
   position: unset;
 }
 .swiper_container .swiper_pagination .swiper-button-prev, .swiper_container .swiper_pagination .swiper-button-next {
@@ -180,6 +187,7 @@ a img {
   background-position: center;
   background-size: 20%;
   margin: 4px;
+  transform: translate(60px, -50%);
 }
 .swiper_container .swiper_pagination .swiper-button-next::after {
   content: "" !important;
@@ -201,6 +209,7 @@ a img {
   background-position: center;
   background-size: 20%;
   margin: 4px;
+  transform: translate(-70px, -50%);
 }
 .swiper_container .swiper_pagination .swiper-button-prev::after {
   content: "" !important;

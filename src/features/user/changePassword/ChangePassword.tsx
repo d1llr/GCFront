@@ -298,3 +298,11 @@ const ChangePassword = () => {
 }
 
 export default ChangePassword
+
+
+
+
+
+
+
+// var x=pagesCount5+'%';
