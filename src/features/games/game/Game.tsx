@@ -23,12 +23,12 @@ import 'swiper/css/navigation';
 
 function Game() {
   const [pagination, setPagination] = useState<number>(0)
-  const GetNumberContainer = (props: { fill?: string; value: number} ) => {
+  const GetNumberContainer = (props: { fill?: string; value: number }) => {
     return <div className={`flex items-center justify-center border-2 cursor-pointer rounded-xl hover:border-yellow h-12 min-w-[3rem]  ${pagination == props.value ? ' border-yellow bg-yellow text-black hover:text-black ' : `border-lightGray text-lightGray hover:text-yellow`}`} onClick={() => setPagination(props.value)}>
       {props.value + 1}
     </div>
   }
-  const Left = (props: { fill: string; swiperClass: string} ) => {
+  const Left = (props: { fill: string; swiperClass: string }) => {
     return <div className={`${props.swiperClass} flex items-center justify-center border-2 border-white rounded-xl h-12 w-12`} onClick={() => setPagination((prev) => prev--)}>
       <svg width="11" height="18" viewBox="0 0 11 18" className="-ml-1" fill={props.fill} xmlns="http://www.w3.org/2000/svg">
         <g clip-path="url(#clip0_768_1563)">
@@ -43,7 +43,7 @@ function Game() {
     </div>
   }
 
-  const Right = (props: { fill: string; swiperClass: string} ) => {
+  const Right = (props: { fill: string; swiperClass: string }) => {
     return <div className={`${props.swiperClass} flex items-center justify-center border-2 border-white rounded-xl h-12 w-12`} onClick={() => setPagination((prev) => prev++)}>
       <svg width="11" height="18" viewBox="0 0 11 18" className="-mr-1" fill={props.fill} xmlns="http://www.w3.org/2000/svg">
         <g clip-path="url(#clip0_768_1555)">
@@ -212,7 +212,7 @@ function Game() {
                                 Duration
                               </span>
                               <span className="font-orbitron font-bold max-[530px]:text-base">
-                                7 days
+                                {item.daysLeft} days
                               </span>
                             </li>
                             <li className="flex flex-row justify-between">
@@ -227,7 +227,7 @@ function Game() {
                         </div>
                         <button onClick={() => {
                           navigate(`/tournaments/${item.id}`)
-                        } } className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 max-[530px]:text-sm`}>
+                        }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 max-[530px]:text-sm`}>
                           More detailed
                         </button>
                       </div>
@@ -259,7 +259,7 @@ function Game() {
                         <HistotyTournamentRating tournament_id={item.id} typeTR="history" />
                         <button onClick={() => {
                           navigate(`/tournaments/history/${item.id}`)
-                        } } className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 max-[530px]:text-sm`}>
+                        }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] text-xl font-bold p-3 text-center cursor-pointer disabled:opacity-30 max-[530px]:text-sm`}>
                           More detailed
                         </button>
                       </div>
