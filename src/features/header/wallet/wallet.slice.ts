@@ -15,7 +15,7 @@ type IReq = {
 // Define a service using a base URL and expected endpoints
 export const WalletActions = createApi({
     reducerPath: 'WalletActions',
-    baseQuery: fetchBaseQuery({ baseUrl:  import.meta.env.VITE_BACKEND_URL }),
+    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
     endpoints: (builder) => ({
         ConnectWallet: builder.mutation<IWallet, IReq>({
             query: (body) => ({
@@ -49,9 +49,17 @@ export const WalletActions = createApi({
                 headers: authHeader()
             }),
         }),
+        canIWithdraw: builder.mutation<{ AvailableToWithdraw: number, commision: number }, IReq>({
+            query: (body) => ({
+                url: `/api/user/canIWithdraw`,
+                method: 'POST',
+                body: body,
+                headers: authHeader()
+            }),
+        }),
     }),
 })
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useConnectWalletMutation, useRemoveWalletMutation, useRechargeBalanceMutation, useWithdrawBalanceMutation } = WalletActions
+export const { useConnectWalletMutation, useCanIWithdrawMutation, useRemoveWalletMutation, useRechargeBalanceMutation, useWithdrawBalanceMutation } = WalletActions

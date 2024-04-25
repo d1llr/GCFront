@@ -1,10 +1,15 @@
 import { NavLink, useNavigate } from "react-router-dom"
 import {
   removeWallet,
+  useChangeAutoRenewMutation,
+  useChangeSubscriptionMutation,
   useChangeUserDataMutation,
   useDeleteAccountMutation,
+  useDeleteSubscriptionMutation,
+  useGetSubscriptionByIdQuery,
   useGetUserInfoQuery,
   useRefreshTokenMutation,
+  useRestoreSubscriptionMutation,
 } from "./User.slice"
 import tokenService from "../../services/token.service"
 import Loader from "../../helpers/Loader"
@@ -20,13 +25,51 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { Modal, ModalFooter } from 'flowbite-react';
 import Button from "../../helpers/Button"
+import Subscriptions from "./subscriptions/Subscriptions"
+import { useToast } from "@chakra-ui/react"
 
+type UserSubmitForm = {
+  name: string,
+  login: string
+}
+
+
+export const dateFormat = (dateString: string) => {
+  let dateStr = dateString
+  let date = new Date(dateStr);
+
+  let formattedDate = date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+
+  let formattedTime = date.toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+
+  return `${formattedDate} ${formattedTime}`
+}
+
+
+enum switchMode {
+  profile = 'profile',
+  subscriptions = 'subscriptions'
+}
 
 const User = () => {
+  const toast = useToast()
   const { isConnected } = useAccount()
   const navigate = useNavigate();
   const { disconnectAsync } = useDisconnect()
   const { data, isLoading, isError, error, refetch } = useGetUserInfoQuery(tokenService.getUser()?.id)
+  const { data: SubData, isLoading: SubsLoading, isError: SubIsError, error: SubError, refetch: SubDataRefetch } = useGetSubscriptionByIdQuery({ id: tokenService.getUser()?.subscribe, userId: tokenService.getUser()?.id })
+  const [deleteUserSubscription, { isError: SubsIsError, isLoading: SubsIsLoading, isSuccess: SubsIsSuccess },] = useDeleteSubscriptionMutation()
+  const [restoreUserSubscription, { isError: restoreSubsIsError, isLoading: restoreSubsIsLoading, isSuccess: restoreSubsIsSuccess },] = useRestoreSubscriptionMutation()
+  const [AutoRenewUserSubscription, { isError: AutoRenewIsError, isLoading: AutoRenewIsLoading, isSuccess: AutoRenewIsSuccess },] = useChangeAutoRenewMutation()
+
   const [changeUserData, { isError: changeUserDataIsError, isLoading: changeUserDataLoading, isSuccess: changeUserDataIsSuccess, isUninitialized: changeUserDataIsUninitialized, error: ChangeUserDataError, reset },] = useChangeUserDataMutation()
   const [deleteAccount, { isError: deleteAccountIsError, isLoading: deleteAccountLoading, isSuccess: deleteAccountIsSuccess, isUninitialized: deleteAccountIsUninitialized, },] = useDeleteAccountMutation()
 
@@ -34,12 +77,12 @@ const User = () => {
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
   const dispatch = useAppDispatch()
   const [mode, setMode] = useState<Mode>()
-  const [openModal, setOpenModal] = useState(false);
+  const [openModalDelete, setOpenModalDelete] = useState(false);
+  const [openModalDeleteSubs, setOpenModalDeleteSubs] = useState(false);
+  const [openModalRestoreSubs, setOpenModalRestoreSubs] = useState(false);
 
-  type UserSubmitForm = {
-    name: string;
-    login: string;
-  };
+  const [switchData, setSwitchData] = useState<switchMode>(switchMode.profile)
+
 
 
   enum Mode {
@@ -75,6 +118,7 @@ const User = () => {
       .required('Login is required')
       .min(6, 'Login must be at least 6 characters')
       .max(40, 'Login must not exceed 40 characters'),
+    id: Yup.number()
   });
 
   const {
@@ -113,6 +157,91 @@ const User = () => {
         tokenService.removeUser()
         navigate('/')
       })
+      .catch(err => {
+        console.log(err);
+
+      })
+  }
+
+  const deleteSubs = async () => {
+    await deleteUserSubscription({
+      userId: tokenService.getUser().id,
+      autorenewal: false
+    })
+      .unwrap()
+      .then((responce) => {
+        console.log(responce);
+        SubDataRefetch()
+        setTimeout(() => {
+          setOpenModalDeleteSubs(false)
+          toast({
+            title: 'У меня нет времени думать что тут написать',
+            description: 'Поэтому Паша, напиши что тут написать, пожалуйста)',
+            status: 'success',
+            position: "top-right",
+            duration: 2000,
+            isClosable: true,
+          })
+        }, 1000);
+      })
+
+      .catch(err => {
+        console.log(err);
+
+      })
+
+  }
+
+  const restoreSubs = async () => {
+    await restoreUserSubscription({
+      userId: tokenService.getUser().id,
+      autorenewal: true
+    })
+      .unwrap()
+      .then((responce) => {
+        console.log(responce);
+        SubDataRefetch()
+        setTimeout(() => {
+          setOpenModalRestoreSubs(false)
+          toast({
+            title: 'У меня нет времени думать что тут написать',
+            description: 'Поэтому Паша, напиши что тут написать, пожалуйста)',
+            status: 'success',
+            position: "top-right",
+            duration: 2000,
+            isClosable: true,
+          })
+        }, 1000);
+      })
+
+      .catch(err => {
+        console.log(err);
+
+      })
+
+  }
+
+  const changeAutoRenewal = async () => {
+    await AutoRenewUserSubscription({
+      userId: tokenService.getUser().id,
+      autorenewal: !SubData?.autorenewal
+    })
+      .unwrap()
+      .then((responce) => {
+        console.log(responce);
+        SubDataRefetch()
+        setTimeout(() => {
+          toast({
+            title: 'System Message',
+            description: SubData?.autorenewal ? 'Subscription auto-renewal has been cancelled.' : 'Subscription auto-renewal successfully activated.',
+            status: 'success',
+            position: "top-right",
+            duration: 2000,
+            isClosable: true,
+          })
+        }, 1000);
+      })
+
       .catch(err => {
         console.log(err);
 
@@ -173,7 +302,7 @@ const User = () => {
     }
   }
 
-  
+
   if (isLoading) {
     return <Loader />
   }
@@ -181,171 +310,257 @@ const User = () => {
   return (
     <div className="background-image-black">
       <div className="wrapper-content">
-        <h1 className="font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">My account</h1>
-        <div className="flex lg:md:flex-row flex-col gap-4 w-full mt-10">
-          <div className="flex flex-col p-8 bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold lg:md:w-1/3 max-[600px]:py-6 max-[600px]:px-4">
-            <div className="flex flex-row justify-between items-center">
-              <h2 className="text-yellow text-3xl">
-                Your data
-              </h2>
-              <button className="h-5" onClick={() => setMode(Mode.changeUserData)}>
-                <svg width="28" height="28" viewBox="0 0 28 28" className={`${mode == Mode.changeUserData && 'stroke-yellow'} hover:stroke-white `} fill="#272727" stroke="#6A6A6A" xmlns="http://www.w3.org/2000/svg">
-                  <path fill="" d="M16.684 3.95095L17.8609 2.75804C18.3244 2.28839 18.8746 1.91587 19.4801 1.66174C20.0857 1.4076 20.7346 1.27684 21.39 1.27692C22.0454 1.27699 22.6944 1.4079 23.2998 1.66217C23.9053 1.91644 24.4554 2.28909 24.9188 2.75885C25.3822 3.2286 25.7497 3.78626 26.0004 4.39998C26.2512 5.01371 26.3802 5.67148 26.3801 6.33574C26.38 6.99999 26.2509 7.65773 26 8.2714C25.7491 8.88507 25.3815 9.44264 24.918 9.91229L23.741 11.102M16.684 3.95095C16.684 3.95095 16.8315 6.48468 19.0363 8.71938C21.2412 10.9541 23.741 11.102 23.741 11.102M16.684 3.95095L5.87077 14.9106C5.13794 15.6534 4.77153 16.0231 4.45746 16.4331C4.08582 16.9159 3.76723 17.4382 3.50731 17.991C3.28683 18.4588 3.12345 18.9572 2.79511 19.9524L1.40717 24.1742L1.06931 25.2047C0.990109 25.445 0.978534 25.7029 1.03588 25.9495C1.09323 26.196 1.21723 26.4216 1.39397 26.6007C1.57072 26.7798 1.79321 26.9055 2.0365 26.9636C2.27979 27.0218 2.53424 27.01 2.77131 26.9298L3.78807 26.5873L7.95346 25.179C8.93533 24.8478 9.42705 24.6822 9.88864 24.4587C10.4343 24.1951 10.9498 23.8719 11.4257 23.4957C11.8302 23.1758 12.195 22.806 12.9278 22.0633L23.741 11.102" stroke-width="2" />
+        <div className="mt-6 flex flex-row gap-4">
+          <button className={`filter_btn ${switchData == switchMode.profile ? 'active' : ""}`}
+            onClick={() => setSwitchData(switchMode.profile)} >
+            Profile
+          </button>
+          <button className={`filter_btn ${switchData == switchMode.subscriptions ? 'active' : ""}`}
+            onClick={() => setSwitchData(switchMode.subscriptions)} >
+            Subscriptions
+          </button>
+        </div>
 
-                </svg>
-              </button>
-            </div>
-            {mode != Mode.changeUserData ?
-              <>
-                <div className="flex flex-row justify-between text-2xl">
-                  <span className="max-[600px]:text-lg">
-                    Your name
-                  </span>
-                  <span className="font-chakra font-normal max-[600px]:text-base">
-                    {data?.name}
-                  </span>
-                </div>
-                <div className="flex flex-row justify-between">
-                  <span className="max-[600px]:text-lg">
-                    Email
-                  </span>
-                  <span className="font-chakra font-normal max-[600px]:text-base">
-                    {data?.email}
-                  </span>
-                </div>
-                <div className="flex flex-row justify-between">
-                  <span className="max-[600px]:text-lg">
-                    Login
-                  </span>
-                  <span className="font-chakra font-normal max-[600px]:text-base">
-                    {data?.username}
-                  </span>
-                </div>
-                <div className="flex flex-row justify-between">
-                  <span className="max-[600px]:text-lg">
-                    Password
-                  </span>
-                  <span className="font-chakra font-normal max-[600px]:text-base">
-                    **************
-                  </span>
-                </div>
-                <div className="flex flex-row justify-between gap-2">
-                  <NavLink to='changeEmail' className=" text-center text-white w-1/2 bg-customBlack hover:bg-customBlackHover p-3 rounded-xl text-base max-[1400px]:text-xs max-[600px]:px-2 max-[600px]:py-3">
-                    Change email
-                  </NavLink>
-                  <NavLink to='changePassword' className=" text-center text-base text-black w-1/2 bg-[#898989] hover:bg-lightGrayHover p-3 rounded-xl max-[1400px]:text-xs max-[600px]:px-2 max-[600px]:py-3">
-                    Change password
-                  </NavLink>
-                </div>
-              </> :
-              <form onSubmit={handleSubmit(onSubmit)} className={`flex flex-col gap-4 text-white mx-auto my-auto w-full`}>
-                <div className="form-group flex flex-col">
-                  <label className="text-2xl after:inline after:text-yellow after:font-beausans max-[600px]:text-lg">
-                    Your name
-                  </label>
-                  <div className="invalid-feedback text-red-500 text-sm mb-1 mt-1">{errors.name?.message}</div>
-                  <input
-                    type="text"
-                    {...register('name')}
-                    className={`form-control focus:outline-0 focus:ring-transparent ${errors.name ? 'is-invalid border border-rose-500' : 'border-0 border-b-2 border-white'} text-lg bg-lightGray p-0 py-1 font-chakra max-[600px]:text-sm`}
-                    defaultValue={data?.name}
-                  />
-                </div>
-                <div className="form-group flex flex-col">
-                  <label className="text-2xl after:inline after:text-yellow after:font-beausans max-[600px]:text-lg">
-                    Login
-                  </label>
-                  <div className="invalid-feedback text-red-500 text-sm mb-1 mt-1">{errors.login?.message}</div>
-                  <div className="invalid-feedback text-red-500 text-sm mb-1 mt-1">{changeUserDataIsError && 'Username already exist'}</div>
-                  <input
-                    type="text"
-                    {...register('login')}
-                    onChange={() => {
-                      reset()
-                    }}
-                    className={`form-control focus:outline-0 focus:ring-transparent ${errors.login || changeUserDataIsError ? 'is-invalid border-0 border-b-2 border-rose-500' : 'border-0 border-b-2 border-white'} text-lg bg-lightGray p-0 py-1 font-chakra max-[600px]:text-sm`}
-                    defaultValue={data?.username}
-                  />
-                </div>
-                <div className="flex flex-row justify-between gap-2">
-                  {/* <button type='submit' className={`text-white ${changeUserDataLoading && 'button_loading'} w-1/2 bg-customBlack hover:bg-customBlackHover p-3 rounded-xl text-base max-[600px]:text-xs`}>
-                    Save
-                  </button> */}
+        {
+          switchData == switchMode.profile &&
+          <>
+            <h1 className="mt-7 font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">My account</h1>
+            <div className="flex lg:md:flex-row flex-wrap flex-col gap-4 w-full mt-10">
+              <div className="flex flex-col sm:p-8 p-4 min-w-[500px]  bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold lg:md:w-1/3 basis-[fit-content]">
+                <div className="flex flex-row justify-between items-center">
+                  <h2 className="text-yellow sm:md:text-3xl text-xl">
+                    Your data
+                  </h2>
+                  <button className="w-5 h-5" onClick={() => setMode(Mode.changeUserData)}>
+                    <svg width="28" height="28" viewBox="0 0 28 28" className={`${mode == Mode.changeUserData && 'stroke-yellow'} hover:stroke-white `} fill="#272727" stroke="#6A6A6A" xmlns="http://www.w3.org/2000/svg">
+                      <path fill="" d="M16.684 3.95095L17.8609 2.75804C18.3244 2.28839 18.8746 1.91587 19.4801 1.66174C20.0857 1.4076 20.7346 1.27684 21.39 1.27692C22.0454 1.27699 22.6944 1.4079 23.2998 1.66217C23.9053 1.91644 24.4554 2.28909 24.9188 2.75885C25.3822 3.2286 25.7497 3.78626 26.0004 4.39998C26.2512 5.01371 26.3802 5.67148 26.3801 6.33574C26.38 6.99999 26.2509 7.65773 26 8.2714C25.7491 8.88507 25.3815 9.44264 24.918 9.91229L23.741 11.102M16.684 3.95095C16.684 3.95095 16.8315 6.48468 19.0363 8.71938C21.2412 10.9541 23.741 11.102 23.741 11.102M16.684 3.95095L5.87077 14.9106C5.13794 15.6534 4.77153 16.0231 4.45746 16.4331C4.08582 16.9159 3.76723 17.4382 3.50731 17.991C3.28683 18.4588 3.12345 18.9572 2.79511 19.9524L1.40717 24.1742L1.06931 25.2047C0.990109 25.445 0.978534 25.7029 1.03588 25.9495C1.09323 26.196 1.21723 26.4216 1.39397 26.6007C1.57072 26.7798 1.79321 26.9055 2.0365 26.9636C2.27979 27.0218 2.53424 27.01 2.77131 26.9298L3.78807 26.5873L7.95346 25.179C8.93533 24.8478 9.42705 24.6822 9.88864 24.4587C10.4343 24.1951 10.9498 23.8719 11.4257 23.4957C11.8302 23.1758 12.195 22.806 12.9278 22.0633L23.741 11.102" stroke-width="2" />
 
-                  <Button 
-                      content="Save" 
-                      buttonStyle="custom"
-                      type="submit"
-
-                      fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
-                      padding="py-2"
-                      textColor="text-white"
-                      rounded="rounded-[8px]"
-                      maxSizes="w-1/2 mb-px"
-                      bgColor="bg-customBlack hover:bg-customBlackHover" 
-                      
-                      loading={`${changeUserDataLoading && 'true'}`} //true 
-                      // loading="true" //true 
-                      disabled="" //disabled
-                      >
-                  </Button>
-
-                  <button className="text-base text-black w-1/2 bg-[#898989] hover:bg-lightGrayHover p-3 rounded-xl max-[600px]:text-xs" onClick={() => setMode(undefined)}>
-                    Cancel
+                    </svg>
                   </button>
                 </div>
-              </form>}
-          </div>
-          <div className="flex flex-col items-center p-8 bg-lightGray rounded-3xl text-white font-orbitron justify-center gap-5 lg:md:w-1/3 h-fit max-[600px]:py-6 max-[600px]:px-4">
-            <div className="flex flex-row justify-between">
-              <h2 className="text-yellow text-3xl text-center font-orbitron font-semibold">
-                Delete an account
-              </h2>
-            </div>
-            <button className="text-center text-yellow w-1/2 bg-customBlack hover:bg-customBlackHover p-3 rounded-xl text-base w-full max-w-[350px]" onClick={() => setOpenModal(true)}>
-              Delete
-            </button>
-            <Modal show={openModal} theme={Theme} size="md" onClose={() => setOpenModal(false)} popup className="bg-black opacity-1 bg-opacity-1 rounded-2xl" >
-              <Modal.Header className=" bg-lightGray" />
-              <Modal.Body className=" bg-lightGray text-white font-orbitron ">
-                <div className="text-center bg-lightGray flex flex-col gap-5">
-                  <h3 className="text-lg font-normal text-gray-500 dark:text-gray-400">
-                    Are you sure you want to delete your account?
-                  </h3>
-                  <h2 className="font-chakra">
-                    The deleted account cannot be restored
+                {mode != Mode.changeUserData ?
+                  <>
+                    <div className="flex flex-row gap-2 justify-between sm:text-xl md:text-2xl text-sm ">
+                      <span>
+                        Your name
+                      </span>
+                      <span className="font-chakra font-normal sm:text-xl md:text-2xl text-sm">
+                        {data?.name}
+                      </span>
+                    </div>
+                    <div className="flex flex-row gap-2 justify-between sm:text-xl md:text-2xl text-sm">
+                      <span>
+                        Email
+                      </span>
+                      <span className="font-chakra font-normal sm:text-xl md:text-2xl text-sm">
+                        {data?.email}
+                      </span>
+                    </div>
+                    <div className="flex flex-row gap-2 justify-between sm:text-xl md:text-2xl text-sm">
+                      <span>
+                        Login
+                      </span>
+                      <span className="font-chakra font-normal sm:text-xl md:text-2xl text-sm">
+                        {data?.username}
+                      </span>
+                    </div>
+                    <div className="flex flex-row gap-2 justify-between sm:text-xl md:text-2xl text-sm">
+                      <span>
+                        Password
+                      </span>
+                      <span className="font-chakra font-normal sm:text-xl md:text-2xl text-sm">
+                        **************
+                      </span>
+                    </div>
+                    <div className="flex flex-row justify-between gap-2">
+                      <NavLink to='changeEmail' className=" text-center text-white w-1/2 bg-customBlack hover:bg-customBlackHover p-3 rounded-xl text-base">
+                        Change email
+                      </NavLink>
+                      <NavLink to='changePassword' className=" text-center text-base text-black w-1/2 bg-[#898989] hover:bg-lightGrayHover p-3 rounded-xl" >
+                        Change password
+                      </NavLink>
+                    </div>
+                  </> :
+                  <form onSubmit={handleSubmit(onSubmit)} className={`flex flex-col gap-4 text-white mx-auto my-auto w-full`}>
+                    <div className="form-group flex flex-col">
+                      <label className=" sm:md:text-2xl text-xl after:inline after:text-yellow after:font-beausans ">
+                        Your name
+                      </label>
+                      <div className="invalid-feedback text-red-500 text-s mb-1 mt-1">{errors.name?.message}</div>
+                      <input
+                        type="text"
+                        {...register('name')}
+                        className={`form-control focus:outline-0 focus:ring-transparent ${errors.name ? 'is-invalid border border-rose-500' : 'border-0 border-b-2 border-white'} text-lg bg-lightGray p-0 py-1 font-chakra`}
+                        defaultValue={data?.name}
+                      />
+                    </div>
+                    <div className="form-group flex flex-col">
+                      <label className="text-2xl after:inline after:text-yellow after:font-beausans">
+                        Login
+                      </label>
+                      <div className="invalid-feedback text-red-500 text-sm mb-1 mt-1">{errors.login?.message}</div>
+                      <div className="invalid-feedback text-red-500 text-sm mb-1 mt-1">{changeUserDataIsError && 'Username already exist'}</div>
+                      <input
+                        type="text"
+                        {...register('login')}
+                        onChange={() => {
+                          reset()
+                        }}
+                        className={`form-control focus:outline-0 focus:ring-transparent ${errors.login || changeUserDataIsError ? 'is-invalid border-0 border-b-2 border-rose-500' : 'border-0 border-b-2 border-white'} text-lg bg-lightGray p-0 py-1 font-chakra`}
+                        defaultValue={data?.username}
+                      />
+                    </div>
+                    <div className="flex flex-row justify-between gap-2">
+                      <button type='submit' className={`text-white ${changeUserDataLoading && 'button_loading'} w-1/2 bg-customBlack hover:bg-customBlackHover p-3 rounded-xl text-base`}>
+                        Save
+                      </button>
+                      <button className="text-base text-black w-1/2 bg-[#898989] hover:bg-lightGrayHover p-3 rounded-xl" onClick={() => setMode(undefined)}>
+                        Cancel
+                      </button>
+                    </div>
+                  </form>}
+              </div>
+              <div className="flex flex-col justify-between sm:p-8 p-4 min-w-[500px]  bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold lg:md:w-1/3 basis-[fit-content]">
+                {SubsLoading ?
+                  <Loader />
+                  :
+                  <>
+                    <div className="flex flex-row justify-between items-center">
+                      <h2 className="text-yellow sm:md:text-3xl text-xl">
+                        Subscription
+                      </h2>
+                    </div>
+                    <>
+                      <div className="flex flex-row gap-2 justify-between sm:text-xl md:text-2xl text-sm ">
+                        <span>
+                          Plan
+                        </span>
+                        <span className="font-orbitron font-normal sm:text-xl md:text-2xl text-sm text-white">
+                          {SubData?.name}
+                        </span>
+                      </div>
+                      <div className="flex flex-row gap-2 justify-between sm:text-xl md:text-2xl text-sm">
+                        <span>
+                          Active until
+                        </span>
+                        <span className="font-orbitron font-normal sm:text-xl md:text-2xl text-sm text-white">
+                          {dateFormat(SubData?.active_until) ?? 'unlimited'}
+                        </span>
+                      </div>
+                      {SubData?.id != 1 &&
+                        <div className="flex flex-row gap-2 justify-between sm:text-xl md:text-2xl text-sm">
+                          <span>
+                            Auto-renewal
+                          </span>
+                          <span className="font-chakra font-normal sm:text-xl md:text-2xl text-sm">
+                            <input id="default-checkbox" checked={SubData?.autorenewal} onClick={() => changeAutoRenewal()} type="checkbox" value="" className="w-6 h-6 bg-[rgb(39,39,39)] border-yellow rounded-sm focus:bg-[rgb(39,39,39)] dark:ring-offset-gray-800 focus:ring-0 focus:outline-none dark:bg-gray-700 dark:border-gray-600 checked:bg-transparent shadow-none checked:text-yellow-500 checked:border-yellow checked:outline-none focus:shadow-none"></input>
+                          </span>
+                        </div>
+                      }
+                      <Button buttonStyle="black" type="button" padding="p-3" rounded="rounded-xl" onClick={() => setSwitchData(switchMode.subscriptions)}>
+                        Change the plan
+                      </Button>
+                      {/* {SubData?.id != 1 &&
+                        SubData?.status ?
+                        <button className="bg-inherit font-orbitron text-sm font-bold text-white" onClick={() => setOpenModalDeleteSubs(true)}>
+                          Delete subscription
+                        </button>
+                        :
+                        <button className="bg-inherit font-orbitron text-sm font-bold text-white" onClick={() => setOpenModalRestoreSubs(true)}>
+                          Restore subscription
+                        </button>
+                      } */}
+                    </>
+                  </>
+                }
+              </div>
+              <div className="flex flex-col items-center min-w-[500px] p-8 bg-lightGray rounded-3xl text-white font-orbitron justify-center gap-5 lg:md:w-1/3 h-fit">
+                <div className="flex flex-row justify-between">
+                  <h2 className="text-yellow text-3xl text-center">
+                    Delete an account
                   </h2>
-                  <div className="flex justify-center gap-4">
-                    <button color="failure" onClick={() => handleDeleteAccount()} className="delete_yellow_btn text-xl">
-                      Delete
-                    </button>
-
-                    {/* <Button 
-                      content="Delete" 
-                      buttonStyle="yellow"
-                      type="submit"
-
-                      fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
-                      padding="py-2"
-                      textColor="text-customBlack" 
-                      rounded="rounded-[8px]" 
-
-                      loading="" //true 
-                      disabled="" //disabled
-
-                      onClick={() => handleDeleteAccount()}
-                      >
-                    </Button> */}
-                    <button color="gray" onClick={() => setOpenModal(false)} className="gray_btn text-xl">
-                      Cancel
-                    </button>
-                  </div>
                 </div>
-              </Modal.Body>
+                <button className=" text-center text-yellow w-1/2 bg-customBlack hover:bg-customBlackHover p-3 rounded-xl text-base" onClick={() => setOpenModalDelete(true)}>
+                  Delete
+                </button>
+                <Modal show={openModalDelete} theme={Theme} size="md" onClose={() => setOpenModalDelete(false)} popup className="bg-black opacity-1 bg-opacity-1 rounded-2xl" >
+                  <Modal.Header className=" bg-lightGray" />
+                  <Modal.Body className=" bg-lightGray text-white font-orbitron ">
+                    <div className="text-center bg-lightGray flex flex-col gap-5">
+                      <h3 className="text-lg font-normal text-gray-500 dark:text-gray-400">
+                        Are you sure you want to delete your account?
+                      </h3>
+                      <h2 className="font-chakra">
+                        The deleted account cannot be restored
+                      </h2>
+                      <div className="flex justify-center gap-4">
+                        <button color="failure" onClick={() => handleDeleteAccount()} className="yellow_btn text-sm">
+                          Delete
+                        </button>
+                        <button color="gray" onClick={() => setOpenModalDelete(false)} className="gray_btn text-xl">
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </Modal.Body>
 
-            </Modal>
-          </div>
-          {/* <div className="flex flex-col p-8 bg-lightGray rounded-3xl text-white font-orbitron gap-5 w-1/3">
+                </Modal>
+                <Modal show={openModalDeleteSubs} theme={Theme} size="lg" onClose={() => setOpenModalDeleteSubs(false)} popup className="bg-black opacity-1 bg-opacity-1 rounded-2xl" >
+                  <Modal.Header className=" bg-lightGray" />
+                  <Modal.Body className=" bg-lightGray text-white font-orbitron ">
+                    {
+                      SubsIsLoading || SubsIsSuccess ?
+                        <Loader />
+                        :
+                        <div className="text-center bg-lightGray flex flex-col gap-5">
+                          <h3 className="lg:text-[32px] md:text-2xl sm:text-xl text-lg font-normal text-yellow dark:text-gray-400">
+                            Are you sure you want to cancel?
+                          </h3>
+                          <h2 className="font-chakra lg:text-[23px] md:text-xl sm:text-lg text-base font-normal">
+                            Your subscription will end on {dateFormat(SubData?.active_until)} and then you will automatically switch to the <b className="text-yellow font-bold">STARTED</b> plan
+                          </h2>
+                          <div className="flex justify-center gap-4">
+                            <Button type="button" textColor="text-black" buttonStyle='yellow' onClick={() => setOpenModalDeleteSubs(false)} rounded="rounded-xl" padding="p-3">
+                              Cancel
+                            </Button>
+                            <Button type="button" buttonStyle='black' onClick={() => deleteSubs()} rounded="rounded-xl" textColor="text-yellow" padding="p-3">
+                              Unsubscribe
+                            </Button>
+                          </div>
+                        </div>
+                    }
+                  </Modal.Body>
+
+                </Modal>
+                <Modal show={openModalRestoreSubs} theme={Theme} size="lg" onClose={() => setOpenModalRestoreSubs(false)} popup className="bg-black opacity-1 bg-opacity-1 rounded-2xl" >
+                  <Modal.Header className=" bg-lightGray" />
+                  <Modal.Body className=" bg-lightGray text-white font-orbitron ">
+                    {
+                      restoreSubsIsLoading || restoreSubsIsSuccess ?
+                        <Loader />
+                        :
+                        <div className="text-center bg-lightGray flex flex-col gap-5">
+                          <h3 className="lg:text-[32px] md:text-2xl sm:text-xl text-lg font-normal text-yellow dark:text-gray-400">
+                            Are you sure you want to restore?
+                          </h3>
+                          <h2 className="font-chakra lg:text-[23px] md:text-xl sm:text-lg text-base font-normal">
+                            Auto-renewal will be automatically enabled!
+                          </h2>
+                          <div className="flex justify-center gap-4">
+                            <Button type="button" textColor="text-black" buttonStyle='yellow' onClick={() => setOpenModalRestoreSubs(false)} rounded="rounded-xl" padding="p-3">
+                              Cancel
+                            </Button>
+                            <Button type="button" buttonStyle='black' onClick={() => restoreSubs()} rounded="rounded-xl" textColor="text-yellow" padding="p-3">
+                              Restore
+                            </Button>
+                          </div>
+                        </div>
+                    }
+                  </Modal.Body>
+
+                </Modal>
+              </div>
+              {/* <div className="flex flex-col p-8 bg-lightGray rounded-3xl text-white font-orbitron gap-5 w-1/3">
             <div className="flex flex-row justify-between">
               <h2 className="text-yellow text-3xl">
                 2FA
@@ -362,9 +577,16 @@ const User = () => {
             </div>
 
           </div> */}
-        </div>
+            </div>
+          </>
+        }
+
+        {
+          switchData == switchMode.subscriptions &&
+          <Subscriptions />
+        }
       </div>
-    </div>
+    </div >
   )
 }
 

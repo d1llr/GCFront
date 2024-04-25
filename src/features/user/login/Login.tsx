@@ -126,7 +126,7 @@ const Login = () => {
                             ">
                                 Login or Email
                             </label>
-                            
+
                             <div className={`${errors.login?.message ? '' : 'hidden'} invalid-feedback text-red-500 text-sm mb-1`}>{errors.login?.message}</div>
 
                             <input
@@ -219,22 +219,22 @@ const Login = () => {
 
                         <div className="form-group mt-2">
 
-                            <Button 
-                                content="Log in" 
+                            <Button
                                 buttonStyle="yellow"
                                 type="submit"
 
-                                fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
+                                fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]"
                                 padding="py-2"
-                                textColor="text-customBlack" 
-                                rounded="rounded-[8px]" 
-                                
+                                textColor="text-customBlack"
+                                rounded="rounded-[8px]"
+
                                 loading={`${isLoading && 'true'}`}//true 
                                 // loading="true"//true 
                                 disabled="" //disabled
-                                >
+                            >
+                                Log in
                             </Button>
-                           
+
                             {/* <button type="submit" className={`text-center bg-yellow ${isLoading && 'button_loading'}  text-black w-full p-1 text-xl font-bold h-11 border-none rounded-lg lowercase font-orbiton hover:bg-hoverYellow transition-al`}>
                                 Log in
                             </button> */}

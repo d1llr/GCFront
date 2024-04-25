@@ -36,6 +36,7 @@ import RegConf from "./helpers/SuccessAction"
 import Recover from "./features/user/recover/Recover"
 import ChangeEmail from "./features/user/changeEmail/ChangeEmail"
 import ChangePassword from "./features/user/changePassword/ChangePassword"
+import Subscriptions from "./features/user/subscriptions/Subscriptions"
 
 
 const octaSpace = {
@@ -126,7 +127,11 @@ const router = createBrowserRouter([
       {
         path: "/user",
         element: <User />,
-      }
+      },
+      {
+        path: "/subscriptions",
+        element: <Subscriptions />,
+      },
     ],
   },
   {

@@ -80,6 +80,11 @@ class TokenService {
             return null
         }
     }
+    setUserSubscribe(subscribe: number) {
+        let user = JSON.parse(localStorage.getItem("user") ?? '');
+        user.subscribe = subscribe;
+        localStorage.setItem("user", JSON.stringify(user));
+    }
 
     setUser(user: IUser) {
         console.log(JSON.stringify(user));
