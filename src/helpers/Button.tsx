@@ -9,7 +9,6 @@ interface IButtonProps {
     rounded?: string
     maxSizes?: string
     bgColor?: string
-    onClick?: void | any
     children: string;
     loading?: string
     disabled?: string
@@ -46,7 +45,7 @@ const Button = (props: IButtonProps) => {
 
     return (
 
-        <div className={`${props.loading == "true" && `${props.rounded} p-[1px] button_loading`}`}>
+        <div className={`w-full ${props.loading == "true" && `${props.rounded} p-[1px] button_loading`}`}>
             <button disabled={Boolean(props.disabled)} onClick={props.onClick}  className={`${styles}`} type={props.type}>
                 {props.children}
             </button>

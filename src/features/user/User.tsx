@@ -1,10 +1,15 @@
 import { NavLink, useNavigate } from "react-router-dom"
 import {
   removeWallet,
+  useChangeAutoRenewMutation,
+  useChangeSubscriptionMutation,
   useChangeUserDataMutation,
   useDeleteAccountMutation,
+  useDeleteSubscriptionMutation,
+  useGetSubscriptionByIdQuery,
   useGetUserInfoQuery,
   useRefreshTokenMutation,
+  useRestoreSubscriptionMutation,
 } from "./User.slice"
 import tokenService from "../../services/token.service"
 import Loader from "../../helpers/Loader"
@@ -21,6 +26,32 @@ import * as Yup from 'yup';
 import { Modal, ModalFooter } from 'flowbite-react';
 import Button from "../../helpers/Button"
 import Subscriptions from "./subscriptions/Subscriptions"
+import { useToast } from "@chakra-ui/react"
+
+type UserSubmitForm = {
+  name: string,
+  login: string
+}
+
+
+export const dateFormat = (dateString: string) => {
+  let dateStr = dateString
+  let date = new Date(dateStr);
+
+  let formattedDate = date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+
+  let formattedTime = date.toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+
+  return `${formattedDate} ${formattedTime}`
+}
 
 
 enum switchMode {
@@ -29,10 +60,16 @@ enum switchMode {
 }
 
 const User = () => {
+  const toast = useToast()
   const { isConnected } = useAccount()
   const navigate = useNavigate();
   const { disconnectAsync } = useDisconnect()
   const { data, isLoading, isError, error, refetch } = useGetUserInfoQuery(tokenService.getUser()?.id)
+  const { data: SubData, isLoading: SubsLoading, isError: SubIsError, error: SubError, refetch: SubDataRefetch } = useGetSubscriptionByIdQuery({ id: tokenService.getUser()?.subscribe, userId: tokenService.getUser()?.id })
+  const [deleteUserSubscription, { isError: SubsIsError, isLoading: SubsIsLoading, isSuccess: SubsIsSuccess },] = useDeleteSubscriptionMutation()
+  const [restoreUserSubscription, { isError: restoreSubsIsError, isLoading: restoreSubsIsLoading, isSuccess: restoreSubsIsSuccess },] = useRestoreSubscriptionMutation()
+  const [AutoRenewUserSubscription, { isError: AutoRenewIsError, isLoading: AutoRenewIsLoading, isSuccess: AutoRenewIsSuccess },] = useChangeAutoRenewMutation()
+
   const [changeUserData, { isError: changeUserDataIsError, isLoading: changeUserDataLoading, isSuccess: changeUserDataIsSuccess, isUninitialized: changeUserDataIsUninitialized, error: ChangeUserDataError, reset },] = useChangeUserDataMutation()
   const [deleteAccount, { isError: deleteAccountIsError, isLoading: deleteAccountLoading, isSuccess: deleteAccountIsSuccess, isUninitialized: deleteAccountIsUninitialized, },] = useDeleteAccountMutation()
 
@@ -40,7 +77,10 @@ const User = () => {
   const wallet = useAppSelector((state) => state.UserSlice.wallet)
   const dispatch = useAppDispatch()
   const [mode, setMode] = useState<Mode>()
-  const [openModal, setOpenModal] = useState(false);
+  const [openModalDelete, setOpenModalDelete] = useState(false);
+  const [openModalDeleteSubs, setOpenModalDeleteSubs] = useState(false);
+  const [openModalRestoreSubs, setOpenModalRestoreSubs] = useState(false);
+
   const [switchData, setSwitchData] = useState<switchMode>(switchMode.profile)
 
 
@@ -78,6 +118,7 @@ const User = () => {
       .required('Login is required')
       .min(6, 'Login must be at least 6 characters')
       .max(40, 'Login must not exceed 40 characters'),
+    id: Yup.number()
   });
 
   const {
@@ -116,6 +157,91 @@ const User = () => {
         tokenService.removeUser()
         navigate('/')
       })
+      .catch(err => {
+        console.log(err);
+
+      })
+  }
+
+  const deleteSubs = async () => {
+    await deleteUserSubscription({
+      userId: tokenService.getUser().id,
+      autorenewal: false
+    })
+      .unwrap()
+      .then((responce) => {
+        console.log(responce);
+        SubDataRefetch()
+        setTimeout(() => {
+          setOpenModalDeleteSubs(false)
+          toast({
+            title: 'У меня нет времени думать что тут написать',
+            description: 'Поэтому Паша, напиши что тут написать, пожалуйста)',
+            status: 'success',
+            position: "top-right",
+            duration: 2000,
+            isClosable: true,
+          })
+        }, 1000);
+      })
+
+      .catch(err => {
+        console.log(err);
+
+      })
+
+  }
+
+  const restoreSubs = async () => {
+    await restoreUserSubscription({
+      userId: tokenService.getUser().id,
+      autorenewal: true
+    })
+      .unwrap()
+      .then((responce) => {
+        console.log(responce);
+        SubDataRefetch()
+        setTimeout(() => {
+          setOpenModalRestoreSubs(false)
+          toast({
+            title: 'У меня нет времени думать что тут написать',
+            description: 'Поэтому Паша, напиши что тут написать, пожалуйста)',
+            status: 'success',
+            position: "top-right",
+            duration: 2000,
+            isClosable: true,
+          })
+        }, 1000);
+      })
+
+      .catch(err => {
+        console.log(err);
+
+      })
+
+  }
+
+  const changeAutoRenewal = async () => {
+    await AutoRenewUserSubscription({
+      userId: tokenService.getUser().id,
+      autorenewal: !SubData?.autorenewal
+    })
+      .unwrap()
+      .then((responce) => {
+        console.log(responce);
+        SubDataRefetch()
+        setTimeout(() => {
+          toast({
+            title: 'System Message',
+            description: SubData?.autorenewal ? 'Subscription auto-renewal has been cancelled.' : 'Subscription auto-renewal successfully activated.',
+            status: 'success',
+            position: "top-right",
+            duration: 2000,
+            isClosable: true,
+          })
+        }, 1000);
+      })
+
       .catch(err => {
         console.log(err);
 
@@ -199,8 +325,8 @@ const User = () => {
           switchData == switchMode.profile &&
           <>
             <h1 className="mt-7 font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">My account</h1>
-            <div className="flex lg:md:flex-row flex-col gap-4 w-full mt-10">
-              <div className="flex flex-col sm:p-8 p-4  bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold lg:md:w-1/3 basis-[fit-content]">
+            <div className="flex lg:md:flex-row flex-wrap flex-col gap-4 w-full mt-10">
+              <div className="flex flex-col sm:p-8 p-4 min-w-[500px]  bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold lg:md:w-1/3 basis-[fit-content]">
                 <div className="flex flex-row justify-between items-center">
                   <h2 className="text-yellow sm:md:text-3xl text-xl">
                     Your data
@@ -294,16 +420,70 @@ const User = () => {
                     </div>
                   </form>}
               </div>
-              <div className="flex flex-col items-center p-8 bg-lightGray rounded-3xl text-white font-orbitron justify-center gap-5 lg:md:w-1/3 h-fit">
+              <div className="flex flex-col justify-between sm:p-8 p-4 min-w-[500px]  bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold lg:md:w-1/3 basis-[fit-content]">
+                {SubsLoading ?
+                  <Loader />
+                  :
+                  <>
+                    <div className="flex flex-row justify-between items-center">
+                      <h2 className="text-yellow sm:md:text-3xl text-xl">
+                        Subscription
+                      </h2>
+                    </div>
+                    <>
+                      <div className="flex flex-row gap-2 justify-between sm:text-xl md:text-2xl text-sm ">
+                        <span>
+                          Plan
+                        </span>
+                        <span className="font-orbitron font-normal sm:text-xl md:text-2xl text-sm text-white">
+                          {SubData?.name}
+                        </span>
+                      </div>
+                      <div className="flex flex-row gap-2 justify-between sm:text-xl md:text-2xl text-sm">
+                        <span>
+                          Active until
+                        </span>
+                        <span className="font-orbitron font-normal sm:text-xl md:text-2xl text-sm text-white">
+                          {dateFormat(SubData?.active_until) ?? 'unlimited'}
+                        </span>
+                      </div>
+                      {SubData?.id != 1 &&
+                        <div className="flex flex-row gap-2 justify-between sm:text-xl md:text-2xl text-sm">
+                          <span>
+                            Auto-renewal
+                          </span>
+                          <span className="font-chakra font-normal sm:text-xl md:text-2xl text-sm">
+                            <input id="default-checkbox" checked={SubData?.autorenewal} onClick={() => changeAutoRenewal()} type="checkbox" value="" className="w-6 h-6 bg-[rgb(39,39,39)] border-yellow rounded-sm focus:bg-[rgb(39,39,39)] dark:ring-offset-gray-800 focus:ring-0 focus:outline-none dark:bg-gray-700 dark:border-gray-600 checked:bg-transparent shadow-none checked:text-yellow-500 checked:border-yellow checked:outline-none focus:shadow-none"></input>
+                          </span>
+                        </div>
+                      }
+                      <Button buttonStyle="black" type="button" padding="p-3" rounded="rounded-xl" onClick={() => setSwitchData(switchMode.subscriptions)}>
+                        Change the plan
+                      </Button>
+                      {/* {SubData?.id != 1 &&
+                        SubData?.status ?
+                        <button className="bg-inherit font-orbitron text-sm font-bold text-white" onClick={() => setOpenModalDeleteSubs(true)}>
+                          Delete subscription
+                        </button>
+                        :
+                        <button className="bg-inherit font-orbitron text-sm font-bold text-white" onClick={() => setOpenModalRestoreSubs(true)}>
+                          Restore subscription
+                        </button>
+                      } */}
+                    </>
+                  </>
+                }
+              </div>
+              <div className="flex flex-col items-center min-w-[500px] p-8 bg-lightGray rounded-3xl text-white font-orbitron justify-center gap-5 lg:md:w-1/3 h-fit">
                 <div className="flex flex-row justify-between">
                   <h2 className="text-yellow text-3xl text-center">
                     Delete an account
                   </h2>
                 </div>
-                <button className=" text-center text-yellow w-1/2 bg-customBlack hover:bg-customBlackHover p-3 rounded-xl text-base" onClick={() => setOpenModal(true)}>
+                <button className=" text-center text-yellow w-1/2 bg-customBlack hover:bg-customBlackHover p-3 rounded-xl text-base" onClick={() => setOpenModalDelete(true)}>
                   Delete
                 </button>
-                <Modal show={openModal} theme={Theme} size="md" onClose={() => setOpenModal(false)} popup className="bg-black opacity-1 bg-opacity-1 rounded-2xl" >
+                <Modal show={openModalDelete} theme={Theme} size="md" onClose={() => setOpenModalDelete(false)} popup className="bg-black opacity-1 bg-opacity-1 rounded-2xl" >
                   <Modal.Header className=" bg-lightGray" />
                   <Modal.Body className=" bg-lightGray text-white font-orbitron ">
                     <div className="text-center bg-lightGray flex flex-col gap-5">
@@ -317,11 +497,65 @@ const User = () => {
                         <button color="failure" onClick={() => handleDeleteAccount()} className="yellow_btn text-sm">
                           Delete
                         </button>
-                        <button color="gray" onClick={() => setOpenModal(false)} className="gray_btn text-xl">
+                        <button color="gray" onClick={() => setOpenModalDelete(false)} className="gray_btn text-xl">
                           Cancel
                         </button>
                       </div>
                     </div>
+                  </Modal.Body>
+
+                </Modal>
+                <Modal show={openModalDeleteSubs} theme={Theme} size="lg" onClose={() => setOpenModalDeleteSubs(false)} popup className="bg-black opacity-1 bg-opacity-1 rounded-2xl" >
+                  <Modal.Header className=" bg-lightGray" />
+                  <Modal.Body className=" bg-lightGray text-white font-orbitron ">
+                    {
+                      SubsIsLoading || SubsIsSuccess ?
+                        <Loader />
+                        :
+                        <div className="text-center bg-lightGray flex flex-col gap-5">
+                          <h3 className="lg:text-[32px] md:text-2xl sm:text-xl text-lg font-normal text-yellow dark:text-gray-400">
+                            Are you sure you want to cancel?
+                          </h3>
+                          <h2 className="font-chakra lg:text-[23px] md:text-xl sm:text-lg text-base font-normal">
+                            Your subscription will end on {dateFormat(SubData?.active_until)} and then you will automatically switch to the <b className="text-yellow font-bold">STARTED</b> plan
+                          </h2>
+                          <div className="flex justify-center gap-4">
+                            <Button type="button" textColor="text-black" buttonStyle='yellow' onClick={() => setOpenModalDeleteSubs(false)} rounded="rounded-xl" padding="p-3">
+                              Cancel
+                            </Button>
+                            <Button type="button" buttonStyle='black' onClick={() => deleteSubs()} rounded="rounded-xl" textColor="text-yellow" padding="p-3">
+                              Unsubscribe
+                            </Button>
+                          </div>
+                        </div>
+                    }
+                  </Modal.Body>
+
+                </Modal>
+                <Modal show={openModalRestoreSubs} theme={Theme} size="lg" onClose={() => setOpenModalRestoreSubs(false)} popup className="bg-black opacity-1 bg-opacity-1 rounded-2xl" >
+                  <Modal.Header className=" bg-lightGray" />
+                  <Modal.Body className=" bg-lightGray text-white font-orbitron ">
+                    {
+                      restoreSubsIsLoading || restoreSubsIsSuccess ?
+                        <Loader />
+                        :
+                        <div className="text-center bg-lightGray flex flex-col gap-5">
+                          <h3 className="lg:text-[32px] md:text-2xl sm:text-xl text-lg font-normal text-yellow dark:text-gray-400">
+                            Are you sure you want to restore?
+                          </h3>
+                          <h2 className="font-chakra lg:text-[23px] md:text-xl sm:text-lg text-base font-normal">
+                            Auto-renewal will be automatically enabled!
+                          </h2>
+                          <div className="flex justify-center gap-4">
+                            <Button type="button" textColor="text-black" buttonStyle='yellow' onClick={() => setOpenModalRestoreSubs(false)} rounded="rounded-xl" padding="p-3">
+                              Cancel
+                            </Button>
+                            <Button type="button" buttonStyle='black' onClick={() => restoreSubs()} rounded="rounded-xl" textColor="text-yellow" padding="p-3">
+                              Restore
+                            </Button>
+                          </div>
+                        </div>
+                    }
                   </Modal.Body>
 
                 </Modal>
@@ -352,7 +586,7 @@ const User = () => {
           <Subscriptions />
         }
       </div>
-    </div>
+    </div >
   )
 }
 

@@ -126,15 +126,8 @@ const Tournaments = () => {
                                         }</button>
                                 })
                             }
-                            {/* <button className="filter_btn active">OCTA</button>
 
-                    <button className="filter_btn">REDEV2</button>
-                    <button className="filter_btn">PAC Match 3</button>
-                    <button className="filter_btn">PAC Shoot</button>
-                    <button className="filter_btn">Active</button>
-                    <button className="filter_btn">Completed</button> */}
-
-                    </div>
+                        </div>}
                     <div className={`grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 ${data?.length == 0 && 'hidden'}`}>
                         {data[0]['active']?.map((item: any, index: number) => {
                             return (

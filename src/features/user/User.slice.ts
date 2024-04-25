@@ -54,11 +54,19 @@ const initialState: IUserState = {
 
 export interface ISubs {
     description: string,
-    id:number,
+    id: number,
     name: string,
-    price:number,
+    price: number,
     textinfo: string[],
-    badge?:string
+    badge?: string
+}
+
+export interface ISubsMini {
+    id: number
+    name: string
+    active_until: any
+    autorenewal: boolean,
+    status: boolean,
 }
 
 export const UserSlice = createSlice({
@@ -168,12 +176,43 @@ export const UsersActions = createApi({
                 headers: authHeader()
             }),
         }),
-        changeSubscription: builder.mutation<any, {userId:number, newsubscribe:number}>({
+        getSubscriptionById: builder.query<ISubsMini, { id: number, userId: number }>({
+            query: (body) => ({
+                url: `api/user/getSubsById/${body.id}/${body.userId}`,
+                method: "GET",
+                headers: authHeader()
+            }),
+        }),
+        changeSubscription: builder.mutation<any, { userId: number, newsubscribe: number, autorenewal: boolean }>({
             query: (body) => ({
                 url: `api/user/changeSubscription`,
                 method: "POST",
                 headers: authHeader(),
-                body:body
+                body: body
+            }),
+        }),
+        deleteSubscription: builder.mutation<any, { userId: number, autorenewal: boolean }>({
+            query: (body) => ({
+                url: `api/user/deleteSubscription`,
+                method: "POST",
+                headers: authHeader(),
+                body: body
+            }),
+        }),
+        changeAutoRenew: builder.mutation<any, { userId: number, autorenewal: boolean }>({
+            query: (body) => ({
+                url: `api/user/changeAutoRenew`,
+                method: "POST",
+                headers: authHeader(),
+                body: body
+            }),
+        }),
+        restoreSubscription: builder.mutation<any, { userId: number, autorenewal: boolean }>({
+            query: (body) => ({
+                url: `api/user/restoreSubscription`,
+                method: "POST",
+                headers: authHeader(),
+                body: body
             }),
         }),
         getUserName: builder.mutation<string, string | undefined>({
@@ -251,5 +290,9 @@ export const {
     useCheckOldPasswordMutation,
     useDeleteAccountMutation,
     useGetSubscriptionQuery,
-    useChangeSubscriptionMutation
+    useChangeSubscriptionMutation,
+    useDeleteSubscriptionMutation,
+    useGetSubscriptionByIdQuery,
+    useRestoreSubscriptionMutation,
+    useChangeAutoRenewMutation
 } = UsersActions
