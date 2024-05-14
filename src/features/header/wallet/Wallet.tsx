@@ -792,7 +792,7 @@ const Wallet = memo((props: IWalletProps) => {
                             amountRechargeReset()
                             amountWithdrawalReset()
                             setMode(Mode.withdraw)
-                            await canIWithdraw({ id: tokenService?.getUser().id })
+                            await canIWithdraw({ id: tokenService?.getUser().id, subscription_id: tokenService?.getUser().subscribe })
                               .unwrap()
                               .then(res => {
 

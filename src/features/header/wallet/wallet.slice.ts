@@ -4,11 +4,14 @@ import IWallet from "./wallet.type";
 import authHeader from '../../../services/accessHeaders';
 
 
+
 type IReq = {
     wallet?: string,
     id: string,
-    amount?: number
+    amount?: number,
+    subscription_id?: number
 }
+
 
 
 
