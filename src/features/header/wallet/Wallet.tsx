@@ -5,6 +5,7 @@ import { removeWallet, setBalance, setWallet, useGetUserBalanceQuery, useRefresh
 import {
   useCanIWithdrawMutation,
   useConnectWalletMutation,
+  useGetUrlToPayMutation,
   useRechargeBalanceMutation,
   useRemoveWalletMutation,
   useWithdrawBalanceMutation,
@@ -119,33 +120,47 @@ const Wallet = memo((props: IWalletProps) => {
 
 
 
-  const [mode, setMode] = useState<Mode>()
+  const [mode, setMode] = useState<Mode | undefined>(undefined)
   const [isWalletOpen, setIsWalletOpen] = useState<boolean>(false)
+  const [urlToPay, setUrlToPay] = useState<string>()
   const dispatch = useAppDispatch()
   const [connectWallet, { isLoading }] = useConnectWalletMutation()
   const [canIWithdraw, { isLoading: canIWithdrawLoading }] = useCanIWithdrawMutation()
   const navigate = useNavigate()
   const [refreshToken] = useRefreshTokenMutation()
   const isTouchDevice = useIsTouchDevice()
-  const [RechargeBalance] = useRechargeBalanceMutation()
-  const [WithdrawBalance, { isError: isErrorWithdrawBalance, error: errorWithdrawBalance },] = useWithdrawBalanceMutation()
+  const [RechargeBalance, { isLoading: RechargeLoading }] = useRechargeBalanceMutation()
+  const [GetURLToPay, { isLoading: URLLoading, isUninitialized: URLUnInitialized, reset: URLReset }] = useGetUrlToPayMutation()
+
+  const [WithdrawBalance, { isLoading: WithdrawLoading, isError: isErrorWithdrawBalance, error: errorWithdrawBalance },] = useWithdrawBalanceMutation()
   const isWindowFocused = useWindowFocus();
   const [removeWalletAPI] = useRemoveWalletMutation()
+
+
+
 
 
   // -------------------------------------- //
 
   type amountRecharge = { amountRecharge: number }
-  type amountWithdrawal = { amountWithdrawal: number }
+  type amountWithdrawal = { amountWithdrawal: number, wallet: string }
 
   const amountWithdrawalSchema = Yup.object().shape({
     amountWithdrawal: Yup.number()
+      .transform((value) => Number.isNaN(value) ? null : value)
       .required("Amount is required")
       .moreThan(49, "Min. amount = 50 PAC")
-      .lessThan(availableToWithdraw!, 'Withdrawal amount above daily limit')
+      .max(balance, 'Not enought coins on your balance!')
+      .test('test less than', `Withdrawal amount above daily limit`, (value: number) =>
+        value <= availableToWithdraw!
+      ),
+    wallet: Yup.string()
+      .required('Wallet is required')
+      .matches(/^0x[a-fA-F0-9]{40}$/g, 'Incorrect wallet'),
   })
   const amountRechargeSchema = Yup.object().shape({
     amountRecharge: Yup.number()
+      .transform((value) => Number.isNaN(value) ? null : value)
       .required("Amount is required")
   })
 
@@ -174,78 +189,89 @@ const Wallet = memo((props: IWalletProps) => {
     switch (mode) {
       case Mode.recharge:
         const dataRecharge = data as amountRecharge
+
         try {
-          if (chain?.id !== bsc.id) {
-            console.error("Selected chain is not supported")
-            break
-          }
+          // if (chain?.id !== bsc.id) {
+          //   console.error("Selected chain is not supported")
+          //   reject(false)
+          // }
 
-          const result = (await deposit(dataRecharge.amountRecharge.toString())).status
-          if (!result) {
-            console.error("Transaction status: unfulfilled")
-            break
-          }
+          // const result = (await deposit(dataRecharge.amountRecharge.toString())).status
+          // if (!result) {
+          //   console.error("Transaction status: unfulfilled")
+          //   reject(false)
+          // }
 
-          await RechargeBalance({
+          await GetURLToPay({
             id: tokenService.getUser().id,
             amount: Number(dataRecharge.amountRecharge),
           })
             .unwrap()
-            .then((response: IWallet) => {
-              dispatch(setBalance(response.balance))
-              tokenService.setBalance(response.balance)
+            .then(response => {
+              console.log(response.urlToPay);
+
+              setUrlToPay(response.urlToPay)
             })
+            .catch((err) => {
+              console.log(err);
+
+              console.log('Error with paypac');
+
+            })
+          // await RechargeBalance({
+          //   id: tokenService.getUser().id,
+          //   amount: Number(dataRecharge.amountRecharge),
+          // })
+          //   .unwrap()
+          //   .then((response: IWallet) => {
+          //     // dispatch(setBalance(response.balance))
+          //     // tokenService.setBalance(response.balance)
+          //     resolve(true)
+          //   })
+          //   .catch(() => {
+          //     reject(false)
+          //   })
         } catch (message) {
           const reason = (message as { message: string })?.message.match(regex)
           console.log("Error while recharge: ", reason)
-          notification(
-            `Error while recharge`,
-            `${reason?.[1] ? reason?.[1] : message}`,
-            "error",
-          )
         }
-
+        // toast.promise(promise, {
+        //   success: { title: 'Success', description: `Your balance was successfully credited (${dataRecharge.amountRecharge} PAC)`, position: "top-right", },
+        //   error: { title: 'Error', description: 'Something wrong', position: "top-right", duration: 2000 },
+        //   loading: { title: 'Pending', description: 'Waiting for transaction confirmation...', position: "top-right", },
+        // })
         break
 
       case Mode.withdraw:
         const dataWithdrawal = data as amountWithdrawal
-
-        try {
-          if (chain?.id !== bsc.id) {
-            console.error("Selected chain is not supported")
-            break
+        let promiseW = new Promise(async (resolve, reject) => {
+          try {
+            await WithdrawBalance({
+              id: tokenService.getUser().id,
+              amount: dataWithdrawal.amountWithdrawal,
+              wallet: dataWithdrawal.wallet
+            })
+              .unwrap()
+              .then((response: IWallet) => {
+                resolve(true)
+                setMode(undefined)
+                amountRechargeReset()
+                amountWithdrawalReset()
+              })
+              .catch((err) => {
+                reject(false)
+              })
+          } catch (message) {
+            const reason = (message as { message: string })?.message.match(regex)
+            console.log("Error while withdraw: ", reason)
+            reject(false)
           }
-
-          // if (!neededAccount()) {
-          //   console.error("Request denied")
-          //   break
-          // }
-
-          const result = (await withdraw(dataWithdrawal.amountWithdrawal.toString())).status
-          if (!result) {
-            console.error("Transaction status: unfulfilled")
-            break
-          }
-
-          // await WithdrawBalance({
-          //   id: tokenService.getUser().id,
-          //   amount: data.amount,
-          // })
-          //   .unwrap()
-          //   .then((response: IWallet) => {
-          //     dispatch(setBalance(response.balance))
-          //     tokenService.setBalance(response.balance)
-          //   })
-          //   .catch((err) => {})
-        } catch (message) {
-          const reason = (message as { message: string })?.message.match(regex)
-          console.log("Error while withdraw: ", reason)
-          notification(
-            `Error while withdraw`,
-            `${reason?.[1] ? reason?.[1] : message}`,
-            "error",
-          )
-        }
+        })
+        toast.promise(promiseW, {
+          success: { title: 'Success', description: `Withdrawal was successfully completed (${Number(dataWithdrawal.amountWithdrawal)} PAC)`, position: "top-right", },
+          error: { title: 'Error', description: 'Something wrong', position: "top-right", duration: 2000 },
+          loading: { title: 'Pending', description: 'Waiting for transaction confirmation...', position: "top-right", },
+        })
 
         break
     }
@@ -311,10 +337,10 @@ const Wallet = memo((props: IWalletProps) => {
     }
   }, [BalanceSuccess])
 
-
-
-
   useEffect(() => {
+    if(!tokenService.getLocalRefreshToken()){
+      navigate("/login")
+    }
     refreshToken(tokenService.getLocalRefreshToken())
       .unwrap()
       .then(async (response) => {
@@ -337,7 +363,13 @@ const Wallet = memo((props: IWalletProps) => {
               break;
             case 'connect':
               socket.send({ type: MessageType.auth, message: tokenService.getUser().id })
-
+              break
+            case 'alert':
+              notification('Success', message.message, 'success')
+              break
+            case 'subscription':
+              notification('Success', message.message, 'success')
+              break
             default:
               break;
           }
@@ -347,7 +379,7 @@ const Wallet = memo((props: IWalletProps) => {
       })
       .catch((err) => {
         console.log(err);
-        // navigate("/login")
+        navigate("/login")
       })
   }, [])
 
@@ -419,6 +451,9 @@ const Wallet = memo((props: IWalletProps) => {
     function handleClickOutside(event: any) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         setIsWalletOpen(prev => !prev)
+        amountRechargeReset()
+        amountWithdrawalReset()
+        setMode(undefined)
       }
     }
     // Bind the event listener
@@ -430,48 +465,52 @@ const Wallet = memo((props: IWalletProps) => {
   }, [wrapperRef]);
 
 
-  return account.isConnected ? (
-    <div className="relative w-full">
+  return <div className="relative w-full">
 
-      {!isWalletOpen ?
-        <button
-          className={`${isWalletOpen ? 'rounded_corner relative rounded-b-none' : 'hover:bg-hoverYellow'} ring-0 flex  flex-row items-center gap-2 px-4 font-orbitron font-extrabold w-full h-full text-customBlack bg-yellow w-36  text-base cursor-pointer rounded-[10px]`}
-          onClick={() => setIsWalletOpen(prev => !prev)}
-        >
-          <div className="flex flex-row justify-center items-center gap-2 w-36">
-            {balance &&
-              <>
-                <img src={walletImage} alt="wallet image" />
-                <span>
-                  {balance} PAC
+    {!isWalletOpen ?
+      <button
+        className={`${isWalletOpen ? 'rounded_corner relative rounded-b-none' : 'hover:bg-hoverYellow'} ring-0 flex  flex-row items-center gap-2 px-4 font-orbitron font-extrabold w-full h-full text-customBlack bg-yellow w-36  text-base cursor-pointer rounded-[10px]`}
+        onClick={() => setIsWalletOpen(prev => !prev)}
+      >
+        <div className="flex flex-row justify-center items-center gap-2 w-36">
+          {balance != undefined &&
+            <>
+              <img src={walletImage} alt="wallet image" />
+              <span>
+                {balance} PAC
 
-                </span>
-              </>
-            }
+              </span>
+            </>
+          }
 
-          </div>
-        </button>
-        :
-        <button
-          className={`${isWalletOpen ? 'rounded_corner relative rounded-b-none' : 'hover:bg-hoverYellow'} ring-0 flex  flex-row items-center gap-2 px-4 font-orbitron font-extrabold w-full h-full text-customBlack bg-yellow w-36  text-base cursor-pointer rounded-[10px]`}
-        >
-          <div className="font-orbitron w-36 text-lg text-customBlack font-extrabold">Your balance</div>
-        </button >
-      }
+        </div>
+      </button>
+      :
+      <button
+        className={`${isWalletOpen ? 'rounded_corner relative rounded-b-none' : 'hover:bg-hoverYellow'} ring-0 flex  flex-row items-center gap-2 px-4 font-orbitron font-extrabold w-full h-full text-customBlack bg-yellow w-36  text-base cursor-pointer rounded-[10px]`}
+      >
+        <div className="font-orbitron w-36 text-lg text-customBlack font-extrabold">Your balance</div>
+      </button >
+    }
 
 
-      {isWalletOpen
-        ?
-        isTouchDevice ?
-          <Modal dismissible show={isWalletOpen} theme={Theme} size="md" onClose={() => setIsWalletOpen(false)} popup className="bg-black opacity-1 bg-opacity-1 rounded-2xl" >
-            <Modal.Header>
+    {isWalletOpen
+      ?
+      isTouchDevice ?
+        <Modal dismissible show={isWalletOpen} theme={Theme} size="md" onClose={() => setIsWalletOpen(false)} popup className="bg-black opacity-1 bg-opacity-1 rounded-2xl" >
+          <Modal.Header>
 
-            </Modal.Header>
-            <Modal.Body className=" bg-lightGray text-white font-orbitron ">
-              <div className="wallet_container bg-gameLeftToRightShards bg-no-repeat bg-left-top absolute top-[3rem] right-0 w-96 bg-yellow flex flex-col items-end gap-4 p-5 rounded-[20px]">
-                <img className="max-w-[62px]" src={walletPacLogo} alt="Wallet pac logo" />
-                <div className="font-orbitron text-lg text-customBlack font-extrabold">Your balance</div>
-                <div className="font-orbitron text-xl text-customBlack font-extrabold">{balance} PAC</div>
+          </Modal.Header>
+          <Modal.Body className=" bg-lightGray text-white font-orbitron ">
+            <div className="wallet_container bg-gameLeftToRightShards bg-no-repeat bg-left-top absolute top-[3rem] right-0 lg:md:w-96 w-full bg-yellow flex flex-col items-end gap-4 p-5 rounded-[20px]">
+              <img className="max-w-[62px]" src={walletPacLogo} alt="Wallet pac logo" />
+              <div className="font-orbitron text-lg text-customBlack font-extrabold">Your balance</div>
+              <div className="font-orbitron text-xl text-customBlack font-extrabold">{balance} PAC</div>
+              {canIWithdrawLoading ?
+                <div className="w-full h-full flex justify-center items-center">
+                  <Loader text_color="text-black" />
+                </div>
+                :
                 <div className="flex flex-row w-full gap-4">
                   {
                     mode === Mode.withdraw &&
@@ -480,7 +519,7 @@ const Wallet = memo((props: IWalletProps) => {
                       className={` flex-col text-white ${wallet ? "flex" : "hidden"
                         } mx-auto my-auto w-full gap-2`}
                     >
-                      <div className={`form-group flex-col ${mode ? "flex" : "hidden"} items-end`}>
+                      <div className={`form-group flex-col ${mode ? "flex" : "hidden"} items-end `}>
                         <>
 
                           <label className="text-sm font-bold text-black float-right ">
@@ -496,10 +535,22 @@ const Wallet = memo((props: IWalletProps) => {
                               className={`form-control focus:ring-0 border-0 focus:outline-none text-white ${amountWithdrawalErrors.amountWithdrawal ? "is-invalid" : ""} bg-customBlack p-1 border-none focus:outline-none text-end`}
                               placeholder="Amount"
                             />
-
                           </div>
                           <div className="invalid-feedback text-red-500 text-sm">
                             {amountWithdrawalErrors.amountWithdrawal?.message}
+                          </div>
+                          <div className={`form-control ${amountWithdrawalErrors.wallet ? "is-invalid border-red-500" : ""} border-2 border-black bg-customBlack w-full px-1 rounded-lg flex flex-row items-center mt-1 justify-between`} >
+                            <span className="cursor-pointer text-white text-sm">Wallet</span>
+                            <input
+                              {...amountWithdrawalRegister("wallet")}
+                              type="text"
+                              className={`form-control focus:ring-0 border-0 focus:outline-none text-white ${amountWithdrawalErrors.wallet ? "is-invalid" : ""} bg-customBlack p-1 border-none focus:outline-none text-end`}
+                              placeholder="Wallet"
+                            />
+
+                          </div>
+                          <div className="invalid-feedback text-red-500 text-sm">
+                            {amountWithdrawalErrors.wallet?.message}
                           </div>
                           <>
                             <span className="text-black text-center font-bold w-full">
@@ -519,21 +570,14 @@ const Wallet = memo((props: IWalletProps) => {
                         >
                           Cancel
                         </button>
-                        {needToSwitch ? (
-                          <button
-                            className="bg-black p-2 w-full border-black text-sm text-white font-bold"
-                            onClick={() => changeChain(bsc.id)}
-                          >
-                            Switch
-                          </button>
-                        ) : (
-                          <button
-                            type="submit"
-                            className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover"
-                          >
-                            {Mode.withdraw}
-                          </button>
-                        )}
+
+                        <button
+                          type="submit"
+                          disabled={WithdrawLoading}
+                          className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover disabled:opacity-30"
+                        >
+                          {Mode.withdraw}
+                        </button>
                       </div>
                     </form>
                   }
@@ -544,46 +588,50 @@ const Wallet = memo((props: IWalletProps) => {
                       className={` flex-col text-white ${wallet ? "flex" : "hidden"
                         } mx-auto my-auto w-full gap-2`}
                     >
-                      <div className={`form-group flex-col ${mode ? "flex" : "hidden"} items-end`}>
+                      {URLLoading && <Loader text_color="text-black" />}
+                      {urlToPay &&
+                        <div className={`form-group flex-col ${mode ? "flex" : "hidden"} items-end`}>
+                          <a href={urlToPay} target='_blank' className="text-black text-center w-full text-2xl hover:underline p-3 bg-customBlack text-white rounded-2xl">Go to payment</a>
+                        </div>
+                      }
+                      {
+                        URLUnInitialized &&
                         <>
-                          <div className={`form-control ${amountRechargeErrors.amountRecharge ? "is-invalid border-red-500" : ""} border-2 border-black bg-customBlack w-full px-1 rounded-lg flex flex-row items-center justify-between`} >
-                            <span className="cursor-pointer text-white text-sm">PAC</span>
-                            <input
-                              {...amountRechargeRegister("amountRecharge")}
-                              type="number"
-                              className={`form-control focus:ring-0 border-0 focus:outline-none text-white ${amountRechargeErrors.amountRecharge ? "is-invalid" : ""} bg-customBlack p-1 border-none focus:outline-none text-end`}
-                              placeholder="Amount"
-                            />
+                          <div className={`form-group flex-col ${mode ? "flex" : "hidden"} items-end`}>
+                            <>
+                              <div className={`form-control ${amountRechargeErrors.amountRecharge ? "is-invalid border-red-500" : ""} border-2 border-black bg-customBlack w-full px-1 rounded-lg flex flex-row items-center justify-between`} >
+                                <span className="cursor-pointer text-white text-sm">PAC</span>
+                                <input
+                                  {...amountRechargeRegister("amountRecharge")}
+                                  type="number"
+                                  className={`form-control focus:ring-0 border-0 focus:outline-none text-white ${amountRechargeErrors.amountRecharge ? "is-invalid" : ""} bg-customBlack p-1 border-none focus:outline-none text-end`}
+                                  placeholder="Amount"
+                                />
 
+                              </div>
+                              <div className="invalid-feedback text-red-500 text-sm">
+                                {amountRechargeErrors.amountRecharge?.message}
+                              </div>
+                            </>
                           </div>
-                          <div className="invalid-feedback text-red-500 text-sm">
-                            {amountRechargeErrors.amountRecharge?.message}
+                          <div className="flex flex-row  gap-2">
+                            <button
+                              className="w-full bg-lightGray py-2 text-white rounded-lg hover:bg-lightGrayHover"
+                              onClick={() => setMode(undefined)}
+                            >
+                              Cancel
+                            </button>
+
+                            <button
+                              type="submit"
+
+                              className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover"
+                            >
+                              {Mode.recharge}
+                            </button>
                           </div>
                         </>
-                      </div>
-                      <div className="flex flex-row  gap-2">
-                        <button
-                          className="w-full bg-lightGray py-2 text-white rounded-lg hover:bg-lightGrayHover"
-                          onClick={() => setMode(undefined)}
-                        >
-                          Cancel
-                        </button>
-                        {needToSwitch ? (
-                          <button
-                            className="bg-black p-2 w-full border-black text-sm text-white font-bold"
-                            onClick={() => changeChain(bsc.id)}
-                          >
-                            Switch
-                          </button>
-                        ) : (
-                          <button
-                            type="submit"
-                            className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover"
-                          >
-                            {Mode.recharge}
-                          </button>
-                        )}
-                      </div>
+                      }
                     </form>
                   }
                   {
@@ -591,189 +639,7 @@ const Wallet = memo((props: IWalletProps) => {
                     <div
                       className={`form-group w-full flex flex-row justify-between gap-2`}
                     >
-                      {needToSwitch ? (
-                        <button
-                          className="bg-black p-2 w-full border-black text-sm text-white font-bold"
-                          onClick={() => changeChain(bsc.id)}
-                        >
-                          Switch
-                        </button>
-                      ) : (
-                        <>
 
-                          <button
-                            className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover"
-                            onClick={() => {
-                              amountRechargeReset()
-                              amountWithdrawalReset()
-                              setMode(Mode.recharge)
-                            }}
-                          >
-                            {Mode.recharge}
-                          </button>
-                          <button
-                            className={"w-full bg-lightGray py-2 text-white rounded-lg hover:bg-lightGrayHover"}
-                            onClick={async () => {
-                              amountRechargeReset()
-                              amountWithdrawalReset()
-                              setMode(Mode.withdraw)
-                              await canIWithdraw({ id: tokenService?.getUser().id })
-                                .unwrap()
-                                .then(res => {
-
-                                  setAvailableToWithdraw(res.AvailableToWithdraw)
-                                  setCommision(res.commision)
-                                })
-                            }}
-                          >
-                            {Mode.withdraw}
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  }
-                </div>
-
-
-              </div>
-            </Modal.Body>
-          </Modal>
-          :
-          <div ref={wrapperRef} className="wallet_container bg-gameLeftToRightShards bg-no-repeat bg-left-top absolute top-[3rem] right-0 w-96 bg-yellow flex flex-col items-end gap-4 p-5 rounded-[20px] rounded-tr-none">
-            <img className="max-w-[62px]" src={walletPacLogo} alt="Wallet pac logo" />
-            <div className="font-orbitron text-xl text-customBlack font-extrabold">{balance} PAC</div>
-            {canIWithdrawLoading ?
-              <div className="w-full h-full flex justify-center items-center">
-                <Loader text_color="text-black" />
-              </div>
-              :
-              <div className="flex flex-row w-full gap-4">
-                {
-                  mode === Mode.withdraw &&
-                  <form
-                    onSubmit={amountWithdrawalHandleSumbit(onSubmit)}
-                    className={` flex-col text-white ${wallet ? "flex" : "hidden"
-                      } mx-auto my-auto w-full gap-2`}
-                  >
-                    <div className={`form-group flex-col ${mode ? "flex" : "hidden"} items-end`}>
-                      <>
-
-                        <label className="text-sm font-bold text-black float-right ">
-                          Available to withdraw: <b className="text-black text-base">{availableToWithdraw}</b>
-                        </label>
-
-                        <div className={`form-control ${amountWithdrawalErrors.amountWithdrawal ? "is-invalid border-red-500" : ""} border-2 border-black bg-customBlack w-full px-1 rounded-lg flex flex-row items-center justify-between`} >
-                          <span className="cursor-pointer text-white text-sm">PAC</span>
-
-                          <input
-                            {...amountWithdrawalRegister("amountWithdrawal")}
-                            type="number"
-                            className={`form-control focus:ring-0 border-0 focus:outline-none text-white ${amountWithdrawalErrors.amountWithdrawal ? "is-invalid" : ""} bg-customBlack p-1 border-none focus:outline-none text-end`}
-                            placeholder="Amount"
-                          />
-
-                        </div>
-                        <div className="invalid-feedback text-red-500 text-sm">
-                          {amountWithdrawalErrors.amountWithdrawal?.message}
-                        </div>
-                        <>
-                          <span className="text-black text-center font-bold w-full">
-                            Withdrawal fee = {commission}%
-                          </span>
-                          <span className="text-sm text-black text-center opacity-2/3">
-                            Withdrawals may take a long time, please wait at least 30 minutes
-                          </span>
-
-                        </>
-                      </>
-                    </div>
-                    <div className="flex flex-row  gap-2">
-                      <button
-                        className="w-full bg-lightGray py-2 text-white rounded-lg hover:bg-lightGrayHover"
-                        onClick={() => setMode(undefined)}
-                      >
-                        Cancel
-                      </button>
-                      {needToSwitch ? (
-                        <button
-                          className="bg-black p-2 w-full border-black text-sm text-white font-bold"
-                          onClick={() => changeChain(bsc.id)}
-                        >
-                          Switch
-                        </button>
-                      ) : (
-                        <button
-                          type="submit"
-                          className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover"
-                        >
-                          {Mode.withdraw}
-                        </button>
-                      )}
-                    </div>
-                  </form>
-                }
-                {
-                  mode === Mode.recharge &&
-                  <form
-                    onSubmit={amountRechargeHandleSubmit(onSubmit)}
-                    className={` flex-col text-white ${wallet ? "flex" : "hidden"
-                      } mx-auto my-auto w-full gap-2`}
-                  >
-                    <div className={`form-group flex-col ${mode ? "flex" : "hidden"} items-end`}>
-                      <>
-                        <div className={`form-control ${amountRechargeErrors.amountRecharge ? "is-invalid border-red-500" : ""} border-2 border-black bg-customBlack w-full px-1 rounded-lg flex flex-row items-center justify-between`} >
-                          <span className="cursor-pointer text-white text-sm">PAC</span>
-                          <input
-                            {...amountRechargeRegister("amountRecharge")}
-                            type="number"
-                            className={`form-control focus:ring-0 border-0 focus:outline-none text-white ${amountRechargeErrors.amountRecharge ? "is-invalid" : ""} bg-customBlack p-1 border-none focus:outline-none text-end`}
-                            placeholder="Amount"
-                          />
-
-                        </div>
-                        <div className="invalid-feedback text-red-500 text-sm">
-                          {amountRechargeErrors.amountRecharge?.message}
-                        </div>
-                      </>
-                    </div>
-                    <div className="flex flex-row  gap-2">
-                      <button
-                        className="w-full bg-lightGray py-2 text-white rounded-lg hover:bg-lightGrayHover"
-                        onClick={() => setMode(undefined)}
-                      >
-                        Cancel
-                      </button>
-                      {needToSwitch ? (
-                        <button
-                          className="bg-black p-2 w-full border-black text-sm text-white font-bold"
-                          onClick={() => changeChain(bsc.id)}
-                        >
-                          Switch
-                        </button>
-                      ) : (
-                        <button
-                          type="submit"
-                          className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover"
-                        >
-                          {Mode.recharge}
-                        </button>
-                      )}
-                    </div>
-                  </form>
-                }
-                {
-                  mode === undefined &&
-                  <div
-                    className={`form-group w-full flex flex-row justify-between gap-2`}
-                  >
-                    {needToSwitch ? (
-                      <button
-                        className="bg-black p-2 w-full border-black text-sm text-white font-bold"
-                        onClick={() => changeChain(bsc.id)}
-                      >
-                        Switch
-                      </button>
-                    ) : (
                       <>
 
                         <button
@@ -804,67 +670,195 @@ const Wallet = memo((props: IWalletProps) => {
                           {Mode.withdraw}
                         </button>
                       </>
-                    )}
+                    </div>
+                  }
+                </div>
+
+              }
+
+
+            </div>
+          </Modal.Body>
+        </Modal>
+        :
+        <div ref={wrapperRef} className="wallet_container bg-gameLeftToRightShards bg-no-repeat bg-left-top absolute top-[3rem] right-0 w-96 bg-yellow flex flex-col items-end gap-4 p-5 rounded-[20px] rounded-tr-none">
+          <img className="max-w-[62px]" src={walletPacLogo} alt="Wallet pac logo" />
+          <div className="font-orbitron text-xl text-customBlack font-extrabold">{balance} PAC</div>
+          {canIWithdrawLoading ?
+            <div className="w-full h-full flex justify-center items-center">
+              <Loader text_color="text-black" />
+            </div>
+            :
+            <div className="flex flex-row w-full gap-4">
+              {
+                mode === Mode.withdraw &&
+                <form
+                  onSubmit={amountWithdrawalHandleSumbit(onSubmit)}
+                  className={` flex-col text-white flex mx-auto my-auto w-full gap-2`}
+                >
+                  <div className={`form-group flex-col flex items-end `}>
+                    <>
+
+                      <label className="text-sm font-bold text-black float-right ">
+                        Available to withdraw: <b className="text-black text-base">{availableToWithdraw}</b>
+                      </label>
+
+                      <div className={`form-control ${amountWithdrawalErrors.amountWithdrawal ? "is-invalid border-red-500" : ""} border-2 border-black bg-customBlack w-full px-1 rounded-lg flex flex-row items-center justify-between`} >
+                        <span className="cursor-pointer text-white text-sm">PAC</span>
+
+                        <input
+                          {...amountWithdrawalRegister("amountWithdrawal")}
+                          type="number"
+                          className={`form-control focus:ring-0 border-0 focus:outline-none text-white ${amountWithdrawalErrors.amountWithdrawal ? "is-invalid" : ""} bg-customBlack p-1 border-none focus:outline-none text-end`}
+                          placeholder="Amount"
+                        />
+                      </div>
+                      <div className="invalid-feedback text-red-500 text-sm">
+                        {amountWithdrawalErrors.amountWithdrawal?.message}
+                      </div>
+                      <div className={`form-control ${amountWithdrawalErrors.wallet ? "is-invalid border-red-500" : ""} border-2 border-black bg-customBlack w-full px-1 rounded-lg flex flex-row items-center mt-1 justify-between`} >
+                        <span className="cursor-pointer text-white text-sm">Wallet</span>
+                        <input
+                          {...amountWithdrawalRegister("wallet")}
+                          type="text"
+                          className={`form-control focus:ring-0 border-0 focus:outline-none text-white ${amountWithdrawalErrors.wallet ? "is-invalid" : ""} bg-customBlack p-1 border-none focus:outline-none text-end`}
+                          placeholder="Wallet"
+                        />
+
+                      </div>
+                      <div className="invalid-feedback text-red-500 text-sm">
+                        {amountWithdrawalErrors.wallet?.message}
+                      </div>
+                      <>
+                        <span className="text-black text-center font-bold w-full">
+                          Withdrawal fee = {commission}%
+                        </span>
+                        <span className="text-sm text-black text-center opacity-2/3">
+                          Withdrawals may take a long time, please wait at least 30 minutes
+                        </span>
+
+                      </>
+                    </>
                   </div>
-                }
+                  <div className="flex flex-row  gap-2">
+                    <button
+                      className="w-full bg-lightGray py-2 text-white rounded-lg hover:bg-lightGrayHover"
+                      onClick={() => setMode(undefined)}
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      disabled={WithdrawLoading}
+                      className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover disabled:opacity-30"
+                    >
+                      {Mode.withdraw}
+                    </button>
+                  </div>
+                </form>
+              }
+              {
+                mode === Mode.recharge &&
+                <form
+                  onSubmit={amountRechargeHandleSubmit(onSubmit)}
+                  className={` flex-col text-white flex mx-auto my-auto w-full gap-2`}
+                >
+                  {URLLoading && <Loader text_color="text-black" />}
+                  {urlToPay &&
+                    <div className={`form-group flex-col ${mode ? "flex" : "hidden"} items-end`}>
+                      <a href={urlToPay} target='_blank' className="text-black text-center w-full text-2xl hover:underline p-3 bg-customBlack text-white rounded-2xl">Go to payment</a>
+                    </div>
+                  }
+                  {
+                    URLUnInitialized &&
+                    <>
+                      <div className={`form-group flex-col ${mode ? "flex" : "hidden"} items-end`}>
+                        <>
+                          <div className={`form-control ${amountRechargeErrors.amountRecharge ? "is-invalid border-red-500" : ""} border-2 border-black bg-customBlack w-full px-1 rounded-lg flex flex-row items-center justify-between`} >
+                            <span className="cursor-pointer text-white text-sm">PAC</span>
+                            <input
+                              {...amountRechargeRegister("amountRecharge")}
+                              type="number"
+                              className={`form-control focus:ring-0 border-0 focus:outline-none text-white ${amountRechargeErrors.amountRecharge ? "is-invalid" : ""} bg-customBlack p-1 border-none focus:outline-none text-end`}
+                              placeholder="Amount"
+                            />
+
+                          </div>
+                          <div className="invalid-feedback text-red-500 text-sm">
+                            {amountRechargeErrors.amountRecharge?.message}
+                          </div>
+                        </>
+                      </div>
+                      <div className="flex flex-row  gap-2">
+                        <button
+                          className="w-full bg-lightGray py-2 text-white rounded-lg hover:bg-lightGrayHover"
+                          onClick={() => setMode(undefined)}
+                        >
+                          Cancel
+                        </button>
+
+                        <button
+                          type="submit"
+
+                          className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover"
+                        >
+                          {Mode.recharge}
+                        </button>
+                      </div>
+                    </>
+                  }
+                </form>
+              }
+              {
+                mode === undefined &&
+                <div
+                  className={`form-group w-full flex flex-row justify-between gap-2`}
+                >
+
+                  <>
+
+                    <button
+                      className="w-full bg-customBlack py-2 text-yellow rounded-lg hover:bg-customBlackHover"
+                      onClick={() => {
+                        amountRechargeReset()
+                        amountWithdrawalReset()
+                        setMode(Mode.recharge)
+                      }}
+                    >
+                      {Mode.recharge}
+                    </button>
+                    <button
+                      className={"w-full bg-lightGray py-2 text-white rounded-lg hover:bg-lightGrayHover"}
+                      onClick={async () => {
+                        setMode(Mode.withdraw)
+                        amountRechargeReset()
+                        amountWithdrawalReset()
+                        await canIWithdraw({ id: tokenService?.getUser().id, subscription_id: tokenService?.getUser().subscribe })
+                          .unwrap()
+                          .then(res => {
+
+                            setAvailableToWithdraw(res.AvailableToWithdraw)
+                            setCommision(res.commision)
+                          })
+                      }}
+                    >
+                      {Mode.withdraw}
+                    </button>
+                  </>
+                </div>
+              }
 
 
-              </div>
-
-            }
+            </div>
 
 
-          </div >
-        : ''}
-    </div >
-  ) : (
-    <div className="max-[920px]:w-full">
-      {account.isConnected ? (
-        <button
-          className="text-xl text-black font-bold bg-yellow p-3 flex-col flex gap-5 w-full items-center text-center"
-          onClick={() => handleDisConnectWallet()}
-        >
-          {isLoading && <Loader />}
-          Disconnect wallet
-        </button>
-      ) : (
-        // <Button 
-        //     content="Connect wallet" 
-        //     buttonStyle="yellow"
-        //     type="submit"
+          }
 
-        //     fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
-        //     padding="py-2 px-3"
-        //     textColor="text-customBlack" 
-        //     rounded="rounded-[8px]" 
-        //     maxSizes="min-h-[48px] max-[600px]:min-h-[44px]"
 
-        //     loading={`${isLoading && 'true'}`}//true 
-        //     // loading=""//true 
-        //     disabled="" //disabled
+        </div >
+      : ''}
+  </div >
 
-        //     onClick={() => handleConnectWallet()}
-        //     >
-        // </Button>
-
-        <>
-          {/* {useIsTouchDevice() ?
-            <ConnectButtonMobile />
-            : */}
-          <button
-            className={`yellow_btn px-4 ${props.padding} text-base rounded-[10px] max-[920px]:text-[16px]`}
-            onClick={() => handleConnectWallet()}
-          >
-            {isLoading && <Loader />}
-            Connect wallet
-          </button>
-          {/* } */}
-        </>
-      )
-      }
-    </div >
-
-  )
 })
-
 export default Wallet

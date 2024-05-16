@@ -7,11 +7,11 @@ export default defineConfig({
   server: {
     origin: 'https://pacgc.pw',
     // origin: 'https://dev.pacgc.pw',
-    port: 4173,
+    port: 5173,
     strictPort: true,
     hmr: {
       host: "localhost",
-      port: 4173,
+      port: 5173,
       protocol: "ws",
     },
   },

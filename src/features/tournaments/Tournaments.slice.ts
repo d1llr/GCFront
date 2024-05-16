@@ -22,7 +22,7 @@ export const GetTournaments = createApi({
                 headers: authHeader()
             }),
         }),
-        GetTournamentsByFilters: builder.mutation<any, string[]>({
+        GetTournamentsByFilters: builder.mutation<any, IFilters>({
             query: (body) => ({
                 url: `/api/tournaments/getTournamentsByFilters`,
                 headers: authHeader(),

@@ -4,6 +4,7 @@ import {
   usePrepareSendTransaction,
   useSendTransaction,
   useWaitForTransaction,
+  useConnect,
 } from "wagmi"
 import { utils } from "ethers"
 import { changeChain } from "../../header/wallet/meta/chainHelper"
@@ -12,6 +13,8 @@ import { useToast } from "@chakra-ui/react"
 import Loader from "../../../helpers/Loader"
 import { NavLink, useNavigate } from "react-router-dom"
 import { HashLink } from 'react-router-hash-link';
+import { MetaMaskConnector } from "wagmi/connectors/metaMask"
+import { bsc } from "@wagmi/core/chains"
 
 
 interface ButtonProps {
@@ -37,6 +40,13 @@ const TournamentBtn: FC<ButtonProps> = ({
   const { chain } = useNetwork()
   const { isDisconnected } = useAccount()
   const toast = useToast()
+  const account = useAccount({
+    onConnect({ address, connector, isReconnected }) {
+      console.log("Connected", { address, connector, isReconnected })
+    },
+  })
+
+  const { connectAsync } = useConnect()
 
   const { config } = usePrepareSendTransaction({
     request: {
@@ -104,22 +114,63 @@ const TournamentBtn: FC<ButtonProps> = ({
     }
   }, [txError])
 
-  if (tournamentChainId !== chain?.id) {
+
+  async function handleConnectWallet(): Promise<void> {
+    try {
+      // connect logic
+      await changeChain(bsc.id)
+
+      const { account: accountAddress, chain: metamaskChain } =
+        await connectAsync({
+          connector: new MetaMaskConnector(),
+        })
+      const userData = { address: accountAddress, chainId: metamaskChain.id }
+
+      // DB logic
+      // await connectWallet({
+      //   id: tokenService.getUser().id,
+      //   wallet: accountAddress,
+      // })
+      //   .then((response) => {
+      //     tokenService.setWallet(accountAddress)
+      //     dispatch(setWallet(accountAddress))
+      //   })
+      //   .catch((error) => {
+      //     console.log(error)
+      //   })
+
+      console.log("User data: ", userData)
+    } catch (e) {
+      let error = (e as { message: string })?.message
+      console.error("Error while disconnect: ", error)
+
+      if (
+        error.includes("No crypto wallet found") ||
+        error.includes("Connector not found")
+      ) {
+        window.open("https://metamask.io/", "_blank")
+      }
+    }
+  }
+
+  if (tournamentChainId != chain?.id) {
     return (
       <button
-        className="text-center max-w-20 bg-yellow text-black w-1/2 p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-al  disabled:opacity-30"
-        onClick={() => changeChain(tournamentChainId)}
-        disabled={!isDisconnected}
+        className="text-center max-w-20 bg-yellow text-black w-1/2 p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-all"
+        onClick={async () => {
+          await handleConnectWallet()
+          await changeChain(tournamentChainId)
+        }}
       >
-        {`Participate`}
+        {`Connect wallet`}
       </button>
     )
   }
 
   return (
     <button
-      className="text-center bg-yellow text-black w-full p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-al  disabled:opacity-30"
-      onClick={() => sendTransaction?.()}
+    className="text-center max-w-20 bg-yellow text-black w-1/2 p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-all"
+    onClick={() => sendTransaction?.()}
       disabled={!sendTransaction || isDisconnected}
     >
       {

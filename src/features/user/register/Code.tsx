@@ -267,20 +267,20 @@ const Code = (props: { userProps: UserSubmitForm }) => {
 
 
                         <div className="form-group mt-2">
-                        <Button 
-                                content="Check code" 
+                            <Button
                                 buttonStyle="yellow"
                                 type="button"
                                 onClick={() => onSubmit()}
-                                fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]" 
+                                fontSize="text-[18px] leading-[22px] max-[920px]:text-[16px] max-[920px]:leading-[20px]"
                                 padding="py-2"
-                                textColor="text-customBlack" 
-                                rounded="rounded-[8px]" 
-                                
+                                textColor="text-customBlack"
+                                rounded="rounded-[8px]"
+
                                 loading={`${CheckCodeLoading && 'true'}`}//true 
                                 // loading="true"//true 
                                 disabled="" //disabled
-                                >
+                            >
+                                Check code
                             </Button>
                         </div>
                     </form>
