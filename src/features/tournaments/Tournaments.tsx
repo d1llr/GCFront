@@ -37,7 +37,7 @@ const Tournaments = () => {
     const [filter, setFilter] = useState<string[]>()
     const navigate = useNavigate();
 
-    const [activeFilters, setActiveFilters] = useState<string[]>([])
+    const [activeFilters, setActiveFilters] = useState<string[] | undefined>([])
 
 
     const [tournamentsRefsArray] = useState(() =>
@@ -118,7 +118,7 @@ const Tournaments = () => {
                         <div className="flex flex-row gap-3 flex-wrap max-[920px]:gap-2">
                             {
                                 filter?.length > 2 && filter?.map(item => {
-                                    return <button className={`filter_btn ${activeFilters == item ? 'active' : ""}`} onClick={(e) => activeFilters == item ? setActiveFilters(undefined) : setActiveFilters(item)}
+                                    return <button className={`filter_btn ${activeFilters?.includes(item) ? 'active' : ""}`} onClick={(e) => activeFilters?.includes(item) ? setActiveFilters(undefined) : setActiveFilters([...activeFilters as [], item])}
                                         data-field={item}>
                                         {symbols.hasOwnProperty(item)
                                             ? symbols[item as keyof typeof symbols]

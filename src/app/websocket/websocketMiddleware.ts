@@ -1,6 +1,6 @@
-import { Socket } from "./Socket";
+import { IMessage, Socket } from "./Socket";
 
-export const socketMiddleware = (socket: Socket) => (params) => (next) => (action: string) => {
+export const socketMiddleware = (socket: Socket) => (params: { dispatch: any; getState: any; }) => (next: (arg0: any) => any) => (action: { type: string }) => {
   const { dispatch, getState } = params
   const { type } = action
 

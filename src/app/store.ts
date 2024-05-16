@@ -25,7 +25,8 @@ export const store = configureStore({
     GetTournamentById: GetTournamentById.reducer,
     WalletActions: WalletActions.reducer,
     websocket: websocketReducer,
-    mobBurger:mobBurger.reducer 
+    mobBurger:mobBurger.reducer,
+    counterReducer: counterReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(

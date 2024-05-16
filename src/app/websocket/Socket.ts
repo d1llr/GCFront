@@ -5,7 +5,7 @@ export enum MessageType {
 }
 
 
-interface IMessage {
+export interface IMessage {
     type: MessageType,
     message: string
 }

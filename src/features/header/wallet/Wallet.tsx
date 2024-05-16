@@ -336,7 +336,7 @@ const Wallet = memo((props: IWalletProps) => {
               tokenService.setBalance(message.message)
               break;
             case 'connect':
-              socket.send({ type: 'auth', message: tokenService.getUser().id })
+              socket.send({ type: MessageType.auth, message: tokenService.getUser().id })
 
             default:
               break;

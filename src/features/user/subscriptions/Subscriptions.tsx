@@ -10,6 +10,7 @@ import Loader from '../../../helpers/Loader'
 import { isApiError, isApiResponse } from '../../../helpers/isApiResponse'
 import { useToast } from '@chakra-ui/react'
 import { dateFormat } from '../User'
+import { Ref } from 'react-hook-form'
 
 const Subscriptions = () => {
     const toast = useToast()
@@ -22,7 +23,7 @@ const Subscriptions = () => {
     const [openModalRestoreSubs, setOpenModalRestoreSubs] = useState(false);
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [currentSub, setCurrentSub] = useState<ISubs>()
-    const autoRenewalCheckBox = createRef() as LegacyRef<HTMLInputElement>
+    const autoRenewalCheckBox = createRef() as RefObject<HTMLInputElement>
 
     const onSubmit = async (subId: number) => {
         await changeUserSubscription({
