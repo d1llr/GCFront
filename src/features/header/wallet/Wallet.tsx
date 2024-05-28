@@ -254,6 +254,8 @@ const Wallet = memo((props: IWalletProps) => {
   async function handleConnectWallet(): Promise<void> {
     try {
       // connect logic
+      console.log(bsc);
+      
       await changeChain(bsc.id)
 
       if (account.isConnected) {
@@ -336,7 +338,7 @@ const Wallet = memo((props: IWalletProps) => {
               tokenService.setBalance(message.message)
               break;
             case 'connect':
-              socket.send({ type: 'auth', message: tokenService.getUser().id })
+              socket.send({ type: MessageType.auth, message: tokenService.getUser().id })
 
             default:
               break;

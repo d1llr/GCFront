@@ -44,7 +44,7 @@ const Button = (props: IButtonProps) => {
 
 
     return (
-
+//fit
         <div className={`w-full ${props.loading == "true" && `${props.rounded} p-[1px] button_loading`}`}>
             <button disabled={Boolean(props.disabled)} onClick={props.onClick}  className={`${styles}`} type={props.type}>
                 {props.children}

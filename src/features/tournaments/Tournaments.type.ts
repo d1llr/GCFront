@@ -47,10 +47,7 @@ export interface IRating { username: string, earned: number, games_count: number
 
 
 export type IFilters = {
-    [index: string]: {
-        chainID: string,
-        game_name: string
-    }
-} & {
-    type: string
+    chainID: string[]
+    game_name: string[]
+    type: string[]
 }

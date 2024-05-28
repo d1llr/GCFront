@@ -10,6 +10,11 @@ import Loader from "../../../helpers/Loader"
 import Page404 from "../../../helpers/Page404"
 import TournamentBtn, { symbols } from "./TournamentBtn"
 import { HashLink } from "react-router-hash-link"
+import aboutIcon from "../../../images/icons/about-octa.svg"
+import Button from "../../../helpers/Button"
+import { useGetAllGamesQuery } from "../../games/Games.slice"
+import { useEffect, useState } from "react"
+import IGames from "../../games/Games.type"
 
 const Tournament = () => {
   let params = useParams()
@@ -17,9 +22,9 @@ const Tournament = () => {
   const [getParticipate] = useGetParticipateMutation()
 
   const { data, isLoading, isError, error, refetch, isSuccess } = useGetTournamentByIdQuery(params.tournamentId)
-  // console.log(data?.players?.split(','));
+  const { data: gamesData, isLoading: gameDataLoading } = useGetAllGamesQuery();
 
-  if (isLoading) {
+  if (isLoading || gameDataLoading) {
     return <Loader />
   }
 
@@ -43,6 +48,11 @@ const Tournament = () => {
     return res.toDateString()
   }
 
+  function gameInfo() {
+    const game = gamesData?.find(game => game.code === data?.game);
+    navigate(`/games/${game?.id}`)
+  }
+
   return data && (
     <div className="background-image-yellow">
       <div className="wrapper-content">
@@ -57,7 +67,14 @@ const Tournament = () => {
               <span className="text-white text-2xl font-bold">
                 {data?.cost}
               </span>
-            </div>
+            </div> 
+            {data?.chainID === "800001" &&
+            <a href="https://octa.space/" target="_blank">
+                <button className="w-fit flex text-center bg-customBlack font-orbitron font-bold transition-all duration-300 disabled:text-textGray disabled:bg-[rgb(27, 27, 27)] rounded-lg hover:bg-lighterGray hover:transition-all hover:duration-300 text-white items-center gap-4 ">
+                    <p className="h-fit">About OCTA</p>
+                    <img src={aboutIcon} alt="about" />
+                </button>                           
+            </a>}
             <div className="flex lg:md:flex-row gap-2 lg:md:w-1/2 flex-col">
               {
                 data?.players?.split(',').includes(tokenService.getUser()?.id.toString())
@@ -70,30 +87,42 @@ const Tournament = () => {
                     Players rating
                   </HashLink>
                   :
-                  <TournamentBtn
-                    transferTo={data?.address}
-                    tournamentChainId={Number(data?.chainID)}
-                    // amount={data?.cost.toString()}
-                    amount={data?.cost.toString()}
+                  <>
+                    <TournamentBtn
+                      transferTo={data?.address}
+                      tournamentChainId={Number(data?.chainID)}
+                      // amount={data?.cost.toString()}
+                      amount={data?.cost.toString()}
 
-                    // transferTo={"0x63b3B5a9113D5e3e9cF50c2Ab619d89e8d8D7DA9"} // TODO: integrate address for each tournament
-                    // tournamentChainId={800001} // TODO: integrate chainId of current tournament for each tournament (chain)
-                    // amount={"5"} // TODO: change on `data?.cost.toString()`
-                    postRequest={() =>
-                      // post request
-                      getParticipate({
-                        user_id: tokenService.getUser()?.id,
-                        tournament_id: data?.id || "0",
-                      })
-                        .then((response: any) => {
-                          console.log(response)
-                          refetch()
+                      // transferTo={"0x63b3B5a9113D5e3e9cF50c2Ab619d89e8d8D7DA9"} // TODO: integrate address for each tournament
+                      // tournamentChainId={800001} // TODO: integrate chainId of current tournament for each tournament (chain)
+                      // amount={"5"} // TODO: change on `data?.cost.toString()`
+                      postRequest={() =>
+                        // post request
+                        getParticipate({
+                          user_id: tokenService.getUser()?.id,
+                          tournament_id: data?.id || "0",
                         })
-                        .catch((error: any) => {
-                          console.log(error)
-                        })
-                    }
-                  />
+                          .then((response: any) => {
+                            console.log(response)
+                            refetch()
+                          })
+                          .catch((error: any) => {
+                            console.log(error)
+                          })
+                      }
+                    />
+
+                    {/* <div className={`w-[384px] p-[1px] max-w-96 `}> */}
+                    {/* <a href="" target="_blank" className="w-full md:max-w-[384px] h-[60px]"> */}
+                      <button onClick={gameInfo} className=" w-full h-[60px] xl:h-auto max-w-none md:max-h-[78px] xl:max-w-[384px] font-semibold border-none font-orbitron text-center transition-all duration-300 hover:transition-all hover:duration-300 text-[#FFF100] bg-[#272727] rounded-xl">
+                          Details about the game
+                      </button>                        
+                    {/* </a> */}
+                    
+                    {/* </div> */}
+
+                  </>
               }
 
               {/* <button disabled className={`${data?.players?.split(',').includes(tokenService.getUser()?.id.toString()) && 'hidden'} disabled:opacity-30 text-center bg-lightGray text-yellow w-full p-4 text-xl font-bold border-none rounded-xl font-orbiton hover:bg-hoverYellow transition-al`}>

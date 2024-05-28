@@ -5,8 +5,8 @@ import react from "@vitejs/plugin-react"
 export default defineConfig({
   plugins: [react()],
   server: {
-    origin: 'https://pacgc.pw',
-    // origin: 'https://dev.pacgc.pw',
+    // origin: 'https://pacgc.pw',
+    origin: 'https://dev.pacgc.pw',
     port: 4173,
     strictPort: true,
     hmr: {

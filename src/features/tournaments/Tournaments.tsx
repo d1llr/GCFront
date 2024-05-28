@@ -11,33 +11,48 @@ import { object } from "yup";
 
 
 
-const filteredFields = ['chainID', 'game_name']
+type filteredFields = 'chainID' | 'game_name' | 'type'
 
 const Tournaments = () => {
 
     const [getTournamentsByFilter, { isLoading: getUserNameLoading }] = useGetTournamentsByFiltersMutation()
 
-    const limit = 5
+    const limit = 6
     const [pagination, setPagination] = useState<number>(0)
 
     const { data, isLoading, isError, isSuccess: ActiveTournamentsSuccess, error, refetch } = useGetTournamentsQuery({
         offset: pagination * limit,
         limit: limit
     })
+    const [dataFilterAll, setDataFilterAll] = useState<{ history: any; active: string | any[]; }>({history: "", active: ""});
+    const [dataFilter, setDataFilter] = useState(data);
 
     useEffect(() => {
         refetch()
+        if (activeFilters.chainID.length || activeFilters.game_name.length || activeFilters.type.length) {
+            paginationSlice(dataFilterAll);
+        }
     }, [pagination])
+
+    useEffect(() => {
+        if (!activeFilters.chainID.length && !activeFilters.game_name.length && !activeFilters.type.length) {
+            setDataFilter(data);
+        }
+    }, [data])
 
 
     const { data: FilterData, isSuccess: FilterDataSuccess, isLoading: FilterDataLoading } = useGetFiltersQuery()
     const { data: tournamentsCount, isSuccess: tournamentsCountSuccess } = useGetTournamentsCountQuery()
 
     const [pagesCount, setPagesCount] = useState<number>()
-    const [filter, setFilter] = useState<string[]>()
+    const [filter, setFilter] = useState<IFilters>()
     const navigate = useNavigate();
 
-    const [activeFilters, setActiveFilters] = useState<string[]>([])
+    const [activeFilters, setActiveFilters] = useState<IFilters>({
+        chainID: [],
+        game_name: [],
+        type: []
+    })
 
 
     const [tournamentsRefsArray] = useState(() =>
@@ -50,51 +65,98 @@ const Tournaments = () => {
         </div >
     }
 
+    function transformObject(inputs: any) {
+        let output: any = {
+            chainID: [],
+            game_name: [],
+            type: []
+        };
+
+        inputs.map((input: any) => {
+            for (let key in input) {
+                if (input[key]['chainID'] && !output.chainID.includes(input[key]['chainID'])) {
+                    output.chainID.push(input[key]['chainID']);
+                }
+                if (input[key]['game_name'] && !output.game_name.includes(input[key]['game_name'])) {
+                    output.game_name.push(input[key]['game_name']);
+                }
+            }
+            output.type.push(input['type']);
+        })
+        return output;
+    }
+    
     useEffect(() => {
         if (FilterData) {
-            setFilter(() => {
-                let res: string[] = []
-                FilterData.map(item => {
-                    let values = Object.keys(item).filter(key => !Number.isNaN(Number(key)) ?? key).map(key => Object.values(item[key]))
-                    values.map((value, index: number) => {
-                        value.map(v => {
-                            if (!res.includes(v))
-                                res.push(v)
-                        })
-                    })
-                    if (!res.includes(item.type))
-                        res.push(item.type)
+            setFilter(() => transformObject(FilterData))
+            
+            // setFilter(() => {
+            //     let res: string[] = []
+            //     FilterData.map(item => {
+            //         let values = Object.keys(item).filter(key => !Number.isNaN(Number(key)) ?? key).map(key => Object.values(item[key]))
+            //         values.map((value, index: number) => {
+            //             value.map(v => {
+            //                 if (!res.includes(v))
+            //                     res.push(v)
+            //             })
+            //         })
+            //         if (!res.includes(item.type))
+            //             res.push(item.type)
 
-                })
-                return res
-            })
-
-
+            //     })
+            //     return res
+            // })
         }
     }, [FilterDataSuccess])
 
     useEffect(() => {
-        if (activeFilters) {
+        if (activeFilters.chainID.length || activeFilters.game_name.length || activeFilters.type.length) {
             getTournamentsByFilter(activeFilters)
                 .unwrap()
                 .then(responce => {
-                    console.log(responce);
-
+                    setDataFilterAll(responce);
+                    setPagesCount(responce.active.length + responce.history.length);
+                    setPagination(0);
+                    paginationSlice(responce);              
                 })
                 .catch(err => {
                     console.log(err);
                 })
+        } else {
+            setDataFilter(data);
+            setPagesCount(tournamentsCount)
         }
     }, [activeFilters])
 
+    function paginationSlice(arr: { history: any; active: string | any[]; }) {
+        let offset = pagination * limit;        
+        let res: any = {};
+        res.active = arr.active.slice(offset, offset + limit);
+
+        if (!res.active.length) { 
+            let historyOffset =  offset - arr.active.length;
+            res.history = arr.history.slice(historyOffset, historyOffset + limit);   
+        } else {
+            res.history = arr.history.slice(0, limit - arr.active.length);
+        }
+
+        setDataFilter(res);
+    }
+
+    function activeFiltersChange(key: string, item: string) {
+        if (!activeFilters[key as filteredFields].includes(item)) {
+            setActiveFilters(prev => ({ ...prev, [key]: [...prev[key as filteredFields], item] }))
+        } else {
+            setActiveFilters(prev => ({ ...prev, [key]: prev[key as filteredFields].filter(x => x != item) }))
+        }
+    }
 
     useEffect(() => {
         if (tournamentsCount)
             setPagesCount(tournamentsCount)
-
     }, [tournamentsCountSuccess])
 
-    if (isLoading) {
+    if (isLoading || getUserNameLoading) {
         return <Loader />
     }
 
@@ -105,9 +167,6 @@ const Tournaments = () => {
         return `${day}.${month}`;
     }
 
-
-
-
     return (
         <div className="background-image-black">
             <div className="wrapper-content">
@@ -117,19 +176,24 @@ const Tournaments = () => {
                         filter &&
                         <div className="flex flex-row gap-3 flex-wrap max-[920px]:gap-2">
                             {
-                                filter?.length > 2 && filter?.map(item => {
-                                    return <button className={`filter_btn ${activeFilters == item ? 'active' : ""}`} onClick={(e) => activeFilters == item ? setActiveFilters(undefined) : setActiveFilters(item)}
-                                        data-field={item}>
-                                        {symbols.hasOwnProperty(item)
-                                            ? symbols[item as keyof typeof symbols]
-                                            : item
-                                        }</button>
+                                Object.keys(filter)?.map((key: string | filteredFields) => {
+                                    return filter[key as filteredFields].map((item: string) => {
+                                        return <button
+                                            className={`filter_btn ${activeFilters[key as filteredFields]?.includes(item) ? 'active' : ""}`}
+                                            onClick={(e) => activeFiltersChange(key, item)}
+                                            data-field={item}>
+                                            {symbols.hasOwnProperty(item)
+                                                ? symbols[item as keyof typeof symbols]
+                                                : item
+                                            }</button>
+
+                                    })
                                 })
                             }
 
                         </div>}
-                    <div className={`grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 ${data?.length == 0 && 'hidden'}`}>
-                        {data[0]['active']?.map((item: any, index: number) => {
+                    <div className={`grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 ${dataFilter?.length == 0 && 'hidden'}`}>
+                        {dataFilter?.active?.map((item: any, index: number) => {
                             return (
                                 <div key={index} className={`bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full `} data-chainID={item.chainID} data-game_name={item.game_name} data-type="active" ref={tournamentsRefsArray[index]}>
                                     <div className="flex flex-col w-full gap-6 justify-between">
@@ -184,7 +248,7 @@ const Tournaments = () => {
                                 </div>
                             )
                         })}
-                        {data[1]['history']?.map((item: any, index: number) => {
+                        {dataFilter?.history?.map((item: any, index: number) => {
 
                             return (
                                 <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white" data-chainID={item.chainID} data-game_name={item.game_name} data-type="ended" >
@@ -216,8 +280,7 @@ const Tournaments = () => {
                                     </div>
                                 </div>
                             )
-                        })
-                        }
+                        })}
                         {/* {HistoryData?.map((item: ITournaments, index: number) => {
                             return (
                                 <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white" data-chainID={item.chainID} data-game_name={item.game_name} data-type="ended" ref={endedRefsArray[index]}>
@@ -251,7 +314,8 @@ const Tournaments = () => {
                             )
                         })} */}
                     </div>
-                    {data?.length == 0 && (
+                    
+                    {/* {data?.length == 0 && (
                         <div className="bg-lightGray rounded-[30px] flex flex-col items-center lg:md:mt-10 mt-3 gap-10 px-6 pt-16 pb-12 max-[920px]:pt-8 max-[920px]:pb-6">
                             <div className="flex flex-col items-center gap-5">
                                 <div className="font-orbitron text-white text-center text-[28px] leading-[35px] max-[920px]:text-[18px] max-[920px]:leading-[23px]">
@@ -264,9 +328,9 @@ const Tournaments = () => {
                             <NavLink className="black_btn max-w-[475px]" to="/games">
                                 Games
                             </NavLink>
-                        </div>)}
+                        </div>)} */}
                     <div className="flex flex-row justify-center items-center gap-2 mt-5">
-                        {(pagesCount && pagesCount > 5) && ([...new Array(Math.ceil(pagesCount / 5))].map((page, index: number) => {
+                        {(pagesCount && pagesCount > limit) && ([...new Array(Math.ceil(pagesCount / limit))].map((page, index: number) => {                          
                             return <GetNumberContainer value={index} />
                         }))}
                     </div>

@@ -4,6 +4,8 @@ import {
   usePrepareSendTransaction,
   useSendTransaction,
   useWaitForTransaction,
+  useDisconnect,
+  useConnect,
 } from "wagmi"
 import { utils } from "ethers"
 import { changeChain } from "../../header/wallet/meta/chainHelper"
@@ -11,7 +13,13 @@ import { FC, useEffect } from "react"
 import { useToast } from "@chakra-ui/react"
 import Loader from "../../../helpers/Loader"
 import { NavLink, useNavigate } from "react-router-dom"
-import { HashLink } from 'react-router-hash-link';
+import { HashLink } from 'react-router-hash-link'
+import { useConnectWalletMutation } from "../../header/wallet/wallet.slice"
+import { bsc } from "@wagmi/core/chains"
+import { MetaMaskConnector } from "wagmi/connectors/metaMask"
+import tokenService from "../../../services/token.service"
+import { setWallet } from "../../user/User.slice"
+import { useAppDispatch } from "../../../app/hooks"
 
 
 interface ButtonProps {
@@ -55,6 +63,16 @@ const TournamentBtn: FC<ButtonProps> = ({
     isLoading: txLoading,
     isSuccess: transactionConfirmed,
   } = useWaitForTransaction({ confirmations: 1, hash: transactionData?.hash })
+  const dispatch = useAppDispatch()
+  const { connectAsync } = useConnect()
+  const { disconnectAsync } = useDisconnect()
+  const account = useAccount({
+    onConnect({ address, connector, isReconnected }) {
+      console.log("Connected", { address, connector, isReconnected })
+    },
+  })
+
+  const [connectWallet, { isLoading }] = useConnectWalletMutation()
   // ===========================================
 
   function notification(
@@ -104,14 +122,61 @@ const TournamentBtn: FC<ButtonProps> = ({
     }
   }, [txError])
 
+  async function handleConnectWallet(): Promise<void> {
+    try {  
+    // connect logic
+    console.log("bsc");
+      console.log(bsc);
+      
+      await changeChain(bsc.id)
+
+      if (account.isConnected) {
+        await disconnectAsync()
+      }
+      const { account: accountAddress, chain: metamaskChain } =
+        await connectAsync({
+          connector: new MetaMaskConnector(),
+        })
+      const userData = { address: accountAddress, chainId: metamaskChain.id }
+
+      // DB logic
+      await connectWallet({
+        id: tokenService.getUser().id,
+        wallet: accountAddress,
+      })
+        .then((response) => {
+          tokenService.setWallet(accountAddress)
+          dispatch(setWallet(accountAddress))
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+      console.log("User data: ", userData)
+    } catch (e) {
+      let error = (e as { message: string })?.message
+      console.error("Error while disconnect: ", error)
+
+      if (
+        error.includes("No crypto wallet found") ||
+        error.includes("Connector not found")
+      ) {
+        window.open("https://metamask.io/", "_blank")
+      }
+    }
+  }
+
   if (tournamentChainId !== chain?.id) {
     return (
       <button
-        className="text-center max-w-20 bg-yellow text-black w-1/2 p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-al  disabled:opacity-30"
-        onClick={() => changeChain(tournamentChainId)}
+        className="text-center max-w-20 bg-yellow text-black w-full p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-al  disabled:opacity-30"
+        onClick={async () => {
+          await handleConnectWallet()
+          await changeChain(tournamentChainId)
+        }}
         disabled={!isDisconnected}
       >
-        {`Participate`}
+        {`Connect wallet`}
       </button>
     )
   }
