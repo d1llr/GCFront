@@ -13,6 +13,12 @@ type IReq = {
 }
 
 
+type ICanWithdraw = {
+    id: string,
+    subscription_id: number
+}
+
+
 
 
 // Define a service using a base URL and expected endpoints
@@ -30,7 +36,16 @@ export const WalletActions = createApi({
         }),
         removeWallet: builder.mutation<IWallet, IReq>({
             query: (body) => ({
+
                 url: `/api/user/removeWallet`,
+                method: 'POST',
+                body: body,
+                headers: authHeader()
+            }),
+        }),
+        getUrlToPay: builder.mutation<{ urlToPay: string }, IReq>({
+            query: (body) => ({
+                url: `/api/user/getUrlToPay`,
                 method: 'POST',
                 body: body,
                 headers: authHeader()
@@ -52,7 +67,7 @@ export const WalletActions = createApi({
                 headers: authHeader()
             }),
         }),
-        canIWithdraw: builder.mutation<{ AvailableToWithdraw: number, commision: number }, IReq>({
+        canIWithdraw: builder.mutation<{ AvailableToWithdraw: number, commision: number }, ICanWithdraw>({
             query: (body) => ({
                 url: `/api/user/canIWithdraw`,
                 method: 'POST',
@@ -65,4 +80,4 @@ export const WalletActions = createApi({
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useConnectWalletMutation, useCanIWithdrawMutation, useRemoveWalletMutation, useRechargeBalanceMutation, useWithdrawBalanceMutation } = WalletActions
+export const { useGetUrlToPayMutation, useConnectWalletMutation, useCanIWithdrawMutation, useRemoveWalletMutation, useRechargeBalanceMutation, useWithdrawBalanceMutation } = WalletActions

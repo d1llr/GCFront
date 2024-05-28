@@ -10,6 +10,7 @@ import Loader from '../../../helpers/Loader'
 import { isApiError, isApiResponse } from '../../../helpers/isApiResponse'
 import { useToast } from '@chakra-ui/react'
 import { dateFormat } from '../User'
+import { Ref } from 'react-hook-form'
 
 const Subscriptions = () => {
     const toast = useToast()
@@ -22,9 +23,10 @@ const Subscriptions = () => {
     const [openModalRestoreSubs, setOpenModalRestoreSubs] = useState(false);
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [currentSub, setCurrentSub] = useState<ISubs>()
-    const autoRenewalCheckBox = createRef() as LegacyRef<HTMLInputElement>
+    const autoRenewalCheckBox = createRef() as RefObject<HTMLInputElement>
 
     const onSubmit = async (subId: number) => {
+        let checked = autoRenewalCheckBox as RefObject<HTMLInputElement>
         await changeUserSubscription({
             userId: tokenService.getUser().id,
             newsubscribe: subId,
@@ -234,7 +236,7 @@ const Subscriptions = () => {
                                             return (
                                                 <li
                                                     key={index}
-                                                    className={`min-[320px]:text-base max-[620px] md:text-xl before:mt-[5px] before:block before:min-w-[16px] before:rounded-full before:h-[16px] before:content-[""] before:bg-yellow flex flex-row items-start gap-4 font-normal ${item.badge && 'after:content-[""] after:block'}`}>
+                                                    className={`min-[320px]:text-base max-[620px] lg:text-xl lg:text-lg before:mt-[5px] before:block before:min-w-[16px] before:rounded-full before:h-[16px] before:content-[""] before:bg-yellow flex flex-row items-start gap-4 font-normal ${item.badge && 'after:content-[""] after:block'}`}>
                                                     {value}
                                                     {item.badge && value.includes('badge') && <img src={item.badge} alt="" />}
                                                 </li>
@@ -297,7 +299,7 @@ const Subscriptions = () => {
                             {
                                 isError &&
                                 <div className='flex flex-col text-center justify-center gap-4'>
-                                    <span className='text-red-500 font-bold'>Something went wrong!</span>
+                                    <span className='text-red-500 font-bold'>Not enough balance!</span>
                                 </div>
                             }
                         </Modal.Body>

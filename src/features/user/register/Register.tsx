@@ -319,7 +319,6 @@ const Register = () => {
 
               <div className="form-group">
                 <Button
-                  content="Sign up"
                   buttonStyle="yellow"
                   type="submit"
 
@@ -331,6 +330,7 @@ const Register = () => {
                   loading={`${SendCodeLoading && 'true'}`}//true 
                 // loading="true"//true 
                 >
+                  Sign up
                 </Button>
               </div>
               <span className='text-red-500 text-center'>

@@ -56,7 +56,7 @@ export const NETWORKS: MapType = {
   "56": networks.bsc_mainnet,
 }
 
-export const registerdChainIds: number[] = [bsc.id]
+export const registerdChainIds: number[] = [bsc.id, 800001]
 
 export const DEFAULT_CHAINID = registerdChainIds[0]
 

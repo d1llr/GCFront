@@ -9,7 +9,7 @@ interface IButtonProps {
     rounded?: string
     maxSizes?: string
     bgColor?: string
-    children: string;
+    children?: string;
     loading?: string
     disabled?: string
     onClick?: () => void

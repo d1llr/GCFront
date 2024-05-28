@@ -326,7 +326,7 @@ const User = () => {
           <>
             <h1 className="mt-7 font-orbitron w-fit text-yellow lg:text-8xl md:text-6xl text-4xl font-extrabold">My account</h1>
             <div className="flex lg:md:flex-row flex-wrap flex-col gap-4 w-full mt-10">
-              <div className="flex flex-col sm:p-8 p-4 min-w-[500px]  bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold lg:md:w-1/3 basis-[fit-content]">
+              <div className="flex flex-col sm:p-8 p-4 lg:min-w-[500px]  bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold lg:md:w-1/3 basis-[fit-content]">
                 <div className="flex flex-row justify-between items-center">
                   <h2 className="text-yellow sm:md:text-3xl text-xl">
                     Your data
@@ -420,7 +420,7 @@ const User = () => {
                     </div>
                   </form>}
               </div>
-              <div className="flex flex-col justify-between sm:p-8 p-4 min-w-[500px]  bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold lg:md:w-1/3 basis-[fit-content]">
+              <div className="flex flex-col justify-between sm:p-8 p-4 lg:min-w-[500px]  bg-lightGray rounded-3xl text-white gap-5 font-orbitron font-bold lg:md:w-1/3 basis-[fit-content]">
                 {SubsLoading ?
                   <Loader />
                   :
@@ -444,7 +444,7 @@ const User = () => {
                           Active until
                         </span>
                         <span className="font-orbitron font-normal sm:text-xl md:text-2xl text-sm text-white">
-                          {dateFormat(SubData?.active_until) ?? 'unlimited'}
+                          {SubData?.active_until ? dateFormat(SubData?.active_until) : 'unlimited'}
                         </span>
                       </div>
                       {SubData?.id != 1 &&
@@ -474,7 +474,7 @@ const User = () => {
                   </>
                 }
               </div>
-              <div className="flex flex-col items-center min-w-[500px] p-8 bg-lightGray rounded-3xl text-white font-orbitron justify-center gap-5 lg:md:w-1/3 h-fit">
+              <div className="flex flex-col items-center lg:min-w-[500px] sm:p-8 p-4 bg-lightGray rounded-3xl text-white font-orbitron justify-center gap-5 lg:md:w-1/3 h-fit">
                 <div className="flex flex-row justify-between">
                   <h2 className="text-yellow text-3xl text-center">
                     Delete an account

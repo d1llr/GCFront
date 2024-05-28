@@ -45,6 +45,13 @@ const TournamentBtn: FC<ButtonProps> = ({
   const { chain } = useNetwork()
   const { isDisconnected } = useAccount()
   const toast = useToast()
+  const account = useAccount({
+    onConnect({ address, connector, isReconnected }) {
+      console.log("Connected", { address, connector, isReconnected })
+    },
+  })
+
+  const { connectAsync } = useConnect()
 
   const { config } = usePrepareSendTransaction({
     request: {
@@ -170,6 +177,7 @@ const TournamentBtn: FC<ButtonProps> = ({
     return (
       <button
         className="text-center max-w-20 bg-yellow text-black w-full p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-al  disabled:opacity-30"
+
         onClick={async () => {
           await handleConnectWallet()
           await changeChain(tournamentChainId)
@@ -183,8 +191,8 @@ const TournamentBtn: FC<ButtonProps> = ({
 
   return (
     <button
-      className="text-center bg-yellow text-black w-full p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-al  disabled:opacity-30"
-      onClick={() => sendTransaction?.()}
+    className="text-center max-w-20 bg-yellow text-black w-1/2 p-4 text-xl font-bold border-none rounded-xl  font-orbiton hover:bg-hoverYellow transition-all"
+    onClick={() => sendTransaction?.()}
       disabled={!sendTransaction || isDisconnected}
     >
       {
