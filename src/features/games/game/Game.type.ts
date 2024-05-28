@@ -8,8 +8,8 @@ export interface IGame {
         android?: string
         web?: string
         apple?: string
-    }
-
+    },
+    instruction: string
 }
 
 

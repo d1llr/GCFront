@@ -13,6 +13,8 @@ import Loader from "../../../helpers/Loader";
 import Page404 from "../../../helpers/Page404";
 import { symbols } from "./TournamentBtn";
 import { IRating } from "../Tournaments.type";
+import Button from "../../../helpers/Button";
+
 const HistoryTournament = () => {
     let params = useParams();
     const navigate = useNavigate();

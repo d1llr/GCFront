@@ -84,6 +84,8 @@ function Game() {
           var v = z.toString()
           v = v + '%'
           console.log(v)
+          console.log(data);
+          
         })
         .catch(err => {
           setHistoryError(true)
@@ -169,6 +171,12 @@ function Game() {
             <div className="lg:md:w-2/5 w-full sm:w-4/5 font-semibold lg:md:text-2xl text-base text-white">{data?.short_desc}</div>
             <div>
               <ul className="flex flex-row gap-3">
+                {data?.instruction && 
+                  <a href={data?.instruction} target="_blank">
+                    <button className="md:text-base md:max-w-[277px] md:px-6 text-xs max-w-[200px] px-3 rounded-lg w-full h-full font-semibold border-none font-orbitron text-center bg-yellow transition-all duration-300 hover:bg-hoverYellow hover:transition-all hover:duration-300">
+                      Instructions for the game
+                    </button>
+                  </a>}
                 {data?.links?.android && <a href={data?.links?.android} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow hover:bg-hoverYellow"><img src={android_icon} alt="not found" className=""></img></a>}
                 {data?.links?.windows && <a href={data?.links?.windows} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow hover:bg-hoverYellow"><img src={win} alt="not found" className=""></img></a>}
                 {(data?.links?.web && data?.links?.web != 'http://www.pacshooter.pw/') && <a href={data?.links?.web} target="_blank" className="flex justify-center items-center rounded-lg w-11 h-11 bg-yellow hover:bg-hoverYellow"><img src={web} alt="not found" className=""></img></a>}

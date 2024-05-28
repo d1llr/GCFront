@@ -14,20 +14,28 @@ import { object } from "yup";
 type filteredFields = 'chainID' | 'game_name' | 'type'
 
 
-const Tournaments = () => {
-    const navigate = useNavigate();
-    const limit = 5
+    const limit = 6
     const [pagination, setPagination] = useState<number>(0)
 
-    ////////
-    const [getTournamentsByFilter, { isLoading: FilterLoading }] = useGetTournamentsByFiltersMutation()
-    const [data, setData] = useState<any>()
-    // const { data, isLoading, isError, isSuccess: ActiveTournamentsSuccess, error, refetch } = useGetTournamentsQuery({
-    //     offset: pagination * limit,
-    //     limit: limit
-    // })
+    const { data, isLoading, isError, isSuccess: ActiveTournamentsSuccess, error, refetch } = useGetTournamentsQuery({
+        offset: pagination * limit,
+        limit: limit
+    })
+    const [dataFilterAll, setDataFilterAll] = useState<{ history: any; active: string | any[]; }>({history: "", active: ""});
+    const [dataFilter, setDataFilter] = useState(data);
 
+    useEffect(() => {
+        refetch()
+        if (activeFilters.chainID.length || activeFilters.game_name.length || activeFilters.type.length) {
+            paginationSlice(dataFilterAll);
+        }
+    }, [pagination])
 
+    useEffect(() => {
+        if (!activeFilters.chainID.length && !activeFilters.game_name.length && !activeFilters.type.length) {
+            setDataFilter(data);
+        }
+    }, [data])
 
 
     const { data: FilterData, isSuccess: FilterDataSuccess, isLoading: FilterDataLoading } = useGetFiltersQuery()
@@ -36,6 +44,9 @@ const Tournaments = () => {
     const [pagesCount, setPagesCount] = useState<number>()
 
     const [filter, setFilter] = useState<IFilters>()
+    const navigate = useNavigate();
+
+
     const [activeFilters, setActiveFilters] = useState<IFilters>({
         chainID: [],
         game_name: [],
@@ -74,15 +85,14 @@ const Tournaments = () => {
             }
             output.type.push(input['type']);
         })
-
-
-
         return output;
     }
-
+    
     useEffect(() => {
         if (FilterData) {
             setFilter(() => transformObject(FilterData))
+            
+
             // setFilter(() => {
             //     let res: string[] = []
             //     FilterData.map(item => {
@@ -100,33 +110,59 @@ const Tournaments = () => {
             //     return res
             // })
 
-
         }
     }, [FilterDataSuccess])
 
     useEffect(() => {
-        if (activeFilters) {
+        if (activeFilters.chainID.length || activeFilters.game_name.length || activeFilters.type.length) {
             getTournamentsByFilter(activeFilters)
                 .unwrap()
                 .then(responce => {
-                    setData(responce)
-                    console.log(activeFilters);
+                    setDataFilterAll(responce);
+                    setPagesCount(responce.active.length + responce.history.length);
+                    setPagination(0);
+                    paginationSlice(responce);              
 
                 })
                 .catch(err => {
                     console.log(err);
                 })
+        } else {
+            setDataFilter(data);
+            setPagesCount(tournamentsCount)
         }
     }, [activeFilters])
 
+    function paginationSlice(arr: { history: any; active: string | any[]; }) {
+        let offset = pagination * limit;        
+        let res: any = {};
+        res.active = arr.active.slice(offset, offset + limit);
+
+        if (!res.active.length) { 
+            let historyOffset =  offset - arr.active.length;
+            res.history = arr.history.slice(historyOffset, historyOffset + limit);   
+        } else {
+            res.history = arr.history.slice(0, limit - arr.active.length);
+        }
+
+        setDataFilter(res);
+    }
+
+    function activeFiltersChange(key: string, item: string) {
+        if (!activeFilters[key as filteredFields].includes(item)) {
+            setActiveFilters(prev => ({ ...prev, [key]: [...prev[key as filteredFields], item] }))
+        } else {
+            setActiveFilters(prev => ({ ...prev, [key]: prev[key as filteredFields].filter(x => x != item) }))
+        }
+    }
 
     useEffect(() => {
         if (tournamentsCount)
             setPagesCount(tournamentsCount)
-
     }, [tournamentsCountSuccess])
 
-    if (FilterDataLoading) {
+    if (isLoading || getUserNameLoading) {
+
         return <Loader />
     }
 
@@ -136,9 +172,6 @@ const Tournaments = () => {
         const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed, so we add 1
         return `${day}.${month}`;
     }
-
-
-
 
     return (
         <div className="background-image-black">
@@ -153,7 +186,8 @@ const Tournaments = () => {
                                     return filter[key as filteredFields].map((item: string) => {
                                         return <button
                                             className={`filter_btn ${activeFilters[key as filteredFields]?.includes(item) ? 'active' : ""}`}
-                                            onClick={(e) => !activeFilters[key as filteredFields].includes(item) ? setActiveFilters(prev => ({ ...prev, [key]: [...prev[key as filteredFields], item] })) : setActiveFilters(prev => ({ ...prev, [key]: prev[key as filteredFields].filter(x => x != item) }))}
+                                            onClick={(e) => activeFiltersChange(key, item)}
+
                                             data-field={item}>
                                             {symbols.hasOwnProperty(item)
                                                 ? symbols[item as keyof typeof symbols]
@@ -165,28 +199,15 @@ const Tournaments = () => {
                             }
 
                         </div>}
-                    {FilterLoading ?
-                        <div>
-                            <Loader />
-                        </div> : data &&
-                        <div className={`grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 ${data?.length == 0 && 'hidden'}`}>
-                            {data['active'] &&
-                                data['active']?.map((item: any, index: number) => {
-                                    return (
-                                        <div key={index} className={`bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full `} data-chainID={item.chainID} data-game_name={item.game_name} data-type="active" ref={tournamentsRefsArray[index]}>
-                                            <div className="flex flex-col w-full gap-6 justify-between">
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="flex flex-row justify-between items-base  gap-2" >
-                                                        <div className="text-white font-orbitron text-3xl flex flex-col items-start w-2/3">
-                                                            <div className="lg:md:text-2xl sm:text-lg text-lg font-bold">{item.name}</div>
-                                                        </div>
-                                                        <span className="lg:md:p-2 p-1 lg:md:text-base text-sm  font-bold flex flex-col juistify-center whitespace-nowrap text-center items-center rounded-3xl text-white w-36 h-fit bg-[#007E3D]">
-                                                            active
-                                                        </span>
-                                                    </div>
-                                                    <span className="pt-4 font-medium text-white lg:md:text-2xl sm:text-lg text-base break-normal ">
-                                                        {item.goal}
-                                                    </span>
+                    <div className={`grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 ${dataFilter?.length == 0 && 'hidden'}`}>
+                        {dataFilter?.active?.map((item: any, index: number) => {
+                            return (
+                                <div key={index} className={`bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white w-full `} data-chainID={item.chainID} data-game_name={item.game_name} data-type="active" ref={tournamentsRefsArray[index]}>
+                                    <div className="flex flex-col w-full gap-6 justify-between">
+                                        <div className="flex flex-col gap-1">
+                                            <div className="flex flex-row justify-between items-base  gap-2" >
+                                                <div className="text-white font-orbitron text-3xl flex flex-col items-start w-2/3">
+                                                    <div className="lg:md:text-2xl sm:text-lg text-lg font-bold">{item.name}</div>
 
                                                 </div>
                                                 <div>
@@ -249,19 +270,68 @@ const Tournaments = () => {
                                                     <span>
                                                         {item.game_name}
                                                     </span>
-                                                </div>
-                                                <HistotyTournamentRating tournament_id={item.id} typeTR="history" />
-                                                <button onClick={() => {
-                                                    navigate(`/tournaments/history/${item.id}`);
-                                                }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] lg:md:text-xl text-base font-bold p-3 text-center cursor-pointer disabled:opacity-30 hover:bg-[#1B1B1B]`}>
-                                                    More detailed
-                                                </button>
+                                                </li>
+                                                <li className="flex flex-row justify-between">
+                                                    <span className=" font-bold font-orbitron lg:md:text-2xl sm:text-lg text-base">
+                                                        Duration
+                                                    </span>
+                                                    <span className="font-orbitron font-bold ">
+                                                        {item.daysLeft} days
+                                                    </span>
+                                                </li>
+                                                <li className="flex flex-row justify-between">
+                                                    <span className=" font-bold font-orbitron lg:md:text-2xl sm:text-lg text-base">
+                                                        Cost
+                                                    </span>
+                                                    <span className="font-orbitron font-bold ">
+                                                        {item.cost}
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <button onClick={() => {
+                                            navigate(`/tournaments/${item.id}`);
+                                        }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] lg:md:text-xl text-base font-bold p-3 text-center cursor-pointer disabled:opacity-30 hover:bg-[#1B1B1B]`}>
+                                            More detailed
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                        {dataFilter?.history?.map((item: any, index: number) => {
+
+                            return (
+                                <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white" data-chainID={item.chainID} data-game_name={item.game_name} data-type="ended" >
+                                    <div className="flex flex-col w-full gap-8 justify-between">
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex flex-row justify-between items-base gap-2 " >
+                                                <span className="font-orbitron lg:md:text-2xl sm:text-lg text-lg font-bold w-2/3">
+                                                    {item.name} | {item.id}
+                                                </span>
+                                                <span className="lg:md:p-2 p-1 lg:md:text-base text-sm font-bold flex flex-col juistify-center text-center items-center rounded-3xl text-white w-1/3 h-fit bg-[#898989]">
+                                                    Ended {convertISO8601ToDDMM(item.createdAt)}
+                                                </span>
                                             </div>
                                         </div>
-                                    )
-                                })
-                            }
-                            {/* {HistoryData?.map((item: ITournaments, index: number) => {
+                                        <div className="flex flex-row justify-between items-center lg:md:text-2xl sm:text-lg text-base font-orbitron">
+                                            <span>
+                                                Game
+                                            </span>
+                                            <span>
+                                                {item.game_name}
+                                            </span>
+                                        </div>
+                                        <HistotyTournamentRating tournament_id={item.id} typeTR="history" />
+                                        <button onClick={() => {
+                                            navigate(`/tournaments/history/${item.id}`);
+                                        }} className={`font-orbitron w-full text-yellow rounded-3xl bg-[#0D0D0D] lg:md:text-xl text-base font-bold p-3 text-center cursor-pointer disabled:opacity-30 hover:bg-[#1B1B1B]`}>
+                                            More detailed
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                        {/* {HistoryData?.map((item: ITournaments, index: number) => {
                             return (
                                 <div key={index} className="bg-lightGray p-6 rounded-[20px] flex flex-row gap-2 text-white" data-chainID={item.chainID} data-game_name={item.game_name} data-type="ended" ref={endedRefsArray[index]}>
                                     <div className="flex flex-col w-full gap-8 justify-between">
@@ -293,9 +363,10 @@ const Tournaments = () => {
                                 </div>
                             )
                         })} */}
-                        </div>
-                    }
-                    {data?.length == 0 && (
+                    </div>
+                    
+                    {/* {data?.length == 0 && (
+
                         <div className="bg-lightGray rounded-[30px] flex flex-col items-center lg:md:mt-10 mt-3 gap-10 px-6 pt-16 pb-12 max-[920px]:pt-8 max-[920px]:pb-6">
                             <div className="flex flex-col items-center gap-5">
                                 <div className="font-orbitron text-white text-center text-[28px] leading-[35px] max-[920px]:text-[18px] max-[920px]:leading-[23px]">
@@ -308,9 +379,10 @@ const Tournaments = () => {
                             <NavLink className="black_btn max-w-[475px]" to="/games">
                                 Games
                             </NavLink>
-                        </div>)}
-                    {/* <div className="flex flex-row justify-center items-center gap-2 mt-5">
-                        {(pagesCount && pagesCount > 5) && ([...new Array(Math.ceil(pagesCount / 5))].map((page, index: number) => {
+                        </div>)} */}
+                    <div className="flex flex-row justify-center items-center gap-2 mt-5">
+                        {(pagesCount && pagesCount > limit) && ([...new Array(Math.ceil(pagesCount / limit))].map((page, index: number) => {                          
+
                             return <GetNumberContainer value={index} />
                         }))}
                     </div> */}

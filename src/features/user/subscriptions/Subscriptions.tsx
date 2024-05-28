@@ -249,7 +249,7 @@ const Subscriptions = () => {
                                                 setCurrentSub(item)
                                                 setOpenModal(true)
                                                 reset()
-                                            }} buttonStyle='black' type='button' textColor='text-yellow' padding='p-3' rounded='rounded-xl' fontSize='lg:md:text-xl sm:text-base' >
+                                            }} buttonStyle='black' disabled='true' type='button' textColor='text-yellow' padding='p-3' rounded='rounded-xl' fontSize='lg:md:text-xl sm:text-base' >
                                                 Select
                                             </Button>
                                         )

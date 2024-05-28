@@ -5,5 +5,6 @@ export default interface IGames {
     scr_dir: string,
     short_desc: string,
     id: string,
-    active: boolean
+    active: boolean,
+    code: string
 }

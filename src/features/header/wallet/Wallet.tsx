@@ -280,6 +280,8 @@ const Wallet = memo((props: IWalletProps) => {
   async function handleConnectWallet(): Promise<void> {
     try {
       // connect logic
+      console.log(bsc);
+      
       await changeChain(bsc.id)
 
       if (account.isConnected) {
